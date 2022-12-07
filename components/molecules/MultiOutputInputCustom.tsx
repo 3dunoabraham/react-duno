@@ -276,6 +276,7 @@ export const MultiOutputInputCustom = ({
                                     reference={formObject[key]}
                                     optName={theInputObj.optName}
                                     optSubName={theInputObj.optSubName || null}
+                                    config={"config" in theInputObj ? theInputObj.config : {}}
                                     display={
                                                 !!theInputObj.optSubName
                                                 ? formObject[key][theInputObj.optSubName]

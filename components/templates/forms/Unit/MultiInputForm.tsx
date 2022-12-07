@@ -35,14 +35,14 @@ export const UnitMultiInputForm =({
         "characteristics": {
             _: {label: "Characteristics",flex:"wrap"},
             color: {title:"Color", value: "Grey", widget: "string", customFormat: "", limit: 24, inputName:"color", },
-            axles: {title:"Axles", value: "2", widget: "select", customFormat: "intrange", inputName:"axles", limit:4, optName:"label"},
+            axles: {title:"Axles", value: "2", widget: "select", customFormat: "intrange", inputName:"axles", limit:4, config:{isReadOnly: true},  optName:"label"},
             hitch_type: {title:"Hitch Type", value: "AB", widget: "string", customFormat: "tiny", inputName:"hitch_type", },
             shipping_weight: {title:"Shipping Weight (lbs)", value: "2000", widget: "string", customFormat: "integer", inputName:"shipping_weight", limit: 99000 },
             gvwr: {title:"GVWR (lbs)", value: "2005", widget: "string", customFormat: "integer", inputName:"gvwr", limit: 99999 },
         },
         "registration_title": {
             _: {label: "Title",flex:"wrap"},
-            title_status: {title:"Title Status", value: "Pending", widget: "select", customFormat: "enum", optName:"label",inputName:"title_status", },
+            title_status: {title:"Title Status", value: "Pending", widget: "select", customFormat: "enum", config:{isReadOnly: true}, optName:"label",inputName:"title_status", },
             title_number: {title:"Title No.", value: "645964548547", widget: "string", customFormat: "bigint", limit: 30, inputName:"title_number", },
             title_state: {title:"Title State", value: "NJ", widget: "select", customFormat: "enum", addMode: true, optName:"label", inputName:"title_state", },
             mso: {title:"MSO", value: "64596454854722115", widget: "string", customFormat: "", inputName:"mso", },

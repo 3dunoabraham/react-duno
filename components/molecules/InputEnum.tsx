@@ -11,15 +11,21 @@ import { PostButton } from '@/components/atoms/PostButton'
 import { InputSelect, InputSelectProps } from '@/components/atoms/InputSelect'
 export interface OutputInputEnumProps {
     optMap?: any; value?: any; sublabel?: string; label?: string;  inputName?: string; display?: string;
-    /* CONFIG */ debug?: boolean; editMode?: boolean;
+    /* CONFIG */ debug?: boolean; editMode?: boolean; config?: any;
     /* UPDATE */ updateNewData?: any;
 }
 // ReactFunctionComponent
 export const OutputInputEnum = ({
     updateNewData, optMap, value,
-    sublabel, label,  inputName, display,
+    sublabel, label,  inputName, display, config = {},
     debug = false, editMode,
 }: OutputInputEnumProps) => {
+    const memoizedMergedConfig = useMemo(() => {
+        return {...{isReadOnly:true},...config}
+    }, [config])
+
+
+
     return (<>
         
 
@@ -38,7 +44,7 @@ export const OutputInputEnum = ({
                 :
                 <div className="flex ">
 
-                    {<InputSelect erasable={false}  inputName={ inputName} updateNewData={updateNewData} optMap={optMap} reference={value} optName="label" display={display} />}
+                    {<InputSelect erasable={false} config={memoizedMergedConfig} inputName={ inputName} updateNewData={updateNewData} optMap={optMap} reference={value} optName="label" display={display} />}
                 </div>
             }
         </div>

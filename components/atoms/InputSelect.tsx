@@ -11,7 +11,7 @@ import { PostButton } from '@/components/atoms/PostButton'
 export interface OutputInputSelectProps {
     optMap?: any; sublabel?: string; defaultDisplay?: string; label?: string;
      inputName?: string; display?: string; value?: string; optName?: any;
-    /* CONFIG */ editMode?: boolean; isEntity?: boolean; addMode?: boolean; debug?: boolean; erasable?: boolean; superErasable?: boolean;
+    /* CONFIG */ editMode?: boolean; isEntity?: boolean; addMode?: boolean; debug?: boolean; erasable?: boolean; superErasable?: boolean; config?: any;
     /* UPDATE */ updateNewData?: any;
 }
 // ReactFunctionComponent
@@ -19,6 +19,7 @@ export const OutputInputSelect = ({
     optName = "label",
     optMap, sublabel, defaultDisplay, label,  inputName, display, value,
     isEntity, editMode, addMode,
+    config = {},
     debug = false, erasable = true, superErasable = false,
     updateNewData,
 }: OutputInputSelectProps) => {
@@ -37,7 +38,7 @@ export const OutputInputSelect = ({
                 </div>
                 :
                 <div className="flex ">
-                    <InputSelect erasable={erasable}  inputName={ inputName} isEntity={isEntity} debug={debug}
+                    <InputSelect erasable={erasable}  inputName={ inputName} isEntity={isEntity} debug={debug} config={config}
                         updateNewData={updateNewData} addMode={addMode} optMap={optMap} reference={value}
                         optName={optName} display={(display == "None" && !!defaultDisplay) ? defaultDisplay : display}
                     />
@@ -98,7 +99,7 @@ Child.displayName = 'Child'
 export const InputSelect = ({
     inputName, reference, display, optName, optMap, optSubName = "",
     debug=false,addMode=false,erasable=true,compact=false,isEntity=false,superErasable = false,
-    config= {},
+    config = {},
     updateNewData,
     parseFunction = (x,y) => x,
 }:InputSelectProps) => {
@@ -272,6 +273,7 @@ export const InputSelect = ({
 
                 <input ref={$displayInput} value={displayValue} onClick={() => __set_isOpen(true)} onChange={handleChange} 
                     type="text" placeholder={config.placeholder} className={cx("py-2 tx-mdl block opaci-hov-75 noborder w-100 ml-1 clickble",compact ? "px-1" : "px-4")}
+                    readOnly={config.isReadOnly}
                 />
                 {erasable && isOpen && <div onClick={clearInput} className="px-1 flex-center opaci-hov-50 clickble  tx-lg">
                      

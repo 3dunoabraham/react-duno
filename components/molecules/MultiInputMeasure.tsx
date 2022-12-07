@@ -136,7 +136,7 @@ export const MultiOutputInputMeasure = ({
                         <InputSelect compact  inputName={`${key}:${aValue.format_titles[0]}`} updateNewData={local_updateNewData}
                             addMode={false} optMap={measureMapSpecific} parseFunction={(newVal,prevVal)=>validateInteger(newVal,prevVal,0,60)}
                             reference={value && value[key] ? value[key][aValue.format_titles[0]] : 0} optName="label"
-                            display={!inputkeyForm.get(key) ? "0" : `${inputkeyForm.get(key)[0]}`} erasable={false}
+                            display={!inputkeyForm.get(key) ? "0" : `${inputkeyForm.get(key)[0]}`} erasable={false} config={{isReadOnly:true}}
                         />
                     </div>
 
@@ -146,7 +146,7 @@ export const MultiOutputInputMeasure = ({
                                 addMode={false} optMap={measureMapGeneral}
                                 parseFunction={(newVal,prevVal)=>validateInteger(newVal,prevVal,0,12)}
                                 reference={value && value[key] ? value[key][aValue.format_titles[1]] : 0} optName="label"
-                                display={!inputkeyForm.get(key) ? "0" : `${inputkeyForm.get(key)[1]}`} erasable={false}
+                                display={!inputkeyForm.get(key) ? "0" : `${inputkeyForm.get(key)[1]}`} erasable={false} config={{isReadOnly:true}}
                             />
                             {/*<InputSelect erasable={false} optMap={new Map()} reference={aValue.floatField.value} optName="label" display={aValue.floatField.value} />*/}
                         </div>

@@ -68,6 +68,7 @@ export const UnitMainForm = ({
                         defaultDisplay={unit.brand == "None" ? unit.manufacturer : ""} display={unit.brand}
                         optMap={manufacturers} optName={"name"} value={unit_brand ? unit_brand.id : unit.brand}
                         editMode={editMode} addMode  updateNewData={updateEntityField}   inputName="brand"
+                        config={{isReadOnly:true}}
                     />}
                 </div>
                     <div className={`flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
