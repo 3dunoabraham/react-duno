@@ -15,6 +15,7 @@ import { UnitSummary } from '@/components/organisms/Unit/Summary'
 import { StandardModal } from '@/components/molecules/StandardModal'
 import { OutputInputFile } from '@/components/molecules/InputFile'
 import { UnitMainForm } from './MainForm'
+import { UnitSummaryForm } from './SummaryForm'
 import { UnitMultiInputForm } from './MultiInputForm'
 export interface UnitFormProps {
     unit?: IUnit;
@@ -222,7 +223,11 @@ export const UnitFormComponent = ({
             </div>
         </div>
 
-        <div className="flex pt-2 pb-3"> {isValidUnit && <UnitSummary unit={unit} /> } </div>
+        <div className="flex pt-2 pb-3"> {isValidUnit  && (
+            !editMode 
+                ? <UnitSummary unit={unit} />
+                : <UnitSummaryForm unit={unit} />
+        ) } </div>
 
         <hr/>
             {/* isDevEnvironment && (editMode) && 

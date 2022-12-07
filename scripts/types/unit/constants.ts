@@ -2,6 +2,7 @@
 
 export const FAKE_UNIT = {
     "uid":"8889-8818",
+    "vin":"8889-A-8818",
     // "type":"1", //?
     "brand":"Stor-Mor", /*fk label*/ // default to manufacturer
     "dealer":"Barbies Trailers", /*fk label*/ // "dealer_id":"1", //fk // "dealer_name":"n/a",
@@ -38,6 +39,7 @@ export const FAKE_UNIT = {
 export const DEFAULT_UNIT = {...FAKE_UNIT}
 export const _DEFAULT_UNIT = {
     "uid":"8889-8818",
+    "vin":"8889-8818",
     // "type":"1", //?
     "brand":"Stor-Mor", /*fk label*/ // default to manufacturer
     "dealer":"Barbies Trailers", /*fk label*/ // "dealer_id":"1", //fk // "dealer_name":"n/a",

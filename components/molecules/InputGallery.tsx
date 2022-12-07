@@ -3,6 +3,7 @@ import { useToggle, useOnClickOutside, useMap, useMediaQuery, useInterval, useEv
 import { BsThreeDots, BsTrash, BsPlus, BsDot, BsChevronLeft, BsChevronRight } from 'react-icons/bs'
 
 
+import { API_FILE_UPLOAD } from '@/scripts/api/constants'
 import { lerp } from '@/scripts/helpers/mathHelper'
 import { StandardDropdown } from '@/components/molecules/StandardDropdown'
 import { StandardModal } from '@/components/molecules/StandardModal'
@@ -103,7 +104,7 @@ export const InputImage = ({
         if (prompt(`upload ${firstFile.name}? type "y" to confirm...`) == "y")
         {
             const req = new XMLHttpRequest();
-            req.open('POST', 'https://httpbin.org/post');
+            req.open('POST', API_FILE_UPLOAD);
 
             req.upload.addEventListener('progress', function(e) {
                 const percentComplete = (e.loaded / e.total)*100;

@@ -22,6 +22,7 @@ export type IUnitBaseOpts = {
 
 export type IUnit = {
     uid: string;
+    vin: string;
     // type: string;
     brand: string;
     dealer: string; // dealer_id: string; // dealer_name: string;
