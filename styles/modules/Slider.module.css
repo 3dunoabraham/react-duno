@@ -1,0 +1,24 @@
+.emphasis-card,
+.emphasis {
+    transition: all 0.1s ease-in-out;
+}
+.emphasis:hover .emphasis-card {
+    box-shadow: 0px 2px 5px #00000066;
+    transform: scale(1.15);
+}
+.dots-button:hover .dots-dots {
+    transform: scale(1.2);
+    border-radius: 100%;
+    transition: all 0.1s ease-in-out;
+    box-shadow: 0px 2px 5px #00000066;
+    background: #ffffff;
+}
+.dots-dots {
+    text-shadow: 1px 1px 1px red;
+    display: block;
+    transform: rotate(0deg);
+}
+.nav-dot-button:hover .nav-dot {
+    box-shadow: 0px 1px 3px 1px #00000033;
+    transform: scale(1.6);
+}
