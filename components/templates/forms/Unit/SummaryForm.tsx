@@ -10,11 +10,11 @@ import { IMS_PrimaryButton, IMS_FadedButton } from '@/components/atoms/IMS_Prima
 export const UnitSummaryForm =({ unit }) =>
 {
     /****** CREATE ******/
-    useEffectOnce(() => {
-        console.log("unit.vin")
-        console.log(unit.vin)
-        // __set_vinValue(unit.vin)
-    })
+    // useEffectOnce(() => {
+    //     console.log("unit.vin")
+    //     console.log(unit.vin)
+    //     // __set_vinValue(unit.vin)
+    // })
 
 
 

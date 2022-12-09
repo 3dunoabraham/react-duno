@@ -7,6 +7,7 @@ import { useEffectOnce, useIsFirstRender, useIsMounted, useIsClient, useSsr, use
 
 import { IUnit } from '@/scripts/types/unit'
 import { DEFAULT_UNIT, } from '@/scripts/types/unit/constants'
+import { isStrInteger } from '@/scripts/helpers/stringHelper';
 import { dd, dlog } from '@/scripts/helpers/devHelper';
 // import { isDevEnvironment  } from '@/scripts/helpers/devHelper';
 import { PostData, PostButton } from '@/components/atoms/PostButton'
@@ -92,6 +93,7 @@ export const UnitFormComponent = ({
     }
     const toggle_editMode = async () => {
         __toggle_editMode()
+            console.log("11111111111111")
 
         if (editMode) // save edit 
         {
@@ -102,7 +104,8 @@ export const UnitFormComponent = ({
             __set_isLoadingEditing(true)
 
             let the_data = Object.fromEntries(changedData) 
-            // /*debug*/ dlog("the_data = Object.fromEntries(changedData)",the_data,"*")
+            // /*debug*/
+            dlog("the_data = Object.fromEntries(changedData)",the_data,"*")
             if (changedData.has("locations"))
             {
                 Object.keys(the_data.locations)/*.reverse()*/.map((key,index)=>
@@ -113,16 +116,26 @@ export const UnitFormComponent = ({
                 delete the_data["locations"]
             }
 
+            // console.log("11111111111111")
             if (changedData.has("investors"))
             {
                 Object.keys(the_data.investors).map((key,index)=>
                 {
-                    if (key in the_data.investors && the_data.investors[key] == "None") return
+                    // console.log("1",key in the_data.investors)
+                    // console.log("2",the_data.investors[key] == "None")
+                    // console.log("3",!isStrInteger(`${the_data.investors[key]}`))
+                    if (
+                            key in the_data.investors &&
+                            (
+                                the_data.investors[key] == "None" ||
+                                !isStrInteger(`${the_data.investors[key]}`)
+                            )
+                        ) return
                     the_data[key] = the_data.investors[key]
                 })
                 delete the_data["investors"]
             }
-            // dd("PREREQUEST parsed data",the_data)
+            dd("PREREQUEST parsed data",the_data)
             try {
                 const res = await PostData(the_url, the_data, "PUT");
                 setRefreshCount(refreshCount+1)

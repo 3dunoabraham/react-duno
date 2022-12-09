@@ -14,7 +14,7 @@ export const IMS_PrimaryButton = ({
   ...others
 }: IMS_PrimaryButtonProps) => {
     return (<>
-        <div className="px-4 py-8px opaci-hov--50 flex-center tx-md ims-primary tx-white border-r-8">
+        <div className="px-4 py-8px opaci-hov--50 flex-center tx-md ims-bg-primary tx-white border-r-8">
             {precontent}
             {content}
             {postcontent}

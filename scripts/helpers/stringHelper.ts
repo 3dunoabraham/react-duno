@@ -1,12 +1,26 @@
+export const isStrInteger = (value) => {
+  return /^\d+$/.test(value);
+}
 export const firstUpperCase = (theString) =>
 {
     return theString.charAt(0).toUpperCase() + theString.slice(1)
 }
-export const jsonStrSingleQt = (theObj) =>
+export const parseStrSingleQt = (theObj) =>
 {
     return JSON.stringify(theObj).replace(/"([^"]+)":/g, '$1:').replaceAll("\"", "'")
 }
-
+export const parseJsonSingleQt = (fullNameJson:string) => {
+    // console.log("fullNameJson")
+    // console.log(fullNameJson)
+    // console.log(fullNameJson.replace(/'/g, '"'))
+    return JSON.parse(fullNameJson.replace(/'/g, '"'))
+}
+export const parseJsonSingleQtFixNone = (fullNameJson:string) => {
+    // console.log("fullNameJson")
+    let theReplacedString = fullNameJson.replace(/'/g, '"').replace('None','"None"')
+    // console.log(fullNameJson,theReplacedString)
+    return JSON.parse(theReplacedString)
+}
 // inspired by clsx built by gugaguichard
 export type Cx = (...a: Array<undefined | null | string | boolean>) => string
 export const cx: Cx = (...args) =>

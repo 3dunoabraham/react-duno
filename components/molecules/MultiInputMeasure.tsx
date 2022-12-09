@@ -16,7 +16,7 @@ export interface OutputInputMeasureProps {
     display?: string;
     value: string;
     editMode?: boolean;
-    inputkeyobj: any; //map
+    inputkeyobj: any; 
 }
 // ReactFunctionComponent
 export const MultiOutputInputMeasure = ({

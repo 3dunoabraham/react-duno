@@ -64,24 +64,43 @@
 
 
 
-.box-shadow-1 {
-	box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
-}.box-shadow-2 {
-	box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-}
+.box-shadow-1 {box-shadow: 0 0 6px rgba(0, 0, 0, 0.1); }
+.box-shadow-2 {box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); }
+.box-shadow-5 {box-shadow: 0 0 6px rgba(0, 0, 0, 0.5); }
+.box-shadow-7 {box-shadow: 0 0 6px rgba(0, 0, 0, 0.7); }
+.box-shadow-9 {box-shadow: 0 0 6px rgba(0, 0, 0, 0.9); }
 
 
+.bg-black { background: black; }
 .bg-white { background: white; }
 .bg-w-opaci-100 { background: #ffffff; }
 .bg-w-opaci-50 { background: #ffffff77; }
+.bg-w-opaci-20 { background: #ffffff22; }
+.bg-w-opaci-33 { background: #ffffff55; }
 .bg-b-opaci-100 { background: #000000; }
 .bg-b-opaci-50 { background: #00000077; }
-.bg-opaci-50 { background: #00000077; }
+.bg-b-opaci-20 { background: #00000022; }
+.bg-b-opaci-33 { background: #00000055; }
+
+.bg-black-hov:hover { background: black; }
+.bg-white-hov:hover { background: white; }
+.bg-w-opaci-hov-100:hover { background: #ffffff; }
+.bg-w-opaci-hov-50:hover { background: #ffffff77; }
+.bg-w-opaci-hov-20:hover { background: #ffffff22; }
+.bg-w-opaci-hov-33:hover { background: #ffffff55; }
+.bg-b-opaci-hov-100:hover { background: #000000; }
+.bg-b-opaci-hov-50:hover { background: #00000077; }
+.bg-b-opaci-hov-20:hover { background: #00000022; }
+.bg-b-opaci-hov-33:hover { background: #00000055; }
+
 ._ddr { background: red; }
 ._ddg { background: green; }
 ._ddb { background: blue; }
-.clickble {cursor: pointer; }
 .grab {cursor: grab; }
+.grabble {cursor: grab; }
+.grabable {cursor: grab; }
+.clickble {cursor: pointer; }
+.clickable {cursor: pointer; }
 .stopcursor {cursor: not-allowed !important; }
 .waitcursor {cursor: wait; }
 .nopointer {pointer-events: none; }
@@ -204,6 +223,7 @@
 .w-max-600px { max-width: 600px; }
 .w-max-650px { max-width: 650px; }
 .w-max-700px { max-width: 700px; }
+.w-min-50px { min-width: 50px; }
 .w-min-80px { min-width: 80px; }
 .w-min-100px { min-width: 100px; }
 .w-min-120px { min-width: 120px; }
@@ -241,7 +261,17 @@
 .opaci-hov--10:hover {opacity: 0.1 }  .opaci-hov--10 {opacity: 1; }
 .opaci-hov--5:hover {opacity: 0.05 }  .opaci-hov--10 {opacity: 1; }
 
+.opaci-ahov-75:hover .opaci-bhov-75 {opacity: 1; }  .opaci-ahov-75 .opaci-bhov-75 {opacity: 0.75; }
+.opaci-ahov-50:hover .opaci-bhov-50 {opacity: 1; }  .opaci-ahov-50 .opaci-bhov-50 {opacity: 0.5; }
+.opaci-ahov-25:hover .opaci-bhov-25 {opacity: 1; }  .opaci-ahov-25 .opaci-bhov-25 {opacity: 0.25; }
+.opaci-ahov-10:hover .opaci-bhov-10 {opacity: 1; }  .opaci-ahov-10 .opaci-bhov-10 {opacity: 0.1; }
+.opaci-ahov-5:hover .opaci-bhov-5 {opacity: 0.5; }  .opaci-ahov-5 .opaci-bhov-5 {opacity: 0.05; }
 
+.opaci-ahov--75:hover .opaci-bhov--75 {opacity: 0.75 }  .opaci-ahov--75 .opaci-bhov--75 {opacity: 1; }
+.opaci-ahov--50:hover .opaci-bhov--50 {opacity: 0.5 }  .opaci-ahov--50 .opaci-bhov--50 {opacity: 1; }
+.opaci-ahov--25:hover .opaci-bhov--25 {opacity: 0.25 }  .opaci-ahov--25 .opaci-bhov--25 {opacity: 1; }
+.opaci-ahov--10:hover .opaci-bhov--10 {opacity: 0.1 }  .opaci-ahov--10 .opaci-bhov--10 {opacity: 1; }
+.opaci-ahov--5:hover .opaci-bhov--5 {opacity: 0.05 }  .opaci-ahov--10 .opacib-hov--5 {opacity: 1; }
 
 
 /* ------------------------------------------ STRUCTURE ------------------------------------------ */

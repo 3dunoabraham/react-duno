@@ -15,15 +15,15 @@ import { InputDate } from '@/components/molecules/InputDate'
 import { InputColor } from '@/components/molecules/InputColor'
 import { MultiInputRadioSelect } from '@/components/molecules/MultiInputRadioSelect'
 export interface MultiOutputInputCustomProps {
-    uid: any; //map
+    uid: any; 
     inputName: string;
     label: string;
     sublabel?: string;
     addFieldMode?: boolean;
-    inputsMapObj: any; //map
+    inputsMapObj: any; 
     optsObj?: any;
-    values: any; //map
-    flex?: any; //map
+    values: any; 
+    flex?: any; 
     needsFullObjectAtAPI?: boolean; debug?: boolean; editMode?: boolean;
     updateNewData?: (arg:any) => void;
 }
@@ -263,9 +263,11 @@ export const MultiOutputInputCustom = ({
                             </div>
                         }
                         {theInputObj.widget == "select" && theInputObj.customFormat != "radio"
-                          &&<div className={
-                                    cxWSwitch(theInputObj.customFormat, ["tiny","narrow","entity","intrange","","enum"],
-                                                                        [100,200,250,100,200,250])}
+                          &&<div className={ !theInputObj.customWidth
+                                    ? cxWSwitch(theInputObj.customFormat, ["tiny","narrow","entity","intrange","","enum"],
+                                                                        [100,200,250,100,200,250])
+                                    : `w-max-${theInputObj.customWidth}px`
+                                }
                               >
                                 <InputSelect isEntity={theInputObj.customFormat == "entity"}
                                     inputName={theInputObj.inputName} erasable={theInputObj.customFormat != "intrange" && theInputObj.customFormat != "enum"}

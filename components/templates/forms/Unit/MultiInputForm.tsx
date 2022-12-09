@@ -3,8 +3,9 @@ import { useMap } from 'usehooks-ts'
 
 
 // import { dd, isDevEnvironment } from '@/scripts/helpers/devHelper'
+// import { parseStrSingleQt } from '@/scripts/helpers/fetchHelper'
 import { ddom } from '@/scripts/helpers/devHelper'
-import { firstUpperCase } from '@/scripts/helpers/stringHelper'
+import { firstUpperCase, parseJsonSingleQt, parseStrSingleQt, parseJsonSingleQtFixNone } from '@/scripts/helpers/stringHelper'
 import { MultiOutputCustom } from '@/components/molecules/MultiOutputCustom'
 import { MultiOutputInputCustom } from '@/components/molecules/MultiOutputInputCustom'
 // ReactFunctionComponent
@@ -24,6 +25,48 @@ export const UnitMultiInputForm =({
     },[peoplesObj])
     const axlesObjArray:any = Array.from(Array(4).keys()).map(i => ({label:`${i+1}`,id:`${i+1}`}))
     // const [measureMapGeneral, measureMapGeneral_actions] = useMap<string, any>(axlesObjArray)
+
+    const addressesList = [];
+    const theCounty = useMemo(() => {
+        // console.log("theCounty",optMapObj.addressesList)
+        if (unit.location == "None") return "---"
+        if (!unit.location_related) return "---"
+
+        let foundLocationList = []
+        // console.log("x.namexxxxxxxxxxxxxxxxxx")
+        if (unit.location_related == 1)
+        {
+            // console.log("x.name.1")
+            // Company
+            foundLocationList = orgsList.filter((x)=>{return(x.name == unit.location)})
+        }
+        if (unit.location_related == 2)
+        {
+            // Customer
+            // console.log("x._name.2")
+            foundLocationList = peoplesObj["customerList"].filter((x)=>(x._name == unit.location))
+        }
+        // console.log("theCounty|unit.location,unit.location_related",unit.location,unit.location_related,"|")
+        // console.log("foundLocationList length",foundLocationList.length)
+        if (!foundLocationList.length) return "not found"
+        
+        let foundLocationObj = foundLocationList[0]
+
+        // console.log("foundLocationObj",foundLocationObj,unit.location_related,unit.location)
+        if (foundLocationObj.address == "None") return "---"
+        // let theAddress0 = JSON.parse(foundLocationObj.address)
+        let theAddress = parseJsonSingleQtFixNone(foundLocationObj.address)
+        // console.log("theAddress",theAddress)
+        // console.log("----- address",typeof foundLocationObj.address,typeof theAddress,typeof theAddress0)
+        // console.log("----- address",foundLocationObj.address,theAddress,theAddress0)
+        // if (foundLocationObj) {}
+
+        // return optMapObj.addressesList.map((x)=>{
+        //     // console.log("xxxxxxxxxxxxxxx",x)
+        // })
+    }, [unit])
+
+
     const inputsMapObj = {
         "price": {
             _: {label: "Price",flex:"wrap"},
@@ -44,7 +87,7 @@ export const UnitMultiInputForm =({
             _: {label: "Title",flex:"wrap"},
             title_status: {title:"Title Status", value: "Pending", widget: "select", customFormat: "enum", config:{isReadOnly: true}, optName:"label",inputName:"title_status", },
             title_number: {title:"Title No.", value: "645964548547", widget: "string", customFormat: "bigint", limit: 30, inputName:"title_number", },
-            title_state: {title:"Title State", value: "NJ", widget: "select", customFormat: "enum", addMode: true, optName:"label", inputName:"title_state", },
+            title_state: {title:"Title State", value: "NJ", widget: "select", customFormat: "enum", config:{isReadOnly: true}, customWidth:150, addMode: true, optName:"label", inputName:"title_state", },
             mso: {title:"MSO", value: "64596454854722115", widget: "string", customFormat: "", inputName:"mso", },
         },
         "locations": {
@@ -71,8 +114,8 @@ export const UnitMultiInputForm =({
             // current_investor: {title:"Current Investor", value: "Mitch’s Holdings", widget: "select", customFormat: "entity", optName: "_name", inputName:"current_investor", },
             // previous_investor: {title:"Previous Investor", value: "Trailer Fanatics", widget: "select", customFormat: "entity", optName: "_name", inputName:"previous_investor", },
 
-            current_investor: {title:"Current Investor", value: "", widget: "select", customFormat: "entity", optName:"_name", inputName:"current_investor", },
-            previous_investor: {title:"Previous Investor", value: "", widget: "select", customFormat: "entity", optName:"_name", inputName:"previous_investor", },
+            current_investor: {title:"Current Investor", value: "", widget: "select", config: {isReadOnly: true}, customFormat: "entity", optName:"_name", inputName:"current_investor", },
+            previous_investor: {title:"Previous Investor", value: "", widget: "select", config: {isReadOnly: true}, customFormat: "entity", optName:"_name", inputName:"previous_investor", },
             // current_investor: {title:"Current Investor", value: "Mitch’s Holdings", widget: "string", customFormat: "", inputName:"current_investor", },
             // previous_investor: {title:"Previous Investor", value: "Trailer Fanatics", widget: "string", customFormat: "", inputName:"previous_investor", },
         },
@@ -137,9 +180,9 @@ export const UnitMultiInputForm =({
                         inputsMapObj={inputsMapObj["locations"]} editMode={editMode} values={values["locations"]}   inputName={"locations"}
                         addFieldMode  optsObj={{company:orgsList,customer:peoplesObj_customerList}}  needsFullObjectAtAPI={false} 
                     />
-                    {!editMode &&
+                    {false && !editMode &&
                         <MultiOutputCustom uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["locations"]._.label}
-                            flex={inputsMapObj["locations"]._.flex} 
+                            flex={inputsMapObj["locations"]._.flex}  
                             inputsMapObj={inputsMapObj["locations"]} editMode={false} values={values["locations"]}   inputName={"locations"}
                             addFieldMode  optsObj={{company:orgsList,customer:peoplesObj_customerList}}  needsFullObjectAtAPI={false} 
                         />

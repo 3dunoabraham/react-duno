@@ -92,7 +92,7 @@ export const InputFile = ({
             <input type="file" onChange={handleChange} ref={$theInput} hidden
                 className="py-2 px-4 w-100 ims-tx-dark ims-border-faded border-r-5 tx-mdl"
             />
-            <div className="px-4 py-2 opaci-hov--50  tx-md ims-primary tx-white border-r-8 clickble" onClick={() => $theInput.current.click()}>
+            <div className="px-4 py-2 opaci-hov--50  tx-md ims-bg-primary tx-white border-r-8 clickble" onClick={() => $theInput.current.click()}>
                 Upload File
             </div>
 

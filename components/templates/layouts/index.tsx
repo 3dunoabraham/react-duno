@@ -12,26 +12,21 @@ export interface ComponentProps {
 export const Layout = ({
   children,
   title = 'Home',
-}: ComponentProps) => (
-  <>
-    <Head>
-      <title>{title ? `${title} | IMS` : 'IMS'}</title>
-      <meta name="description" content="ServicePad Inventory Management System" />
-      <link rel="icon" href={"/favicon.ico"} />
-      {/*<link rel="icon" href={isDevEnvironment ? "/dev.ico" : "/favicon.ico"} />*/}
-    </Head>
+}: ComponentProps) => {
+    return (<>
+        <Head>
+            <title>{title ? `${title} | IMS` : 'IMS'}</title>
+            <meta name="description" content="ServicePad Inventory Management System" />
+            <link rel="icon" href={"/favicon.ico"} />
+            {/*<link rel="icon" href={isDevEnvironment ? "/dev.ico" : "/favicon.ico"} />*/}
+        </Head>
 
-    {children}    
-
-
-    <FooterLayout />
+        {children}    
 
 
-    <style jsx>{`
-      main {
-      }
-    `}</style>
-  </>
-)
+        <FooterLayout />
+        <style jsx>{` main {} `}</style>
+    </> )
+}
 
 export default Layout

@@ -14,16 +14,14 @@ export default function InventoryPage({
 }) {
     const [selectedId,__set_selectedId] = useState(-1)
     return (<>
-        <Head> <title>Inventory | SMP</title> </Head>
+        <Head> <title>Manufacturers | SMP</title> </Head>
         <div className="ims-body">
             <main className="ims-body-inner">
-                <BreadCrumbs pages={[["/units","Inventory"]]} current={`Browse`}/>
-                <h1> Inventory </h1>
-                <ul>
-                    <li className="tx-lg"> <Link href="/dashboard"> Dashboard </Link> </li>
-                    <li> <Link href="/unit/add"> Add Unit </Link> </li>
-                </ul>
+                <BreadCrumbs pages={[["/units","Manufacturers"]]} current={`Browse`}/>
+                <h1 className="pt-6 "> Title TBD </h1>
+                <hr className="my-2"/>
 
+                {/*<FilterContainer />*/}
 
                 {(!unitList || (!!unitList && !unitList.length)) && <div>
 

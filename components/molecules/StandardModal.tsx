@@ -21,7 +21,7 @@ export const StandardModal = ({
 
     useOnClickOutside($domObject, handleClose)
 
-    return(<div className="flex w-100 h-100vh pos-fixed top-0 left-0 flex-center bg-opaci-50 z-999">
+    return(<div className="flex w-100 h-100vh pos-fixed top-0 left-0 flex-center bg-b-opaci-50 z-999">
         <div className="bg-white w-100 w-max-500px block z-1001 px-4 py-6 border-r-12" ref={$domObject}>
             <div className="flex-between">
                 <span className="tx-mdl tx-bold-5">{title}</span>

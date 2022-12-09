@@ -39,10 +39,10 @@
 .ims-tx-link {color: var(--tx-link); }
 .ims-tx-faded {color: var(--tx-faded); }
 
-.ims-faded {background: var(--bg-faded); }
-.ims-primary {background: var(--primary-color); }
-.ims-primary-faded {background: var(--primary-faded); }
-.ims-primary-light {background: var(--primary-light); }
+.ims-bg-faded {background: var(--bg-faded); }
+.ims-bg-primary {background: var(--primary-color); }
+.ims-bg-primary-faded {background: var(--primary-faded); }
+.ims-bg-primary-light {background: var(--primary-light); }
 
 /*HOVER*/
 .ims-hov-primary-faded:hover {background: var(--primary-faded); }
@@ -53,6 +53,7 @@ body {
 }
 
 .ims-body {
+  width: 100%;
   font-family: "Inter";
   padding: 0 1rem;
   min-height: 80vh;

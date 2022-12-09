@@ -97,14 +97,14 @@ export const UnitMainForm = ({
                     />
                 </div>
                 <div className={` flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`} >
-                    {<OutputInputSelect  label="Dealer" isEntity 
+                    {<OutputInputSelect  label="Dealer" isEntity  config={{isReadOnly:true}}
                         display={unit.dealer} value={dealers_obj ? dealers_obj.id : 0}
                         optMap={dealers} optName={"name"}
                         editMode={editMode} addMode  updateNewData={updateEntityField}   inputName="dealer"
                     />}
                 </div>
                 <div className={` flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`} >
-                    {<OutputInputSelect  label="Distributor" sublabel="The company providing unit to Dealer" isEntity 
+                    {<OutputInputSelect  label="Distributor" sublabel="The company providing unit to Dealer" isEntity  config={{isReadOnly:true}}
                         display={unit.distributor} value={distributors_obj ? distributors_obj.id : unit.distributor }
                         optMap={distributors} optName={"name"}
                         editMode={editMode} addMode  updateNewData={updateEntityField}   inputName="distributor"
@@ -112,14 +112,14 @@ export const UnitMainForm = ({
                 </div>
                 <div className={` flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`} >
                     {<OutputInputSelect  label="Manufacturer" sublabel="Known sometimes as “Retailer”. Who Built the unit?"
-                        display={unit.manufacturer} value={manufacturers_obj ? manufacturers_obj.id : unit.manufacturer }
+                        display={unit.manufacturer} value={manufacturers_obj ? manufacturers_obj.id : unit.manufacturer } config={{isReadOnly:true}}
                         optMap={manufacturers} optName={"name"}
                         editMode={editMode} addMode  updateNewData={updateEntityField}   inputName="manufacturer"
                     />}
                 </div>
                 <div className={` flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`} >
                     {<OutputInputSelect  label="Unit Manager" isEntity 
-                        display={unit.owner} value={owners_obj ? owners_obj.id : unit.owner }
+                        display={unit.owner} value={owners_obj ? owners_obj.id : unit.owner } config={{isReadOnly:true}}
                         optMap={owners} optName={"name"}
                         editMode={editMode} addMode  updateNewData={updateEntityField}   inputName="owner" erasable={false}
                     />}

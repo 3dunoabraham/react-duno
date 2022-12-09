@@ -25,6 +25,11 @@ export default function Home() {
                                 <p className="ims-cardlink-desc">Unit List</p>
                             </a>
                         </Link>
+                        <Link href="/manufacturers"><a  className="ims-cardlink" onClick={() => {__set_loadingNewPage(true)}} >
+                                <h2 className="ims-cardlink-title">Dealers &rarr;</h2>
+                                <p className="ims-cardlink-desc">Order List</p>
+                            </a>
+                        </Link>
                         <a href="https://servicepadportal.atlassian.net/wiki/spaces/SP/pages/459538444/Inventory+API+V1"
                             target="_blank" rel="noopener noreferrer"
                             className="ims-cardlink"

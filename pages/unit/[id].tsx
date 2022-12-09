@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 
 import { DEFAULT_STATE_ARRAY } from '@/scripts/api/states';
-import { API_UNIT_OPTS_BASE } from '@/scripts/api/constants';
+import { API_UNIT_OPTS_BASE, API_ADDRESSES } from '@/scripts/api/constants';
 import { parseFullNameJson } from '@/scripts/helpers/reorgHelper';
 import { fetchJsonArray } from '@/scripts/helpers/fetchHelper';
 import { IUnit, IUnitModelStyle } from '@/scripts/types/unit'
@@ -119,7 +119,7 @@ export default function UnitPage({
 const DEFAULT_RESPONSE = {
     fetchedUnit: null,
     model_styles: DEFAULT_MODEL_STYLE_OBJARRAY, ttypes: [], statuses: [], title_statuses: [], title_states:DEFAULT_STATE_ARRAY, conditions: [], investorList: [],
-    orgsList: [], manufacturers: [], dealers: [], distributors: [], owners: [], customerList: [], stateCountyCity: [],
+    orgsList: [], manufacturers: [], dealers: [], distributors: [], owners: [], customerList: [], stateCountyCity: [], addressesList: [],
 }
 
 function parseOrgTypeList(type, _orgsList, DEFAULT_ORG_TYPE_LIST) {
@@ -179,11 +179,13 @@ async function fetchPageData(params,query) {
         // let titleStates = null
         let titleStates = await fetchOptList(API_UNIT_OPTS_BASE, "title_states")
         let conditionsTypeList = await fetchOptList(API_UNIT_OPTS_BASE, "conditions")
+        
 
         let investorList = (await fetchPeopleList(basePeopleUrl,"investors")).Data || []
-        // console.log(investorList)
         let customerList = (await fetchPeopleList(basePeopleUrl,"customers")).Data
 
+        let addressesList = await fetchJsonArray(API_ADDRESSES,"Addresses")
+        // console.log("addressesList",addressesList)
         let orgsList = await fetchJsonArray(baseOrgsUrl)
         let orgTypesList = await fetchJsonArray(baseOrgTypesUrl)
         let parsed_orgTypesList = orgTypesList.map(item=>item.label); parsed_orgTypesList.unshift("None")
@@ -203,7 +205,7 @@ async function fetchPageData(params,query) {
             statuses: statusesTypeList ? statusesTypeList : [],
             title_statuses: titleStatusesTypeList ? titleStatusesTypeList : [],
             conditions: conditionsTypeList ? conditionsTypeList : [],
-
+            addressesList: addressesList ? addressesList : addressesList,
             investorList: investorList.map((x)=>x),
             customerList: customerList ? customerList.map((x,i)=>({...x,...{peopleid:1+i}})) : [],
             stateCountyCity: stateCountyCity ? stateCountyCity : [],

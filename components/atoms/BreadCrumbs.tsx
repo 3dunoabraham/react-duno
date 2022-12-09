@@ -32,7 +32,7 @@ export const BreadCrumbs = ({
             ))}
             {!!current && <>
                 <b className="opaci-10 tx-mdl py-2">/</b>
-                <div className="ims-tx-primary ims-primary-faded tx-bold-5 ml-2 pa-2 border-r-8">
+                <div className="ims-tx-primary ims-bg-primary-faded tx-bold-5 ml-2 pa-2 border-r-8">
                     {current}
                 </div>
             </>}
