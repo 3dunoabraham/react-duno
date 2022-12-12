@@ -283,7 +283,7 @@ export const ModuleOInput = ({
                               {!true && <>
                                   -|{optsObj["customer"].length}|-
                                   </>}
-                                {theInputObj.customFormat == "radio" && <MNputRadioSelect isEntity={theInputObj.customFormat == "entity"}
+                                {theInputObj.customFormat == "radio" && <OInputRadioSelect isEntity={theInputObj.customFormat == "entity"}
                                     valueObj={values}
                                 mapmapmap={mapmapmap} key={key} formObject={formObject} theInputObj={theInputObj} flex={flex}
                                     inputName={theInputObj.inputName} erasable={theInputObj.customFormat != "intrange" && theInputObj.customFormat != "enum"}
