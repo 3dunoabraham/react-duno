@@ -4,14 +4,12 @@ import { useMap } from 'usehooks-ts'
 
 import { useArrayMapPlus } from '@/scripts/helpers/useHooksHelper'
 import { IUnit, IUnitBaseOpts } from '@/scripts/types/unit'
-// import { DEFAULT_INPUT_KEYMAP_OBJECT } from '@/scripts/types/unit/constants'
 import { firstUpperCase } from '@/scripts/helpers/stringHelper'
 import { IMS_PrimaryButton, IMS_FadedButton } from '@/components/atoms/IMS_PrimaryButtons'
-import { OutputInputText } from '@/components/atoms/InputText'
-import { OutputInputSelect } from '@/components/atoms/InputSelect'
-import { OutputInputEnum } from '@/components/molecules/InputEnum'
-import { OutputInputGallery } from '@/components/molecules/InputGallery'
-import { MultiOutputInputMeasure } from '@/components/molecules/MultiInputMeasure'
+import { OInputSelect } from '@/components/atoms/InputSelect'
+import { OInputEnum } from '@/components/molecules/OInputEnum'
+import { ControlGallery } from '@/components/molecules/ControlGallery'
+import { ControlMeasure } from '@/components/molecules/ControlMeasure'
 // import { dlog, dd, isDevEnvironment } from '@/scripts/helpers/devHelper';
 export interface UnitMainFormProps {
     updateNewData?: any;
@@ -64,7 +62,7 @@ export const UnitMainForm = ({
 
             <div className="flex-col flex-align-start flex-1 pt-0 pa-4">
                 <div className={`    flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    {<OutputInputSelect  label="Retailer" sublabel="Name visible on unit"
+                    {<OInputSelect  label="Retailer" sublabel="Name visible on unit"
                         defaultDisplay={unit.brand == "None" ? unit.manufacturer : ""} display={unit.brand}
                         optMap={manufacturers} optName={"name"} value={unit_brand ? unit_brand.id : unit.brand}
                         editMode={editMode} addMode  updateNewData={updateEntityField}   inputName="brand"
@@ -72,53 +70,53 @@ export const UnitMainForm = ({
                     />}
                 </div>
                     <div className={`flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <OutputInputSelect  label="Style" updateNewData={updateField}  inputName="model_style"
+                    <OInputSelect  label="Style" updateNewData={updateField}  inputName="model_style"
                         display={unit.model_style} value={model_styles_obj ? model_styles_obj.id : 0 } optMap={model_styles} 
                         editMode={editMode} addMode 
                     /> 
                 </div>
                 <div className={`     flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <MultiOutputInputMeasure  label={"Size"}  updateNewData={updateField}  inputName="size"
+                    <ControlMeasure  label={"Size"}  updateNewData={updateField}  inputName="size"
                         display={"W 15’3” - L 11’ - H -"} value={unit.size}
                         inputkeyobj={DEFAULT_INPUT_KEYMAP_OBJECT.size} editMode={editMode} />
                 </div>
                 <div className={`flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <OutputInputEnum  label="Condition" updateNewData={updateField}  inputName="condition" 
+                    <OInputEnum  label="Condition" updateNewData={updateField}  inputName="condition" 
                         display={conditions.get(`${unit.condition}`) ? conditions.get(`${unit.condition}`).label : "New"}
                         value={unit.condition} optMap={conditions} 
                         editMode={editMode} 
                     />
                 </div>
                 <div className={`flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <OutputInputEnum  label="Inventory Status" updateNewData={updateField}  inputName="status" 
+                    <OInputEnum  label="Inventory Status" updateNewData={updateField}  inputName="status" 
                         display={statuses.get(`${unit.status}`) ? statuses.get(`${unit.status}`).label : "New"}
                         value={unit.status} optMap={statuses} 
                         editMode={editMode} 
                     />
                 </div>
                 <div className={` flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`} >
-                    {<OutputInputSelect  label="Dealer" isEntity  config={{isReadOnly:true}}
+                    {<OInputSelect  label="Dealer" isEntity  config={{isReadOnly:true}}
                         display={unit.dealer} value={dealers_obj ? dealers_obj.id : 0}
                         optMap={dealers} optName={"name"}
                         editMode={editMode} addMode  updateNewData={updateEntityField}   inputName="dealer"
                     />}
                 </div>
                 <div className={` flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`} >
-                    {<OutputInputSelect  label="Distributor" sublabel="The company providing unit to Dealer" isEntity  config={{isReadOnly:true}}
+                    {<OInputSelect  label="Distributor" sublabel="The company providing unit to Dealer" isEntity  config={{isReadOnly:true}}
                         display={unit.distributor} value={distributors_obj ? distributors_obj.id : unit.distributor }
                         optMap={distributors} optName={"name"}
                         editMode={editMode} addMode  updateNewData={updateEntityField}   inputName="distributor"
                     />}
                 </div>
                 <div className={` flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`} >
-                    {<OutputInputSelect  label="Manufacturer" sublabel="Known sometimes as “Retailer”. Who Built the unit?"
+                    {<OInputSelect  label="Manufacturer" sublabel="Known sometimes as “Retailer”. Who Built the unit?"
                         display={unit.manufacturer} value={manufacturers_obj ? manufacturers_obj.id : unit.manufacturer } config={{isReadOnly:true}}
                         optMap={manufacturers} optName={"name"}
                         editMode={editMode} addMode  updateNewData={updateEntityField}   inputName="manufacturer"
                     />}
                 </div>
                 <div className={` flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`} >
-                    {<OutputInputSelect  label="Unit Manager" isEntity 
+                    {<OInputSelect  label="Unit Manager" isEntity 
                         display={unit.owner} value={owners_obj ? owners_obj.id : unit.owner } config={{isReadOnly:true}}
                         optMap={owners} optName={"name"}
                         editMode={editMode} addMode  updateNewData={updateEntityField}   inputName="owner" erasable={false}
@@ -130,7 +128,7 @@ export const UnitMainForm = ({
                 <div className="flex-col">
                     <></>
                     <div className="">
-                        <OutputInputGallery label="Upload File" display={unit.image} updateNewData={updateGallery}
+                        <ControlGallery uid={unit.uid} label="Upload File" display={unit.image} updateNewData={updateGallery}
                             value={unit.images} editMode={editMode} filelist={unit.images} max={(unit.size && unit.size.width) ? parseInt(unit.size.width.inches) : 0}
                         />
                     </div>

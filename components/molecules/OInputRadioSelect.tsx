@@ -11,11 +11,11 @@ import { PostButton } from '@/components/atoms/PostButton'
 import { InputSelect, InputSelectProps } from '@/components/atoms/InputSelect'
 
 
-export interface InputRadioSelectProps {
+export interface OInputRadioSelectProps {
     theInputObj: any; mapmapmap?; key:any; formObject?:any; valueObj?:any; optObj: any;
 }
 // ReactFunctionComponent
-export const MultiInputRadioSelect = ({theInputObj,..._p}:InputSelectProps & InputRadioSelectProps) => {
+export const OInputRadioSelect = ({theInputObj,..._p}:InputSelectProps & OInputRadioSelectProps) => {
     const [modifiedObject,__set_modifiedObject] = useState({})
     const [radioValue, __set_radioValue] = useState(!!_p.valueObj.location_related ? `${_p.valueObj.location_related}` : "0");
     const radioValueString = useMemo(()=>{
@@ -96,7 +96,7 @@ return (<>
                             <div className={" pr-4 w-min-300px "+` ${radioValue == `${index+1}` ? "":" noclick "} `} >
                                 {true && `${index+1}` == radioValue && <>
                                     {radioValue == _p.valueObj[theInputObj.radioName] && <>
-                                        {true && <InputSelect superErasable={true} isEntity={theInputObj.customFormat == "entity"}
+                                        {true && <InputSelect  isEntity={theInputObj.customFormat == "entity"}
                                             config={{isReadOnly: true,placeholder:`Select ${theInputObj.inputsObj[aRadioSelect].title}`}}
                                             inputName={theInputObj.inputName}
                                             erasable={theInputObj.customFormat != "intrange" && theInputObj.customFormat != "enum"}
@@ -115,7 +115,7 @@ return (<>
                                         />}
                                     </>}
                                     {radioValue != _p.valueObj[theInputObj.radioName] && <>
-                                        {true && <InputSelect superErasable={true} isEntity={theInputObj.customFormat == "entity"}
+                                        {true && <InputSelect  isEntity={theInputObj.customFormat == "entity"}
 
                                             inputName={theInputObj.inputName}
                                             erasable={theInputObj.customFormat != "intrange" && theInputObj.customFormat != "enum"}

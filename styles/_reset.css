@@ -1,39 +1,69 @@
+* {
+    box-sizing: border-box;
+}
 
 html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: "Inter";
+    padding: 0;
+    margin: 0;
+    font-family: "Inter";
 }
 h1, h2, h3, h4, h5, h6, p 
 {
-  padding: 0;
-  margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 hr {
-  margin: 0;
-  opacity: 0.15;
+    margin: 0;
+    opacity: 0.15;
 }
 a {
-  color: inherit;
-  text-decoration: none;
+    color: inherit;
+    text-decoration: none;
 }
 
 button {
-  padding: 0;
-  border: unset;
-  background: unset;
-  cursor: pointer;
-}
-
-* {
-  box-sizing: border-box;
+    padding: 0;
+    border: unset;
+    background: unset;
+    cursor: pointer;
 }
 
 main {
-  min-height: 85vh;
+    min-height: 85vh;
 }
+label {
+   cursor:pointer;
+}
+
+input[type=file] {
+    color: red;
+}
+input[type=file]::before {
+    content: "red";
+}
+input[type=file], /* FF, IE7+, chrome (except button) */
+input[type=file]::-webkit-file-upload-button { /* chromes and blink button */
+    cursor: pointer; 
+}
+input[type=file]::file-selector-button {
+  border: none;
+  color: #00000000;
+  cursor: pointer;
+  background: transparent;
+  width: 0 !important;
+}
+input[type=file], /* FF, IE7+, chrome (except button) */
+input[type=file]::-webkit-file-upload-button { /* chromes and blink button */
+    cursor: pointer; 
+}
+input[type=file]::file-selector-button:hover {
+  cursor: pointer;
+  background: transparent;
+}
+
+
 
 input[type="datetime-local"]::-webkit-inner-spin-button,
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {

@@ -1,3 +1,13 @@
+export const incInLowerCase = (subString,theString) => {
+    return (`${subString}`.toLowerCase() === theString.toLowerCase())
+}
+export const eqInLowerCase = (subString,theString) => {
+    return (`${subString}`.toLowerCase() === `${theString}`.toLowerCase())
+}
+export const readableSize = (fileSize) => {
+    if(fileSize.length < 7) return `${Math.round(+fileSize/1024).toFixed(2)} KB`
+    return `${(Math.round(+fileSize/1024)/1000).toFixed(2)} MB`
+}
 export const isStrInteger = (value) => {
   return /^\d+$/.test(value);
 }

@@ -9,17 +9,17 @@ import { validateInteger } from '@/scripts/helpers/validationHelper';
 import { cx, cxWSwitch } from '@/scripts/helpers/stringHelper'
 import { PostButton } from '@/components/atoms/PostButton'
 import { InputSelect, InputSelectProps } from '@/components/atoms/InputSelect'
-export interface OutputInputEnumProps {
+export interface OInputEnumProps {
     optMap?: any; value?: any; sublabel?: string; label?: string;  inputName?: string; display?: string;
     /* CONFIG */ debug?: boolean; editMode?: boolean; config?: any;
     /* UPDATE */ updateNewData?: any;
 }
 // ReactFunctionComponent
-export const OutputInputEnum = ({
+export const OInputEnum = ({
     updateNewData, optMap, value,
     sublabel, label,  inputName, display, config = {},
     debug = false, editMode,
-}: OutputInputEnumProps) => {
+}: OInputEnumProps) => {
     const memoizedMergedConfig = useMemo(() => {
         return {...{isReadOnly:true},...config}
     }, [config])

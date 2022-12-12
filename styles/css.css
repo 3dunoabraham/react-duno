@@ -246,6 +246,7 @@
 
 
 /* ------------------------------------------ STRUCTURE SPACING ------------------------------------------ */
+.opaci-0 {opacity: 0 }
 .opaci-5 {opacity: 0.05; } .opaci-10 {opacity: 0.10; }
 .opaci-15 {opacity: 0.15; } .opaci-25 {opacity: 0.25; }
 .opaci-50 {opacity: 0.5; } .opaci-75 {opacity: 0.75; }
@@ -281,6 +282,8 @@
 .block { display: block }
 .invisible { visibility: hidden; } .hidden { visibility: hidden; }
 .block { display: block; } .none { display: none; }
+.scale-110 { transform: scale(1.1); }
+.scale-120 { transform: scale(1.2); }
 .scale-150 { transform: scale(1.5); }
 .scale-160 { transform: scale(1.6); }
 .scale-200 { transform: scale(2); }

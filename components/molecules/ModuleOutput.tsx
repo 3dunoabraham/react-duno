@@ -13,8 +13,8 @@ import { InputSelect } from '@/components/atoms/InputSelect'
 import { InputText } from '@/components/atoms/InputText'
 import { InputDate } from '@/components/molecules/InputDate'
 import { InputColor } from '@/components/molecules/InputColor'
-import { MultiInputRadioSelect } from '@/components/molecules/MultiInputRadioSelect'
-export interface MultiOutputCustomProps {
+// import { MNputRadioSelect } from '@/components/molecules/MNputRadioSelect'
+export interface ModuleOutputProps {
     uid: any; 
     inputName: string;
     label: string;
@@ -28,11 +28,11 @@ export interface MultiOutputCustomProps {
     updateNewData?: (arg:any) => void;
 }
 // ReactFunctionComponent
-export const MultiOutputCustom = ({
+export const ModuleOutput = ({
     uid, inputName, label, sublabel, addFieldMode, inputsMapObj, values,
     optsObj = {}, flex = "wrap", needsFullObjectAtAPI = true, editMode, debug = false,
     updateNewData,
-}: MultiOutputCustomProps) => {
+}: ModuleOutputProps) => {
     /****** CREATE ******/
     useEffect(() => {
         __set_formObject({})

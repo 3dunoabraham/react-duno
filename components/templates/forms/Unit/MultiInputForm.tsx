@@ -2,16 +2,13 @@ import { useMemo, useEffect } from 'react'
 import { useMap } from 'usehooks-ts'
 
 
-// import { dd, isDevEnvironment } from '@/scripts/helpers/devHelper'
-// import { parseStrSingleQt } from '@/scripts/helpers/fetchHelper'
 import { ddom } from '@/scripts/helpers/devHelper'
 import { firstUpperCase, parseJsonSingleQt, parseStrSingleQt, parseJsonSingleQtFixNone } from '@/scripts/helpers/stringHelper'
-import { MultiOutputCustom } from '@/components/molecules/MultiOutputCustom'
-import { MultiOutputInputCustom } from '@/components/molecules/MultiOutputInputCustom'
+import { ModuleOutput } from '@/components/molecules/ModuleOutput'
+import { ModuleOInput } from '@/components/molecules/ModuleOInput'
 // ReactFunctionComponent
 export const UnitMultiInputForm =({
     unit, orgsList,
-    // customerList,
     values, optMapObj,
     peoplesObj,
     editMode,
@@ -24,37 +21,24 @@ export const UnitMultiInputForm =({
         return peoplesObj.customerList.map((x)=>({...x,_name:`${x.full_name.first_name} ${x.full_name.last_name}`}))
     },[peoplesObj])
     const axlesObjArray:any = Array.from(Array(4).keys()).map(i => ({label:`${i+1}`,id:`${i+1}`}))
-    // const [measureMapGeneral, measureMapGeneral_actions] = useMap<string, any>(axlesObjArray)
 
     const addressesList = [];
     const theCounty = useMemo(() => {
-        // console.log("theCounty",optMapObj.addressesList)
         if (unit.location == "None") return "---"
         if (!unit.location_related) return "---"
 
         let foundLocationList = []
-        // console.log("x.namexxxxxxxxxxxxxxxxxx")
-        if (unit.location_related == 1)
-        {
-            // console.log("x.name.1")
-            // Company
+        if (unit.location_related == 1) { /* Company */
             foundLocationList = orgsList.filter((x)=>{return(x.name == unit.location)})
         }
-        if (unit.location_related == 2)
-        {
-            // Customer
-            // console.log("x._name.2")
+        if (unit.location_related == 2) {/* Customer */
             foundLocationList = peoplesObj["customerList"].filter((x)=>(x._name == unit.location))
         }
-        // console.log("theCounty|unit.location,unit.location_related",unit.location,unit.location_related,"|")
-        // console.log("foundLocationList length",foundLocationList.length)
         if (!foundLocationList.length) return "not found"
-        
-        let foundLocationObj = foundLocationList[0]
 
-        // console.log("foundLocationObj",foundLocationObj,unit.location_related,unit.location)
+        let foundLocationObj = foundLocationList[0]
         if (foundLocationObj.address == "None") return "---"
-        // let theAddress0 = JSON.parse(foundLocationObj.address)
+
         let theAddress = parseJsonSingleQtFixNone(foundLocationObj.address)
         // console.log("theAddress",theAddress)
         // console.log("----- address",typeof foundLocationObj.address,typeof theAddress,typeof theAddress0)
@@ -97,7 +81,6 @@ export const UnitMultiInputForm =({
                 inputsObj:{
                     company: {title:"Company", value: "", widget: "select", customFormat: "entity", inputName:"company", optName: "name"},
                     customer: {title:"Customer", value: "", widget: "select", customFormat: "entity", inputName:"customer", optName: "_name"},
-                    // ,
                 },
             },
             physical_as_of: {title:"Physical As Of Date", value: "", widget: "date", customFormat: "", inputName:"physical_as_of"},
@@ -111,13 +94,8 @@ export const UnitMultiInputForm =({
         },
         "investors": {
             _: {label: "Investor",flex:"wrap"},
-            // current_investor: {title:"Current Investor", value: "Mitch’s Holdings", widget: "select", customFormat: "entity", optName: "_name", inputName:"current_investor", },
-            // previous_investor: {title:"Previous Investor", value: "Trailer Fanatics", widget: "select", customFormat: "entity", optName: "_name", inputName:"previous_investor", },
-
             current_investor: {title:"Current Investor", value: "", widget: "select", config: {isReadOnly: true}, customFormat: "entity", optName:"_name", inputName:"current_investor", },
             previous_investor: {title:"Previous Investor", value: "", widget: "select", config: {isReadOnly: true}, customFormat: "entity", optName:"_name", inputName:"previous_investor", },
-            // current_investor: {title:"Current Investor", value: "Mitch’s Holdings", widget: "string", customFormat: "", inputName:"current_investor", },
-            // previous_investor: {title:"Previous Investor", value: "Trailer Fanatics", widget: "string", customFormat: "", inputName:"previous_investor", },
         },
     }
 
@@ -136,18 +114,17 @@ export const UnitMultiInputForm =({
             <div className="w-100">
                 <hr className="mb-3 w-100" style={{opacity:"40%"}} />
                 <div className={`flex-col  w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <MultiOutputInputCustom uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["price"]._.label}
+                    <ModuleOInput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["price"]._.label}
                         flex={inputsMapObj["price"]._.flex}
                         inputsMapObj={inputsMapObj["price"]} editMode={editMode} values={values["price"]}   inputName={"price"}
                         addFieldMode  
                     />
                 </div>
             </div>
-            {false && ddom("array",values["characteristics"])}
             <div className="w-100">
                 <hr className="mb-3 w-100" style={{opacity:"40%"}} />
                 <div className={`flex-col  w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <MultiOutputInputCustom uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["characteristics"]._.label}
+                    <ModuleOInput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["characteristics"]._.label}
                         flex={inputsMapObj["characteristics"]._.flex}
                         inputsMapObj={inputsMapObj["characteristics"]} editMode={editMode} values={values["characteristics"]}  
                         inputName={"characteristics"} 
@@ -162,7 +139,7 @@ export const UnitMultiInputForm =({
             <div className="w-100">
                 <hr className="mb-3 w-100" style={{opacity:"40%"}} />
                 <div className={`flex-col  w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <MultiOutputInputCustom uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["registration_title"]._.label}
+                    <ModuleOInput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["registration_title"]._.label}
                         flex={inputsMapObj["registration_title"]._.flex}
                         inputsMapObj={inputsMapObj["registration_title"]} editMode={editMode} values={values["registration_title"]} 
                         inputName={"registration_title"} 
@@ -175,13 +152,13 @@ export const UnitMultiInputForm =({
             <div className="w-100">
                 <hr className="mb-3 w-100" style={{opacity:"40%"}} />
                 <div className={`flex-col  w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <MultiOutputInputCustom uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["locations"]._.label}
+                    <ModuleOInput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["locations"]._.label}
                         flex={inputsMapObj["locations"]._.flex} 
                         inputsMapObj={inputsMapObj["locations"]} editMode={editMode} values={values["locations"]}   inputName={"locations"}
                         addFieldMode  optsObj={{company:orgsList,customer:peoplesObj_customerList}}  needsFullObjectAtAPI={false} 
                     />
-                    {false && !editMode &&
-                        <MultiOutputCustom uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["locations"]._.label}
+                    {/*WIP:for when the user wants to see auto generated fields*/false && !editMode &&
+                        <ModuleOutput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["locations"]._.label}
                             flex={inputsMapObj["locations"]._.flex}  
                             inputsMapObj={inputsMapObj["locations"]} editMode={false} values={values["locations"]}   inputName={"locations"}
                             addFieldMode  optsObj={{company:orgsList,customer:peoplesObj_customerList}}  needsFullObjectAtAPI={false} 
@@ -193,7 +170,7 @@ export const UnitMultiInputForm =({
             <div className="w-100">
                 <hr className="mb-3 w-100" style={{opacity:"40%"}} />
                 <div className={`flex-col  w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <MultiOutputInputCustom uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["gps"]._.label}
+                    <ModuleOInput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["gps"]._.label}
                         flex={inputsMapObj["gps"]._.flex}
                         inputsMapObj={inputsMapObj["gps"]} editMode={editMode} values={values["gps"]}   inputName={"gps"}
                         addFieldMode  
@@ -204,7 +181,7 @@ export const UnitMultiInputForm =({
             <div className="w-100">
                 <hr className="mb-3 w-100" style={{opacity:"40%"}} />
                 <div className={`flex-col  w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <MultiOutputInputCustom uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["investors"]._.label}
+                    <ModuleOInput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["investors"]._.label}
                         flex={inputsMapObj["investors"]._.flex} 
                         inputsMapObj={inputsMapObj["investors"]} editMode={editMode} values={values["investors"]}   inputName={"investors"}
                         addFieldMode  optsObj={{current_investor:peoplesObj_investorList,previous_investor:peoplesObj_investorList}} 

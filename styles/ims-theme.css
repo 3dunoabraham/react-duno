@@ -1,6 +1,7 @@
 :root {
   --primary-color: #3E5F58;
   --primary-washed: #78A79D77;
+  --primary-trans: #B5CFC9;
   --primary-light: #ECFDF3;
   --primary-faded: #F3F7F6;
   --bg-faded: #F5F7F6;
@@ -42,7 +43,13 @@
 .ims-bg-faded {background: var(--bg-faded); }
 .ims-bg-primary {background: var(--primary-color); }
 .ims-bg-primary-faded {background: var(--primary-faded); }
+.ims-bg-primary-trans {background: var(--primary-trans); }
 .ims-bg-primary-light {background: var(--primary-light); }
+
+.ims-border-faded {box-shadow: 0 0 0 1px var(--bg-faded); }
+.ims-border-primary {box-shadow: 0 0 0 1px var(--primary-color); }
+.ims-border-primary-faded {box-shadow: 0 0 0 1px var(--primary-faded); }
+.ims-border-primary-light {box-shadow: 0 0 0 1px var(--primary-light); }
 
 /*HOVER*/
 .ims-hov-primary-faded:hover {background: var(--primary-faded); }

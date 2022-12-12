@@ -80,9 +80,12 @@ export const InputDate = ({
     return (
         <div className="flex-center w-100 pos-rel" >
             <div onClick={handleCalendarClick} className="pos-abs left-0 pl-3 ims-tx-lightdark clickble" /*onClick={handleCalendarClick}*/><BsCalendar /></div>
-            {/*<input  type="datetime-local" value={value} onChange={handleDateTimeChange} onInput={handleDateTimeChange} ref={$theInput}
-                className="py-2 px-4 pl-8 w-100 ims-tx-dark ims-border-faded border-r-5 tx-mdl"
-            />*/}
+            {/*WIP:for when the user wants to input date and time*/false &&
+                <input  type="datetime-local" value={value}
+                    /*onChange={handleDateTimeChange} onInput={handleDateTimeChange} ref={$theInput}*/
+                    className="py-2 px-4 pl-8 w-100 ims-tx-dark ims-border-faded border-r-5 tx-mdl"
+                />
+            }
 
             <input onClick={handleCalendarClick} type="date" value={value} onChange={handleDateChange} onInput={handleDateChange} ref={$theInput}
                 min={minDate} max={maxDate}

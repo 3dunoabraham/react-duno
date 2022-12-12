@@ -14,7 +14,7 @@ import { PostData, PostButton } from '@/components/atoms/PostButton'
 import { IMS_PrimaryButton, IMS_FadedButton } from '@/components/atoms/IMS_PrimaryButtons'
 import { UnitSummary } from '@/components/organisms/Unit/Summary'
 import { StandardModal } from '@/components/molecules/StandardModal'
-import { OutputInputFile } from '@/components/molecules/InputFile'
+import { NputFile } from '@/components/molecules/InputFile'
 import { UnitMainForm } from './MainForm'
 import { UnitSummaryForm } from './SummaryForm'
 import { UnitMultiInputForm } from './MultiInputForm'
@@ -22,7 +22,6 @@ export interface UnitFormProps {
     unit?: IUnit;
     isLoadingRefetching?: any;
     peoplesObj?: any;
-    // customerList?: any;
     optMapObj?: any;
     orgsList?: any;
     refetch?: () => {};
@@ -32,16 +31,19 @@ export const UnitFormComponent = ({
   unit,
   optMapObj,
   orgsList,
-  // customerList,
   peoplesObj,
   isLoadingRefetching,
   refetch,
   ...others
 }: UnitFormProps) => {
+    /****** CREATE ******/
     useEffectOnce(() => {
-        // console.log("aaaaaaaaaaaaaa peoplesObj", peoplesObj)
         setRefreshCount(refreshCount+1)
     })
+
+
+
+    /****** DATA ******/
     const $domObject = useRef(null)
     const [isLoadingEditing, __toggle_isLoadingEditing, __set_isLoadingEditing] = useToggle();
     const [editMode, __toggle_editMode, __set_editMode] = useToggle(false);
@@ -49,7 +51,6 @@ export const UnitFormComponent = ({
     const [succesfulRequest, __toggle_succesfulRequest, __set_succesfulRequest] = useToggle(true);
     const [changedData, changedData_actions] = useMap()
     const [newBaseData, __set_newBaseData] = useState()
-
     const { isBrowser } = useSsr()
     const isFirst = useIsFirstRender()
     const [refreshCount, setRefreshCount] = useState<number>(0)
@@ -84,8 +85,10 @@ export const UnitFormComponent = ({
 
 
 
+    /****** UPDATE ******/
     const updateNewData = (newDataObj) => {
-        // /*debug*/ dd("#R0000T updateNewData reached", newDataObj)
+
+        /*debug*/ dd("#R0000T updateNewData reached", newDataObj)
         changedData_actions.set(newDataObj. inputName, newDataObj.value)
     }
     const resetForm = () => {
@@ -93,8 +96,6 @@ export const UnitFormComponent = ({
     }
     const toggle_editMode = async () => {
         __toggle_editMode()
-            console.log("11111111111111")
-
         if (editMode) // save edit 
         {
             let the_url = `https://ims.jinaron.com/api/v1/unit/${unit.uid}/edit/`
@@ -104,8 +105,7 @@ export const UnitFormComponent = ({
             __set_isLoadingEditing(true)
 
             let the_data = Object.fromEntries(changedData) 
-            // /*debug*/
-            dlog("the_data = Object.fromEntries(changedData)",the_data,"*")
+            // /*debug*/ dlog("the_data = Object.fromEntries(changedData)",the_data,"*")
             if (changedData.has("locations"))
             {
                 Object.keys(the_data.locations)/*.reverse()*/.map((key,index)=>
@@ -116,26 +116,22 @@ export const UnitFormComponent = ({
                 delete the_data["locations"]
             }
 
-            // console.log("11111111111111")
             if (changedData.has("investors"))
             {
                 Object.keys(the_data.investors).map((key,index)=>
                 {
-                    // console.log("1",key in the_data.investors)
-                    // console.log("2",the_data.investors[key] == "None")
-                    // console.log("3",!isStrInteger(`${the_data.investors[key]}`))
                     if (
                             key in the_data.investors &&
                             (
                                 the_data.investors[key] == "None" ||
-                                !isStrInteger(`${the_data.investors[key]}`)
+                                (the_data.investors[key] != "" && !isStrInteger(`${the_data.investors[key]}`))
                             )
                         ) return
                     the_data[key] = the_data.investors[key]
                 })
                 delete the_data["investors"]
             }
-            dd("PREREQUEST parsed data",the_data)
+            // dd("PREREQUEST parsed data",the_data)
             try {
                 const res = await PostData(the_url, the_data, "PUT");
                 setRefreshCount(refreshCount+1)
@@ -157,17 +153,10 @@ export const UnitFormComponent = ({
             }
         }
     }
-    // useEventListener('keydown', (e) => {
-    //     console.log ("keydown",e.keyCode)
-    //     // __set_editMode(true)
-    // }, $domObject)
-    // useEventListener('click', (e) => {
-    //     console.log ("click")
-    //     // console.log (e.keyCode)
-    //     // __set_editMode(true)
-    // }, $domObject)
 
 
+
+    /****** HTML ******/
     if (!unit) return (
         <div >
             No unit Found
@@ -183,7 +172,6 @@ export const UnitFormComponent = ({
             </div>
             <div className="flex mq_xs_md_flex-col">
                 <div className="flex-wrap">
-
                     {isValidUnit && !editMode && <>
 
                         <button onClick={__toggle_standardModal} className="pa-1">
@@ -243,24 +231,15 @@ export const UnitFormComponent = ({
         ) } </div>
 
         <hr/>
-            {/* isDevEnvironment && (editMode) && 
-                <div className="pos-fix top-0 right-0 flex-col-r">
-                    <button onClick={handleTopBottomSave} className="pa-1 ">
-                        <IMS_PrimaryButton content=""
-                            precontent={<div className="pt-1"><BsCheckCircle/></div>}
-                        />
-                    </button>
-                    <button onClick={__toggle_editMode}  className="pa-1 ">
-                        <IMS_FadedButton content="x" />
-                    </button>
-                </div>
-            */}
         <main className="pt-8 mt-3 pos-rel" ref={$domObject}>
-                <UnitMainForm  editMode={editMode} unit={unit} optMapObj={optMapObj} updateNewData={updateNewData} />
-            {!false && <UnitMultiInputForm orgsList={orgsList} /* customerList={customerList} */ peoplesObj={peoplesObj}
+            <UnitMainForm  editMode={editMode} unit={unit} optMapObj={optMapObj} updateNewData={updateNewData} />
+            <UnitMultiInputForm orgsList={orgsList} /* customerList={customerList} */ peoplesObj={peoplesObj}
                 updateNewData={updateNewData} values={customFormValues}
                 editMode={editMode} unit={unit} optMapObj={optMapObj}
-            /> }
+            />
+
+
+            
             {(!editMode) && 
                 <div className={`flex flex-justify-end  mb-6 w-100 `}>
                     <button onClick={handleTopBottomSave} className={`pa-1 ${blockIfEditing}`}>
@@ -289,9 +268,9 @@ export const UnitFormComponent = ({
         </main>
 
         {standardModal &&
-            <StandardModal title="Images" subtitle="Upload or remove images associated with this trailer" handleClose={__toggle_standardModal}>
+            <StandardModal title="Documents" subtitle="Upload, remove and view files accompanying this trailer" handleClose={__toggle_standardModal}>
                 <div className="pa-8 ">
-                    <OutputInputFile  label="Upload File" display={"display"} value={"test"} editMode={editMode} />
+                    <NputFile  label="Upload File" display={"display"} value={"test"} editMode={editMode} />
                 </div>
             </StandardModal>
         }

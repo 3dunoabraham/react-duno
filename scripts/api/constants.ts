@@ -8,6 +8,6 @@ export const API_UNIT_OPTS_BASE = API_UNITS+"opt/"
 export const API_ORGs = API_BASE+"orgs/"
 
 
-export const API_FILE_UPLOAD = API_BASE+"img/upload/"
+export const API_FILE_UPLOAD_BASE = API_BASE+"image/upload/"
 
 export const API_ADDRESSES = API_BASE+"addresses/"

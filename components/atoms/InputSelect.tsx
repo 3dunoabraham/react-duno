@@ -3,26 +3,24 @@ import { useToggle, useOnClickOutside, useEventListener, useMap  } from 'usehook
 import { BsChevronDown, BsChevronUp, BsX, BsTrash, BsPlusLg } from 'react-icons/bs'
 
 
-// import { useObjMap } from '@/scripts/helpers/useHooksHelper';
-// import { validateInteger } from '@/scripts/helpers/validationHelper';
 import { isDevEnvironment } from '@/scripts/helpers/devHelper';
-import { cx, cxWSwitch } from '@/scripts/helpers/stringHelper'
+import { cx, cxWSwitch, eqInLowerCase } from '@/scripts/helpers/stringHelper'
 import { PostButton } from '@/components/atoms/PostButton'
-export interface OutputInputSelectProps {
+export interface OInputSelectProps {
     optMap?: any; sublabel?: string; defaultDisplay?: string; label?: string;
      inputName?: string; display?: string; value?: string; optName?: any;
-    /* CONFIG */ editMode?: boolean; isEntity?: boolean; addMode?: boolean; debug?: boolean; erasable?: boolean; superErasable?: boolean; config?: any;
+    /* CONFIG */ editMode?: boolean; isEntity?: boolean; addMode?: boolean; debug?: boolean; erasable?: boolean; config?: any;
     /* UPDATE */ updateNewData?: any;
 }
 // ReactFunctionComponent
-export const OutputInputSelect = ({
+export const OInputSelect = ({
     optName = "label",
     optMap, sublabel, defaultDisplay, label,  inputName, display, value,
     isEntity, editMode, addMode,
     config = {},
-    debug = false, erasable = true, superErasable = false,
+    debug = false, erasable = true, 
     updateNewData,
-}: OutputInputSelectProps) => {
+}: OInputSelectProps) => {
     return (<>
         <div className="w-50 tx-bold-5 tx-smd ims-tx-lightdark pr-4">
             {label || "Label"}
@@ -44,61 +42,21 @@ export const OutputInputSelect = ({
                     />
                 </div>
             }
-            {debug && (<>
-                erasable={typeof erasable}
-                inputName={typeof inputName}
-                isEntity={typeof isEntity}
-                debug={typeof debug}
-                updateNewData={typeof updateNewData}
-                addMode={typeof addMode}
-                optMap={typeof optMap}
-                reference={typeof value}
-                optName={typeof optName}
-            </>)}
-
-            {debug && (<>
-                optMap={typeof optMap}
-                inputName={typeof inputName}
-                optName={typeof optName}
-            </>)}
         </div>
     </>)
 }
 
 
 
-
-
-
 export interface InputSelectProps {
     inputName?: string; display?: string; reference?: string; optName?: any; optMap?: any; flex?: string; optSubName?: string;
     /* CONFIG */ editMode?: boolean; isEntity?: boolean; addMode?: boolean; debug?: boolean; erasable?: boolean; compact?: boolean; config?: any;
-    /* UPDATE */ updateNewData?: any; parseFunction?: any;superErasable?: boolean;
+    /* UPDATE */ updateNewData?: any; parseFunction?: any;
 }
-
-
-const Child = forwardRef((props, ref) => {
-  useImperativeHandle(ref, () => ({
-    childFunction1() {
-      console.log('child function 1 called');
-    },
-    childFunction2() {
-      console.log('child function 2 called');
-    },
-  }));
-
-  return (
-    <div>
-      <small className="tx-xs">child content</small>
-    </div>
-  );
-});
-Child.displayName = 'Child'
-
 // CORE ReactFunctionComponent
 export const InputSelect = ({
     inputName, reference, display, optName, optMap, optSubName = "",
-    debug=false,addMode=false,erasable=true,compact=false,isEntity=false,superErasable = false,
+    debug=false,addMode=false,erasable=true,compact=false,isEntity=false,
     config = {},
     updateNewData,
     parseFunction = (x,y) => x,
@@ -107,23 +65,11 @@ export const InputSelect = ({
     useEffect(() => {
         __set_theId(reference)
         __set_displayValue(display == "None" ? "" : display)
-
-        if (isEntity)
-        {
-            // console.log( inputName,"|",optMap.size,"optMap,reference",optMap,reference)
-        }
     },[])
 
 
 
     /****** DATA ******/
-    const childRef = useRef(null);
-    const handleClick = () => {
-        childRef.current.childFunction1();
-
-        childRef.current.childFunction2();
-    };
-
     const $displayInput = useRef(null)
     const $domContainer = useRef(null)
     const [addNewMode, __toggle_addNewMode, __set_addNewMode] = useToggle(false)
@@ -131,7 +77,6 @@ export const InputSelect = ({
     const [displayValue, __set_displayValue] = useState<string>('')
     const [theId, __set_theId] = useState<string>('')
     const [descriptionInput, __set_descriptionInput] = useState<string>('')
-    
     const isDisplayAndTypeMatching = useMemo(() =>{
         let theType = optMap.get(`${theId}`)
         if (!theType) return true
@@ -178,21 +123,12 @@ export const InputSelect = ({
 
     /****** UPDATE ******/
     const setNewSelection = (option) => {
-        if (!!optSubName)
-        {
-            // console.log(`option.optSubName.`,option)
-            __set_theId(`${option.peopleid}`)
-            __set_displayValue(option[optName][optSubName])
-        }
-        if (!optSubName)
-        {
-            // console.log(`option.NOoptSubName.`,option)
-            __set_theId(`${option.id}`)
-            __set_displayValue(option[optName])
-        }
+        if (!!optSubName) {__set_theId(`${option.peopleid}`); __set_displayValue(option[optName][optSubName]) }
+        if (!optSubName) {__set_theId(`${option.id}`); __set_displayValue(option[optName]) }
         
         __set_isOpen(false)
-        updateNewData({ inputName, value:`${!optSubName ? option.id : option.peopleid}`})
+        let newUpdateObject = { inputName, value:`${!optSubName ? option.id : option.peopleid}`}
+        updateNewData(newUpdateObject)
     }
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         __set_displayValue(parseFunction(event.target.value,displayValue))
@@ -203,72 +139,43 @@ export const InputSelect = ({
             if (!!optSubName) setNewSelection({peopleid:"",[optName]:""})
             if (!optSubName) setNewSelection({id:"",[optName]:""})
         }
-
+        
         let theType = optMap.get(`${theId}`)
         if (isDisplayAndTypeMatching && display != "None" && display != "") return __set_isOpen(false)
         if (!FILTERED_optMap.size) return __set_isOpen(false)
+        
         let _value = FILTERED_optMap.entries().next().value[1]
-        // console.log("FILTERED_optMap", _value)
-            // console.log("the optSubName.optSubName.optSubName", optName, optSubName, _value[optName])
-        if (!optSubName)
+        if (!optSubName && !!_value[optName])
         {
-            if (!!_value[optName])
+            if (eqInLowerCase(displayValue,_value[optName]))
             {
-                if (`${displayValue}`.toLowerCase() === _value[optName].toLowerCase())
-                {
-                    setNewSelection(_value)
-                }
+                setNewSelection(_value)
             }
         } 
-        if (!!optSubName)
+        if (!!optSubName && !!_value[optName] && _value[optName][optSubName])
         {
-            if (!!_value[optName])
+            if (`${displayValue}`.toLowerCase() === _value[optName][optSubName].toLowerCase())
             {
-                // console.log("*********************************************************************** if (!!optSubName && ((!!_value[optName])",
-                    // typeof optSubName, optSubName,_value[optName],!!_value[optName] ? "yes"+JSON.stringify(_value[optName]) : "noo")
-                if (_value[optName][optSubName])
-                {
-                    if (`${displayValue}`.toLowerCase() === _value[optName][optSubName].toLowerCase())
-                    {
-                        // console.log("----------------------------------",)
-                        setNewSelection({..._value})
-                    }
-                }
+                setNewSelection({..._value})
             }
         } 
         __set_isOpen(false)
     }
-    const superClearInput = () => {
-
-        clearInput();
-        handleClickOutside()
-        // console.log("asd")
-        // $displayInput.current.focus()
-    }
-    const clearInput = () => {
-        __set_displayValue('');
-        $displayInput.current.focus()
-    }
+    const superClearInput = () => {clearInput(); handleClickOutside() }
+    const clearInput = () => {__set_displayValue(''); $displayInput.current.focus() }
+    const handle_onkeypress = (e) => {if (e.keyCode == 9) {handleClickOutside()} }
     useOnClickOutside($domContainer, handleClickOutside)
-    const handle_onkeypress = (e) => {
-        if (e.keyCode == 9) handleClickOutside()
-    }
     useEventListener('keydown', handle_onkeypress, $displayInput)
 
 
 
     /****** HTML ******/
-    //1: HIDDEN INPUT (SELECTED KEY)
-    //2: INPUT
-    //3: DROPDOWN
     return (
 
 
         <div className="pos-rel  w-100" ref={$domContainer}>
-            {/*** //1: HIDDEN INPUT (SELECTED KEY) ***/}
             <input type="text" defaultValue={theId} hidden />
 
-            {/*** //2: INPUT ***/}
             <div className={cx("flex  w-100  ims-tx-dark ims-border-faded border-r-8",false?" ims-border-error ":"")}>
 
                 <input ref={$displayInput} value={displayValue} onClick={() => __set_isOpen(true)} onChange={handleChange} 
@@ -284,24 +191,10 @@ export const InputSelect = ({
                 </div>
             </div>
 
-                            {/*|{typeof optSubName}:{optSubName}-{JSON.stringify(optSubName)}|*/}
-            {/*** //3: DROPDOWN ***/}
             {isOpen &&
                 <div className={" pos-abs bottom-0 ims-border-faded border-r-8  right-0 w-100 ims-box-shadow-1 tx-mdl z-999 bg-white  "+(isOpen ? "" : "")} 
                     style={{transform:"translateY(99%)", maxHeight: "320px", overflowY: "auto"}}
                 >
-                    {isDevEnvironment && debug && <div className="flex-col _ddg">
-                        <hr className="py-3" />
-                        <a>|mapsize:{false && JSON.stringify( Array.from(optMap.entries()))}</a>
-                        <a>|mapsize:{optMap.size}</a>
-                        <a>|ref:{reference}</a>
-                        <a>|filtermapsize:{FILTERED_optMap.size}</a>
-                        <a>|k:{theId}</a>
-                        <a>|optMap.get(k:{!!optMap.get(`${theId}`)?'y':'n'}</a>
-                        <a>|optName:{optName}</a>
-                        <a>|displvalue:{displayValue}</a>
-                        <hr className="py-3" />
-                    </div>}
                     {(FILTERED_optMap.size == 0 || optMap.size == 0) && <>
                         <div className="opaci-50 pa-2 noclick">
                             N/A
@@ -314,7 +207,7 @@ export const InputSelect = ({
                     ))}
                     {addMode &&
                         <div className="bg-white   " >
-                            {false && addNewMode &&
+                            {/*WIP:for when the user wants to add a new option on the fly*/false && addNewMode &&
                                 <div className="flex-col py-2  w-100">
                                     <hr className="w-100" />
                                     <input type="text" defaultValue={descriptionInput} onChange={(e) => {__set_descriptionInput(e.target.value)}} className="mt-2 mb-1" />
@@ -335,12 +228,6 @@ export const InputSelect = ({
                     }
                 </div>
             }
-                {false && superErasable  && <div onClick={superClearInput} className="pt-2 flex-center opaci-hov-50 ims-tx-dark z-999 clickble pos-abs top-0 right-0  tx-lg"
-                    style={{transform:"translate(220%,0)"}}
-                >
-                    {/*<Child ref={childRef} />*/}
-                    <BsTrash />
-                </div>}
         </div>
 
 

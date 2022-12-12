@@ -3,7 +3,7 @@ import { useToggle, useOnClickOutside, useMap, useMediaQuery, useInterval, useEv
 
 
 import SliderCss from '@/styles/modules/Slider.module.css'
-export const ImgSlider = ({
+export const StandardSliderCarousel = ({
     GW, filteredFileList, loadedImages, loadedImages_actions,
     isClicking, __set_isClicking,
     pageOffset, __set_pageOffset

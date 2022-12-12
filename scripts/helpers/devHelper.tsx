@@ -4,12 +4,12 @@ if (process && process.env.NODE_ENV === 'development') {
     isDevEnvironment = true;
 }
 export const dd = (...args) => {
-    if (isDevEnvironment) {
+    if (process.env.ddInConsole) {
         console.log("🖥️→",args.shift());
         console.log(...args)
     }
 }
-export const dlog = (...args) => { if (isDevEnvironment) { console.log("#",...args) } }
+export const dlog = (...args) => { if (isDevEnvironment && process.env.logInConsole) { console.log("#",...args) } }
 export const dtable = (args) => { if (isDevEnvironment) { console.table(args) } }
 export {isDevEnvironment};
 

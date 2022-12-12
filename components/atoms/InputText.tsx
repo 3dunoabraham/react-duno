@@ -3,54 +3,10 @@ import { useDebounce, useEffectOnce, useOnClickOutside, useEventListener } from 
 
 
 // import { dlog } from '@/scripts/helpers/devHelper'
-export interface OutputInputTextProps {
-    label: string;
-    sublabel?: string;
-     inputName?: string;
-    display: ReactNode | string;
-    value: string;
-    /****** CONFIG ******/
-    editMode?: boolean;
-    /*** UPDATER ***/
-    updateNewData?: any;
-}
-// ReactFunctionComponent non-usedComponent
-export const OutputInputText = ({
-    updateNewData,
-    label,
-     inputName,
-    sublabel,
-    display,
-    value,
-    editMode,
-}: OutputInputTextProps) => {
-    return (<>
-        <div className="w-50 tx-bold-5 tx-smd ims-tx-lightdark pr-4">
-            {label || "Label"}
-            {!!sublabel &&
-                <div className="tx-bold-3 tx-sm pt-1">{sublabel}</div>
-            }
-        </div>
-        <div className="w-50">
-            {!editMode && 
-                <div className="tx-md ims-tx-faded pl-5 pr-4">
-                    <div className="tx-mdl  ims-tx-faded"> {display} </div>
-                </div>
-            }
-            {editMode && <div className="flex"> <InputText  inputName={ inputName} updateNewData={updateNewData} reference={value} /> </div>}
-        </div>
-    </>)
-}
-
-
-
 // CORE ReactFunctionComponent
 export const InputText = ({
-     inputName,
-    reference,
-    /*** UPDATER ***/
-    updateNewData,
-    parseFunction = (x,y) => x,
+    inputName, reference,
+    /* UPDATE */ updateNewData, parseFunction = (x,y) => x,
 }) => {
     /****** CREATE ******/
     useEffectOnce(() => {
@@ -58,7 +14,8 @@ export const InputText = ({
     })
 
 
-    /****** STATE ******/
+
+    /****** DATA ******/
     const $domObject = useRef(null)
     const [theValue, __set_theValue] = useState<string>('')
     const [updateCount, __set_updateCount] = useState(0)
@@ -66,10 +23,12 @@ export const InputText = ({
     const isSameAsReference = useMemo(() => debouncedValue == reference, [debouncedValue,reference]);
 
 
+
     /****** UPDATE ******/
     const handle_onblur = (e) => {
         const _newValue = e.target.value
         if (_newValue === reference && updateCount == 0) return
+
         __set_theValue(`${e.target.value}`)
         updateNewData({ inputName, value: `${e.target.value}`})
         __set_updateCount(updateCount+1)
@@ -78,14 +37,12 @@ export const InputText = ({
     {
         if (debouncedValue == "") return
         if (theValue === reference && updateCount == 0) return
+            
         updateNewData({ inputName, value: debouncedValue})
         __set_updateCount(updateCount+1)
     }
     useEventListener('blur', handle_onblur, $domObject)
-    useEffect(() => { 
-        updateValueWithDebounce()
-
-    }, [debouncedValue,reference])
+    useEffect(() => {updateValueWithDebounce() }, [debouncedValue,reference])
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         __set_theValue(parseFunction(event.target.value,theValue))
     }

@@ -18,11 +18,13 @@ export const UnitSummaryForm =({ unit }) =>
 
 
 
-    /****** STATE ******/
+    /****** DATA ******/
     // const $domObject = useRef(null)
     const [vinValue, __set_vinValue] = useState<string>('')
 
 
+
+    /****** HTML ******/
     return (
 
 

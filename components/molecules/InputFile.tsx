@@ -1,19 +1,9 @@
-import { ChangeEvent, useEffect, useState, useMemo, useRef } from 'react'
+import { ChangeEvent, useState, useMemo, useRef } from 'react'
 
 
-export interface OutputInputFileProps {
-    label?: string;
-    display?: string;
-    value?: string;
-    editMode?: boolean;
-}
+export interface NputFileProps {label?: string; display?: string; value?: string; editMode?: boolean; }
 // ReactFunctionComponent
-export const OutputInputFile = ({
-    label,
-    display,
-    value,
-    editMode,
-}: OutputInputFileProps) => {
+export const NputFile = ({label, display, value, editMode, }: NputFileProps) => {
     return (<>
         <div className="w-100 ">
             <InputFile reference={value} display={display} />
@@ -21,22 +11,17 @@ export const OutputInputFile = ({
     </>)
 }
 // CORE ReactFunctionComponent
-export const InputFile = ({
-    reference,
-    ...others
-}) => {
-    //-/* REF */-//
+export const InputFile = ({reference, ...others }) => {
+    /****** DATA ******/
     const $theInput = useRef<HTMLInputElement>()
-
-    //-/* STATE */-//
     const [firstFile, __set_firstFile] = useState<{name:string,type:string}>()
-
-    //-/* MEMO */-//
     const foundExt = useMemo(() => firstFile?.type ? (firstFile.type.replace(/(.*)\//g, '')) : "", [firstFile])
     const foundExtInFilename = useMemo(() => firstFile?.name ? (firstFile.name.match(/\.[0-9a-z]+$/i)[0]) : "", [firstFile])
     const foundFilename = useMemo(() => firstFile?.name, [firstFile])
 
-    //-/* LISTENERS */-//
+
+
+    /****** UPDATE ******/
     const handleChange = () => {
         console.log($theInput.current.files)
         const firstFile = $theInput.current.files[0]
@@ -72,15 +57,11 @@ export const InputFile = ({
 
 
 
-    // COMPONENT PARTS
-    //1: FILE DETAILS
-    //2: FILE INPUT
-
+    /****** HTML ******/
     return (
+
+
         <div className="flex-col w-100 ims-border-faded pa-2 border-r-8">
-
-
-            {/* //1: FILE DETAILS */}
             <span className="flex-col py-2">File: <small>{foundFilename}</small></span>
             <div className="flex gap-1 pa-1">
                 <span>File Type: <b>{foundExtInFilename}</b></span>
@@ -88,15 +69,14 @@ export const InputFile = ({
                 <span>File Ext.: <b>{foundExtInFilename}</b></span>
             </div>
 
-            {/* //2: FILE INPUT */}
             <input type="file" onChange={handleChange} ref={$theInput} hidden
                 className="py-2 px-4 w-100 ims-tx-dark ims-border-faded border-r-5 tx-mdl"
             />
             <div className="px-4 py-2 opaci-hov--50  tx-md ims-bg-primary tx-white border-r-8 clickble" onClick={() => $theInput.current.click()}>
                 Upload File
             </div>
-
-
         </div>
+
+        
     )
 }

@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 
 import { dd, isDevEnvironment } from '@/scripts/helpers/devHelper'
 import { firstUpperCase } from '@/scripts/helpers/stringHelper'
-import { MultiOutputInputCustom } from '@/components/molecules/MultiOutputInputCustom'
+import { ModuleCustom } from '@/components/molecules/ModuleCustom'
 // ReactFunctionComponent
 export const CustomForm =({
     unit,
@@ -32,8 +32,7 @@ export const CustomForm =({
                 <div className="w-100" key={index}>
                     <hr className="mb-3 w-100" style={{opacity:"40%"}} />
                     <div key={index} className={`flex-col  w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                        {false && (!!values[item] ? "y"+Object.keys(values[item]).join("|") : "n")}
-                        <MultiOutputInputCustom uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj[item]._.label}
+                        <ModuleCustom uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj[item]._.label}
                             inputsMapObj={inputsMapObj[item]} editMode={editMode} values={values[item]}   inputName={item}
                             addFieldMode /*  optObjArray={inputsMapObj[item]._.orgs || orgsList} */
                         />
