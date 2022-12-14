@@ -155,6 +155,11 @@
 .tx-deco, .tx-deco *, .underline, .underline * { text-decoration: underline #777; }
 .linethrough { text-decoration: line-through } .strikethrough { text-decoration: line-through }
 .nodeco { text-decoration: none ; } .nowrap {white-space: nowrap; }
+.tx-ellip {
+	/*white-space: nowrap;*/
+	/*overflow: hidden;*/
+	/*text-overflow: ellipsis;*/
+}
 
 
 

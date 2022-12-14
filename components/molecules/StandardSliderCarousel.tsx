@@ -64,10 +64,10 @@ export const StandardSliderCarousel = ({
 
 
     return (
-    <div className={'  border-r-8  '} style={{width:GW+"px",minHeight:GW/1.5+"px", overflow:"hidden"}} >
+    <div className={'  border-r-8  '} style={{width:GW+"px",height:GW/1.5+"px", overflow:"hidden"}} >
         <div className={`${SliderCss["touch-pad"]} grab w-100 border-r-10 h-100 noselect pos-abs`}  ref={$touchPad}> </div>
         <div className="none top-0 right-0 pos-abs" style={{}} > off:{swipeOffset} </div>
-        <div className={'flex  noclick'} style={{minHeight:GW/1.5+"px",}} >
+        <div className={'flex  noclick'} style={{height:GW/1.5+"px",}} >
             {filteredFileList.map((item,index) => {
             return <div  key={index} style={{minWidth:GW+"px",transform:`translateX(${liveOffset}px)`}} className="flex-center " >
                 {!loadedImages.has(index) && (
@@ -75,9 +75,11 @@ export const StandardSliderCarousel = ({
                         <span className="hover-2"> loading... </span>
                     </div>
                 )}
-                <div style={{width:GW+"px",minWidth:GW+"px",}}>
-                    <img alt="imgsliderthumbnail" onLoad={() => loadedImages_actions.set(index,true)} 
-                        src={item} className={'noclick'} 
+                <div style={{width:GW+"px",minWidth:GW+"px",aspectRatio:"cover"}}>
+                    <img className="w-100 noclick" alt="imgsliderthumbnail"
+                        style={{objectFit:"cover",height:GW/1.5+"px",}}
+                        onLoad={() => loadedImages_actions.set(index,true)} 
+                        src={item}  
                     />
                 </div>
             </div> })}

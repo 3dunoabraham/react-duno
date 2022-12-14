@@ -51,12 +51,13 @@ export const _DEFAULT_UNIT = {
     "condition":"1", /*enum*/
     "status":"1", /*enum*/ // "status_type":"New8",
 
-    "images": [
-        "https://i.imgur.com/4yCs9Ed.png", "https://i.imgur.com/0s5StWl.png",
-        "https://i.imgur.com/kZ0VSZk.png", "https://i.imgur.com/NVJUGYl.png", "https://i.imgur.com/8e2GPpS.png",
-        "https://i.imgur.com/WX2Gjzt.png", "https://i.imgur.com/nryX2xi.png",
-        "https://i.imgur.com/uQiOKC0.png", 
-    ],
+    "images": "[]",
+    // "_images": [
+    //     "https://i.imgur.com/4yCs9Ed.png", "https://i.imgur.com/0s5StWl.png",
+    //     "https://i.imgur.com/kZ0VSZk.png", "https://i.imgur.com/NVJUGYl.png", "https://i.imgur.com/8e2GPpS.png",
+    //     "https://i.imgur.com/WX2Gjzt.png", "https://i.imgur.com/nryX2xi.png",
+    //     "https://i.imgur.com/uQiOKC0.png", 
+    // ],
     "image": "https://via.placeholder.com/720x480",
 
     "serial":"abc-8888881888688",

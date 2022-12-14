@@ -24,16 +24,16 @@ export interface UnitFormProps {
     peoplesObj?: any;
     optMapObj?: any;
     orgsList?: any;
-    refetch?: () => {};
+    refetch?: () => void;
 }
 // ReactFunctionComponent
 export const UnitFormComponent = ({
-  unit,
-  optMapObj,
-  orgsList,
-  peoplesObj,
-  isLoadingRefetching,
-  refetch,
+    unit,
+    optMapObj,
+    orgsList,
+    peoplesObj,
+    isLoadingRefetching,
+    refetch=()=>{},
   ...others
 }: UnitFormProps) => {
     /****** CREATE ******/
@@ -232,7 +232,7 @@ export const UnitFormComponent = ({
 
         <hr/>
         <main className="pt-8 mt-3 pos-rel" ref={$domObject}>
-            <UnitMainForm  editMode={editMode} unit={unit} optMapObj={optMapObj} updateNewData={updateNewData} />
+            <UnitMainForm refetch={refetch} editMode={editMode} unit={unit} optMapObj={optMapObj} updateNewData={updateNewData} />
             <UnitMultiInputForm orgsList={orgsList} /* customerList={customerList} */ peoplesObj={peoplesObj}
                 updateNewData={updateNewData} values={customFormValues}
                 editMode={editMode} unit={unit} optMapObj={optMapObj}

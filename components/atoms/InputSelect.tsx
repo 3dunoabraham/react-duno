@@ -4,7 +4,7 @@ import { BsChevronDown, BsChevronUp, BsX, BsTrash, BsPlusLg } from 'react-icons/
 
 
 import { isDevEnvironment } from '@/scripts/helpers/devHelper';
-import { cx, cxWSwitch, eqInLowerCase } from '@/scripts/helpers/stringHelper'
+import { cx, cxWSwitch, isEqInLowerCase } from '@/scripts/helpers/stringHelper'
 import { PostButton } from '@/components/atoms/PostButton'
 export interface OInputSelectProps {
     optMap?: any; sublabel?: string; defaultDisplay?: string; label?: string;
@@ -147,7 +147,7 @@ export const InputSelect = ({
         let _value = FILTERED_optMap.entries().next().value[1]
         if (!optSubName && !!_value[optName])
         {
-            if (eqInLowerCase(displayValue,_value[optName]))
+            if (isEqInLowerCase(displayValue,_value[optName]))
             {
                 setNewSelection(_value)
             }

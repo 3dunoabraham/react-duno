@@ -34,7 +34,7 @@ export type IUnit = {
     condition: string;
     status: string; // status_type: string;
     
-    images: any;
+    images: string;
     image: string;
     registration_title: any;
     characteristics: any;

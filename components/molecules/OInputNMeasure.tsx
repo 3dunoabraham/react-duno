@@ -8,7 +8,7 @@ import { firstUpperCase, cx, cxWSwitch } from '@/scripts/helpers/stringHelper'
 import { PostButton } from '@/components/atoms/PostButton'
 import { InputSelect } from '@/components/atoms/InputSelect'
 import { InputText } from '@/components/atoms/InputText'
-export interface ControlMeasureProps {
+export interface OInputNMeasureProps {
      inputName?: string;
     updateNewData?: any;
     sublabel?: string;
@@ -19,7 +19,7 @@ export interface ControlMeasureProps {
     inputkeyobj: any; 
 }
 // ReactFunctionComponent
-export const ControlMeasure = ({
+export const OInputNMeasure = ({
      inputName,
     updateNewData,
     sublabel,
@@ -28,7 +28,7 @@ export const ControlMeasure = ({
     value,
     editMode,
     inputkeyobj,
-}: ControlMeasureProps) => {
+}: OInputNMeasureProps) => {
     /*** MOUNTED ***/
     useEffectOnce(() => {
         let _value = typeof value == "string" ? JSON.parse(value) : value

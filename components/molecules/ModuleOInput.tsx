@@ -12,7 +12,7 @@ import { PostButton } from '@/components/atoms/PostButton'
 import { InputSelect } from '@/components/atoms/InputSelect'
 import { InputText } from '@/components/atoms/InputText'
 import { InputDate } from '@/components/molecules/InputDate'
-// import { InputColor } from '@/components/molecules/_backup/InputColor'
+// import { InputColor } from '@/components/_backup/InputColor'
 import { OInputRadioSelect } from '@/components/molecules/OInputRadioSelect'
 export interface ModuleOInputProps {
     uid: any; 

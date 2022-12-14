@@ -8,21 +8,23 @@ import { firstUpperCase } from '@/scripts/helpers/stringHelper'
 import { IMS_PrimaryButton, IMS_FadedButton } from '@/components/atoms/IMS_PrimaryButtons'
 import { OInputSelect } from '@/components/atoms/InputSelect'
 import { OInputEnum } from '@/components/molecules/OInputEnum'
-import { ControlGallery } from '@/components/molecules/ControlGallery'
-import { ControlMeasure } from '@/components/molecules/ControlMeasure'
+import { OInputNImages } from '@/components/molecules/OInputNImages'
+import { OInputNMeasure } from '@/components/molecules/OInputNMeasure'
 // import { dlog, dd, isDevEnvironment } from '@/scripts/helpers/devHelper';
 export interface UnitMainFormProps {
     updateNewData?: any;
     unit?: IUnit;
     optMapObj?: IUnitBaseOpts,
     editMode?: boolean;
+    refetch?: () => void;
 }
 // ReactFunctionComponent
 export const UnitMainForm = ({
     updateNewData,
     unit,
     optMapObj,
-    editMode
+    editMode,
+    refetch=()=>{},
 }: UnitMainFormProps) => {
     /****** DATA ******/
     const [conditions, conditions_actions, conditions_obj] = useArrayMapPlus(optMapObj.conditions,"id", unit.condition,"id");
@@ -76,7 +78,7 @@ export const UnitMainForm = ({
                     /> 
                 </div>
                 <div className={`     flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <ControlMeasure  label={"Size"}  updateNewData={updateField}  inputName="size"
+                    <OInputNMeasure  label={"Size"}  updateNewData={updateField}  inputName="size"
                         display={"W 15’3” - L 11’ - H -"} value={unit.size}
                         inputkeyobj={DEFAULT_INPUT_KEYMAP_OBJECT.size} editMode={editMode} />
                 </div>
@@ -128,8 +130,8 @@ export const UnitMainForm = ({
                 <div className="flex-col">
                     <></>
                     <div className="">
-                        <ControlGallery uid={unit.uid} label="Upload File" display={unit.image} updateNewData={updateGallery}
-                            value={unit.images} editMode={editMode} filelist={unit.images} max={(unit.size && unit.size.width) ? parseInt(unit.size.width.inches) : 0}
+                        <OInputNImages uid={unit.uid} label="Upload File" display={unit.image} updateNewData={updateGallery} refetch={refetch}
+                            value={unit.images} editMode={editMode} filelistString={unit.images} max={(unit.size && unit.size.width) ? parseInt(unit.size.width.inches) : 0}
                         />
                     </div>
                 </div>

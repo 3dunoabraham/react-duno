@@ -4,19 +4,19 @@ import { AiOutlineLoading } from 'react-icons/ai'
 
 
 // ReactFunctionComponent
-export const ControlGalleryUploadedImg = ({
+export const OInputImagesJustUploaded = ({
     debug,theKey,handleDeleteImage = null,
-    validatedExt,foundFilename,foundSize,
-    percentComplete
+    validatedFileType,foundFilename,foundSize,
+    percentComplete,
 }) => {
     return (<>
         <div className="mb-6 px-4">
             <div className="flex-center " style={{}}> 
-                <div className="ims-bg-primary-trans ims-tx-primary flex-center tx-mdl  border-r-100p tx-lg" style={{width:"50px",height:"50px"}}> 
+                <div className="ims-bg-primary-trans ims-tx-primary flex-center tx-mdl  border-r-100p tx-lg" style={{minWidth:"50px",height:"50px"}}> 
                     <ImFilePicture />
                 </div>
-                <div className="flex-1 flex-col flex-align-start ml-2">
-                    <div className="">
+                <div className="flex-1 flex-col flex-align-start ml-2 noverflow tx-ellip">
+                    <div className="w-100 ">
                         {foundFilename}
                     </div>
                     <div className="opaci-50">
@@ -24,7 +24,7 @@ export const ControlGalleryUploadedImg = ({
                     </div>
                 </div>
                 {!!handleDeleteImage &&
-                    <div className="flex-center tx-lg clickble pt-0 pa-2 opaci-hov--50" onClick={()=>(handleDeleteImage(theKey))} > 
+                    <div className="flex-center tx-lg clickble pt-0 pa-2 opaci-hov--50" onClick={()=>(handleDeleteImage(foundFilename,theKey))} > 
                         <BsTrash />
                     </div>
                 }
@@ -44,7 +44,7 @@ export const ControlGalleryUploadedImg = ({
                 <div className="tx-mdl pl-2" style={{}}> 
                     {parseInt(`${percentComplete}`)}%
                 </div>
-                {!validatedExt && <>
+                {!validatedFileType && <>
                     <div className="flex-center pl-3 tx-lgx tx-red" title="Wrong Extension">
                         <BsExclamationTriangle />
                     </div>

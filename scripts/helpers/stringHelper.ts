@@ -1,7 +1,31 @@
-export const incInLowerCase = (subString,theString) => {
-    return (`${subString}`.toLowerCase() === theString.toLowerCase())
+import { API_FILE_UPLOAD_BASE, STATIC_IMAGE_BASE } from '@/scripts/api/constants'
+
+export const parseImgArrayStrQtless = (theString) => {
+    return theString.split(",").map((fileName)=>{
+        // console.log(fileName)
+        return STATIC_IMAGE_BASE+fileName.replace("[","").replace("]","").trim()
+        let newSavedImage = {
+            size:0,
+            name:STATIC_IMAGE_BASE+fileName.replace("[","").replace("]","").trim(),
+            lastModified:"",
+            type:"",
+            // name
+        }
+    })
 }
-export const eqInLowerCase = (subString,theString) => {
+export const parseFileExt = (theString) => {
+    return theString.match(/\.[0-9a-z]+$/i)[0]
+}
+export const parseFileType = (theString) => {
+    return theString.replace(/(.*)\//g, '')
+}
+export const isValidImgExt = (theType, theExt) => {
+    return ["JPG","JPEG","PNG","GIF"].indexOf(theType.toUpperCase()) != -1 && [".JPG",".JPEG",".PNG",".GIF"].indexOf(theExt.toUpperCase()) != -1
+}
+// export const incInLowerCase = (subString,theString) => {
+//     return (`${subString}`.toLowerCase() === theString.toLowerCase())
+// }
+export const isEqInLowerCase = (subString,theString) => {
     return (`${subString}`.toLowerCase() === `${theString}`.toLowerCase())
 }
 export const readableSize = (fileSize) => {
