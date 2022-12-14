@@ -23,12 +23,12 @@ export const OInputNImagesJustUploaded = ({
                         {foundSize}
                     </div>
                 </div>
-                {!!handleDeleteImage &&
+                {false && !!handleDeleteImage &&
                     <div className="flex-center tx-lg clickble pt-0 pa-2 opaci-hov--50" onClick={()=>(handleDeleteImage(foundFilename,theKey))} > 
                         <BsTrash />
                     </div>
                 }
-                {!handleDeleteImage &&
+                {false && !handleDeleteImage &&
                     <div className="flex-center tx-lg clickble pt-0 pa-2  spin-1"  > 
                         <AiOutlineLoading />
                     </div>

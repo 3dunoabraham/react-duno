@@ -8,7 +8,8 @@ import {
     BsCloudArrowDown,
     BsChevronLeft,
     BsChevronRight,
-    BsExclamationTriangle
+    BsExclamationTriangle,
+    BsUpload,
 } from 'react-icons/bs'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { ImFilePicture } from 'react-icons/im'
@@ -165,7 +166,8 @@ export const OInputNImages = ({
                 size:firstCurrentFile.size,  name:firstCurrentFile.name.replace(" ","_"),
                 lastModified:firstCurrentFile.lastModified,  type:firstCurrentFile.type,
             }
-            imgMap_do.set(autoincrementID,newSavedImage)
+            // imgMap_do.set(autoincrementID,newSavedImage)
+            s__isOpen(false);s__isGalleryModal(false)
             s__autoincrementID(autoincrementID+1)
             s__firstFile(null)
             await refetch()
@@ -312,15 +314,14 @@ export const OInputNImages = ({
                     />
                 </>)}
 
-                <div className="flex gap-1 pa-2 opaci-50 tx-ls-1" > File types allowed: JPG, PNG, GIF </div>
                 <div className="pos-rel flex-center flex-col ims-border-faded border-r-8 ">
                     <span className="clickble block w-100">
                         <label htmlFor="theImage" className=" block w-100" onDrop={()=>{}}>
                             <span className=" w-100 py-4 flex-col flex-center">
-                                <div className={"ims-circ-button-primary-trans"}
+                                <div className={"ims-circ-button-primary-trans tx-lg"}
                                     style={{minWidth:"50px",height:"50px"}}
                                 > 
-                                    <BsCloudArrowDown />
+                                    <BsUpload />
                                 </div>
                                 <div className="ims-tx-primary py-2">
                                     <span className="tx-bold-6">Click to upload</span>
@@ -336,17 +337,6 @@ export const OInputNImages = ({
                             </span>
                         </label>
                     </span>
-                </div>
-
-                <div className="flex mt-3">
-                    <button className="flex-1 pa-1" onClick={() => { s__isGalleryModal(!isGalleryModal) }} >
-                        <IMS_FadedButton content="Cancel"/>
-                    </button>
-                    <button className="flex-1 "
-                        onClick={() => { isUploading ? alert("Please wait") : s__isGalleryModal(!isGalleryModal) }}
-                    >
-                        <IMS_PrimaryButton content="Save"/>
-                    </button>
                 </div>
 
             </StandardModal>

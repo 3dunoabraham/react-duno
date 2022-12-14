@@ -18,7 +18,8 @@ export const UnitSummary =({ unit }) =>
             </div>
             <div className="pr-2  py-1 flex nowrap">
                 <div className="tx-bold-6 pr-1">VIN:</div>
-                123ABCV63261356
+                {unit.vin}
+                {/*123ABCV63261356*/}
             </div>
             <div className=" pa-1 mx-1 nowrap">
                 <span className="tx-bold-8">Work Order:</span>

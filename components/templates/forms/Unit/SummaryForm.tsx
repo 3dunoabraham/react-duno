@@ -7,7 +7,12 @@ import { validateFloat, validateInteger, validateBigint, validateStringLength } 
 import { InputText } from '@/components/atoms/InputText'
 import { IMS_PrimaryButton, IMS_FadedButton } from '@/components/atoms/IMS_PrimaryButtons'
 // ReactFunctionComponent
-export const UnitSummaryForm =({ unit }) =>
+export const UnitSummaryForm =({
+    unit,
+    refetch,
+    updateNewData,
+    values,
+}) =>
 {
     /****** CREATE ******/
     // useEffectOnce(() => {
@@ -43,7 +48,7 @@ export const UnitSummaryForm =({ unit }) =>
                 {/*<button onClick={()=>{}}  className="pa-1 w-min-200px ">
                     <IMS_FadedButton content="x" />
                 </button>*/}
-                <InputText   inputName={"vin"} updateNewData={()=>{}} reference={unit.vin}
+                <InputText   inputName={"vin"} updateNewData={updateNewData} reference={unit.vin}
                     parseFunction={(newVal,prevVal)=>{return validateStringLength(newVal,prevVal,17)}}
                 />
 

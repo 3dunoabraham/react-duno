@@ -37,6 +37,7 @@
     /*clickble ims-bg-primary-trans ims-tx-primary flex-center tx-mdl border-r-100p */
     cursor: pointer;
     background: var(--primary-trans);
+    color: var(--primary-color);
     display: flex;
     justify-content: center;
     align-items: center;

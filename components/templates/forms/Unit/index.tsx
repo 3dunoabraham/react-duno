@@ -55,6 +55,13 @@ export const UnitFormComponent = ({
     const isFirst = useIsFirstRender()
     const [refreshCount, setRefreshCount] = useState<number>(0)
     const isMounted = useIsMounted()
+    const customSummaryFormValues = useMemo(() => {
+        let { vin } = unit
+
+        return ({
+            vin,
+        })
+    }, [unit])
     const customFormValues = useMemo(() => {
         const {retail_price,min_retail_price, agreement_price, min_agreement_price,} = unit.price || DEFAULT_UNIT.price
         let {axles, color, gvwr, hitch_type, shipping_weight,} = unit.characteristics || DEFAULT_UNIT.characteristics
@@ -87,7 +94,7 @@ export const UnitFormComponent = ({
 
     /****** UPDATE ******/
     const updateNewData = (newDataObj) => {
-
+        // console.log("#R0000T updateNewData reached", newDataObj)
         /*debug*/ dd("#R0000T updateNewData reached", newDataObj)
         changedData_do.set(newDataObj. inputName, newDataObj.value)
     }
@@ -229,7 +236,7 @@ export const UnitFormComponent = ({
     <div className="flex pt-2 pb-3"> {isValidUnit  && (
         !editMode 
             ? <UnitSummary unit={unit} />
-            : <UnitSummaryForm unit={unit} />
+            : <UnitSummaryForm unit={unit} refetch={refetch} updateNewData={updateNewData} values={customSummaryFormValues}/>
     ) } </div>
 
     <hr/>
