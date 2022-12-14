@@ -2,8 +2,7 @@ import { ReactNode, useRef } from 'react'
 import { useOnClickOutside  } from 'usehooks-ts'
 import { BsXLg } from 'react-icons/bs'
 
-import styles from '@/styles/modules/StandardModal.module.css'
-
+// import styles from '@/styles/modules/StandardModal.module.css'
 export interface ModalProps {
     handleClose: () => void;
     title?: string;
@@ -23,6 +22,7 @@ export const StandardModal = ({
 
 
     return(
+
 
     <div className="flex w-100 h-100vh pos-fixed top-0 left-0 flex-center bg-b-opaci-50 z-999">
         <div className="bg-white w-100 w-max-500px block z-1001   border-r-12" ref={$divObject} >

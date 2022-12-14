@@ -11,24 +11,30 @@ const queryClient = new QueryClient()
 function MyApp({ Component, pageProps, ...appProps  }) {
     const isLayoutNeeded = ['/manufacturers','/units'].includes(appProps.router.pathname);
 
+
+
     return (
-        <QueryClientProvider client={queryClient}>
-            <div className="flex flex-justify-between">
-                {isLayoutNeeded && <SidebarLayout /> }
-                {/*isLayoutNeeded && 
-                    <SidebarLayout>
-                        <div className="flex flex-justify-between " style={{height:"100vh", overflowY: "auto"}}>
-                            *{isLayoutNeeded?"YUES":"no"}*
-                        </div>
-                    </SidebarLayout>
-                */}
-                <div className="flex-col w-100">
-                    <Layout>
-                        <Component {...pageProps} />
-                    </Layout>
-                </div>
+
+
+    <QueryClientProvider client={queryClient}>
+        <div className="flex flex-justify-between">
+            {isLayoutNeeded && <SidebarLayout /> }
+            {/*isLayoutNeeded && 
+                <SidebarLayout>
+                    <div className="flex flex-justify-between " style={{height:"100vh", overflowY: "auto"}}>
+                        *{isLayoutNeeded?"YUES":"no"}*
+                    </div>
+                </SidebarLayout>
+            */}
+            <div className="flex-col w-100">
+                <Layout>
+                    <Component {...pageProps} />
+                </Layout>
             </div>
-        </QueryClientProvider>
+        </div>
+    </QueryClientProvider>
+
+
     )
 }
 

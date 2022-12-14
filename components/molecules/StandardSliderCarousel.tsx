@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useState, useMemo, useRef } from 'react'
 import { useOnClickOutside, useMap, useMediaQuery, useInterval, useEventListener } from 'usehooks-ts'
 
 
-import SliderCss from '@/styles/modules/Slider.module.css'
+import CSS from '@/styles/modules/Slider.module.css'
 export const StandardSliderCarousel = ({
     GW, filteredFileList, loadedImages, loadedImages_do,
     isClicking, s__isClicking,
@@ -65,24 +65,30 @@ export const StandardSliderCarousel = ({
 
     return (
     <div className={'  border-r-8  '} style={{width:GW+"px",height:GW/1.5+"px", overflow:"hidden"}} >
-        <div className={`${SliderCss["touch-pad"]} grab w-100 border-r-10 h-100 noselect pos-abs`}  ref={$touchPad}> </div>
+        <div className={`${CSS["touch-pad"]} grab w-100 border-r-10 h-100 noselect pos-abs`} ref={$touchPad}> </div>
         <div className="none top-0 right-0 pos-abs" style={{}} > off:{swipeOffset} </div>
         <div className={'flex  noclick'} style={{height:GW/1.5+"px",}} >
             {filteredFileList.map((item,index) => {
-            return <div  key={index} style={{minWidth:GW+"px",transform:`translateX(${liveOffset}px)`}} className="flex-center " >
-                {!loadedImages.has(index) && (
-                    <div className="bg-white ims-border-faded pos-abs w-100 h-100 flex-center opaci-50 tx-ls-5" style={{width:GW+"px",}}>
-                        <span className="hover-2"> loading... </span>
+            return (
+                <div  key={index} style={{minWidth:GW+"px",transform:`translateX(${liveOffset}px)`}}
+                        className="flex-center "
+                >
+                    {!loadedImages.has(index) && (
+                        <div className="bg-white ims-border-faded pos-abs w-100 h-100 flex-center opaci-50 tx-ls-5"
+                                style={{width:GW+"px",}}
+                        >
+                            <span className="hover-2"> loading... </span>
+                        </div>
+                    )}
+                    <div style={{width:GW+"px",minWidth:GW+"px",aspectRatio:"cover"}}>
+                        <img className="w-100 noclick" alt=""
+                            style={{objectFit:"cover",height:GW/1.5+"px",}}
+                            onLoad={() => loadedImages_do.set(index,true)} 
+                            src={item}  
+                        />
                     </div>
-                )}
-                <div style={{width:GW+"px",minWidth:GW+"px",aspectRatio:"cover"}}>
-                    <img className="w-100 noclick" alt="imgsliderthumbnail"
-                        style={{objectFit:"cover",height:GW/1.5+"px",}}
-                        onLoad={() => loadedImages_do.set(index,true)} 
-                        src={item}  
-                    />
                 </div>
-            </div> })}
+            )})}
         </div>
     </div>
     )

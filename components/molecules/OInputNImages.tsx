@@ -32,7 +32,7 @@ import { StandardDropdown } from '@/components/molecules/StandardDropdown'
 import { StandardModal } from '@/components/molecules/StandardModal'
 import { StandardSliderCarousel } from '@/components/molecules/StandardSliderCarousel'
 import { OInputNImagesJustUploaded } from '@/components/molecules/OInputNImagesJustUploaded'
-import SliderCss from '@/styles/modules/Slider.module.css'
+import CSS from '@/styles/modules/Slider.module.css'
 type I_OInputNImages = {
     uid: string; filelistString: string;
     config?: any;
@@ -189,10 +189,10 @@ export const OInputNImages = ({
         />
 
         <div className="pos-abs  top-0 right-0" >
-            <div className={` border-r-100p clickble   tx-lg ${SliderCss["dots-button"]} pa-5`}
+            <div className={` border-r-100p clickble   tx-lg ${CSS["dots-button"]} pa-5`}
                 onClick={()=>(isOpen ? s__isOpen(!isOpen) : s__isOpen(true))}
             >
-                <span className={`pa-2 pb-1 ${SliderCss["dots-dots"]}`}><BsThreeDots /></span>
+                <span className={`pa-2 pb-1 ${CSS["dots-dots"]}`}><BsThreeDots /></span>
             </div>
             {isOpen && <div className="w-min-200px  pos-abs right-0 top-0 "  ref={$divObject}>
                 <StandardDropdown isOpen={isOpen} >
@@ -232,12 +232,12 @@ export const OInputNImages = ({
                 if (index > 4) return <div key={index}></div>
                 return <div key={index}>
 
-                        <div className={`   ${SliderCss["emphasis-card"]} ${SliderCss["nav-dot-button"]}
+                        <div className={`   ${CSS["emphasis-card"]} ${CSS["nav-dot-button"]}
                                             ${currentPage != index ? "ims-tx-faded opaci-hov-10" : ""}
                                             clickble px-2 py-3`}
                              onClick={()=>{s__pageOffset(-GW*index) }}
                         >
-                            <div className={`border-r-100p ${SliderCss["nav-dot"]}`}
+                            <div className={`border-r-100p ${CSS["nav-dot"]}`}
                                 style={{
                                     width:"10px",height:"10px",
                                     background:currentPage == index ? "#101828" : "#2C334B"
@@ -249,25 +249,25 @@ export const OInputNImages = ({
             })}
         </div>
 
-        {/*!isClicking && */<div className={`   flex-center left-0 pos-abs clickble ${SliderCss["emphasis"]}`} >
-            <div className={`   ${SliderCss["emphasis-card"]} ${isAtFirstImage && " none stopcursor opaci-25 "}
+        {/*!isClicking && */<div className={`   flex-center left-0 pos-abs clickble ${CSS["emphasis"]}`} >
+            <div className={`   ${CSS["emphasis-card"]} ${isAtFirstImage && " none stopcursor opaci-25 "}
                                 border-r-100p clickble bg-white  tx-mdl   pa-3 pb-2 mr-4 ma-2 `}
                  onClick={()=>{setPrevPage() }}
             >
                 <div className="noclick"><BsChevronLeft /></div>
             </div>
         </div>}
-        {/*!isClicking && */<div className={`   flex-center right-0 pos-abs clickble ${SliderCss["emphasis"]}`} >
-            <div className={`   ${SliderCss["emphasis-card"]} ${isAtLastImage && " none stopcursor opaci-25 "}
+        {/*!isClicking && */<div className={`   flex-center right-0 pos-abs clickble ${CSS["emphasis"]}`} >
+            <div className={`   ${CSS["emphasis-card"]} ${isAtLastImage && " none stopcursor opaci-25 "}
                                 border-r-100p clickble bg-white  tx-mdl   pa-3 pb-2 mr-4 ma-2`}
                  onClick={()=>{setNextPage() }}
             >
                 <BsChevronRight />
             </div>
         </div>}
-        {filteredFiles.length == 0 && <div className={`   flex-center pos-abs clickble ${SliderCss["emphasis"]}`} >
+        {filteredFiles.length == 0 && <div className={`   flex-center pos-abs clickble ${CSS["emphasis"]}`} >
             <div className={`   flex-col border-r-8 clickble bg-white px-4 py-6 pb-1 mr-4 ma-2 
-                                ${SliderCss["emphasis-card"]} `}
+                                ${CSS["emphasis-card"]} `}
                  onClick={()=>{s__isGalleryModal(!isGalleryModal) }}
             >
                 <span className="tx-sm">Add Image</span>
@@ -317,7 +317,7 @@ export const OInputNImages = ({
                     <span className="clickble block w-100">
                         <label htmlFor="theImage" className=" block w-100" onDrop={()=>{}}>
                             <span className=" w-100 py-4 flex-col flex-center">
-                                <div className={"ims-circ-button"}
+                                <div className={"ims-circ-button-primary-trans"}
                                     style={{minWidth:"50px",height:"50px"}}
                                 > 
                                     <BsCloudArrowDown />
