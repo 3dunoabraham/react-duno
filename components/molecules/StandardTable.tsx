@@ -44,12 +44,12 @@ export const StandardTable = ({
                         #{item.uid}
                     </div>
                     <div className="w-50 flex">
-                        {Object.keys(displayConfigObj.rest).map((aKey)=>{
+                        {Object.keys(displayConfigObj.rest).map((aKey, index)=>{
                             const theWidget = displayConfigObj.rest[aKey].widget
                             if (!theWidget)
                             {
                                 return (
-                                    <div className="w-100 flex-center flex-1  flex-justify-start">
+                                    <div key={index} className="w-100 flex-center flex-1  flex-justify-start">
                                         {item[displayConfigObj.rest[aKey].fieldName]}
                                     </div>
                                 )
@@ -58,7 +58,7 @@ export const StandardTable = ({
                             if (theWidget == "badge")
                             {
                                 return (
-                                    <div className="w-100 flex-center flex-1  flex-justify-start">
+                                    <div key={index} className="w-100 flex-center flex-1  flex-justify-start">
                                         {item[displayConfigObj.rest[aKey].fieldName] != "3"
                                             ?   <div className="flex-1 ">
                                                     <span className="ims-badge-primary-light pa-1 tx-sm ">Available</span>
