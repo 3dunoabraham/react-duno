@@ -1,30 +1,28 @@
 import { ChangeEvent, useState, useMemo, useRef, useEffect } from 'react'
-import { useToggle, useOnClickOutside, useEventListener, useMap  } from 'usehooks-ts'
+import { useOnClickOutside, useEventListener, useMap  } from 'usehooks-ts'
 import { BsChevronDown, BsChevronUp, BsX, BsTrash, BsPlusLg } from 'react-icons/bs'
 
 
+// import { isDevEnvironment, dd, dlog } from '@/scripts/helpers/devHelper';
 import { useObjMap } from '@/scripts/helpers/useHooksHelper';
 import { validateInteger } from '@/scripts/helpers/validationHelper';
-// import { isDevEnvironment, dd, dlog } from '@/scripts/helpers/devHelper';
-import { cx, cxWSwitch } from '@/scripts/helpers/stringHelper'
+import { jss, jssWSwitch } from '@/scripts/helpers/stringHelper'
 import { PostButton } from '@/components/atoms/PostButton'
 import { InputSelect, InputSelectProps } from '@/components/atoms/InputSelect'
-
-
 export interface OInputRadioSelectProps {
     theInputObj: any; mapmapmap?; key:any; formObject?:any; valueObj?:any; optObj: any;
 }
 // ReactFunctionComponent
 export const OInputRadioSelect = ({theInputObj,..._p}:InputSelectProps & OInputRadioSelectProps) => {
-    const [modifiedObject,__set_modifiedObject] = useState({})
-    const [radioValue, __set_radioValue] = useState(!!_p.valueObj.location_related ? `${_p.valueObj.location_related}` : "0");
+    const [modifiedObject,s__modifiedObject] = useState({})
+    const [radioValue, s__radioValue] = useState(!!_p.valueObj.location_related ? `${_p.valueObj.location_related}` : "0");
     const radioValueString = useMemo(()=>{
         if (!radioValue || radioValue == "0") return "none"
         return ["none","company","customer"][radioValue]
     },[radioValue])
     const newRefreshedValue = useMemo(()=>
     {
-        __set_radioValue(_p.valueObj.location_related)
+        s__radioValue(_p.valueObj.location_related)
         return true
     },[_p.valueObj.location_related]);
     const optMapMap = useMemo(()=>
@@ -53,13 +51,13 @@ export const OInputRadioSelect = ({theInputObj,..._p}:InputSelectProps & OInputR
     /****** UPDATE ******/
     const handleClearUpdate = (event) => {
         _p.updateNewData({[theInputObj.radioName]:"0", [_p.inputName]:"0"} )
-        __set_radioValue("0");
+        s__radioValue("0");
     }
     const handleUpdateNewData = (data) => {
         if (data.value == "") return
         _p.updateNewData({[_p.inputName]:data.value, [theInputObj.radioName]:radioValue, })
     }
-    const handleRadioChange = event => {__set_radioValue(event.target.value); };
+    const handleRadioChange = event => {s__radioValue(event.target.value); };
 
 
 

@@ -44,13 +44,13 @@ export const UnitFormComponent = ({
 
 
     /****** DATA ******/
-    const $domObject = useRef(null)
-    const [isLoadingEditing, __toggle_isLoadingEditing, __set_isLoadingEditing] = useToggle();
-    const [editMode, __toggle_editMode, __set_editMode] = useToggle(false);
-    const [standardModal, __toggle_standardModal, __set_standardModal] = useToggle(false);
-    const [succesfulRequest, __toggle_succesfulRequest, __set_succesfulRequest] = useToggle(true);
+    const $mainDOMObject = useRef(null)
+    const [isLoadingEditing, s__isLoadingEditing] = useState<boolean>(false);
+    const [succesfulRequest, s__succesfulRequest] = useState<boolean>(true);
+    const [editMode, __toggle_editMode, s__editMode] = useToggle(false);
+    const [standardModal, __toggle_standardModal, s__standardModal] = useToggle(false);
     const [changedData, changedData_actions] = useMap()
-    const [newBaseData, __set_newBaseData] = useState()
+    const [newBaseData, s__newBaseData] = useState()
     const { isBrowser } = useSsr()
     const isFirst = useIsFirstRender()
     const [refreshCount, setRefreshCount] = useState<number>(0)
@@ -102,7 +102,7 @@ export const UnitFormComponent = ({
             const changedFieldnames = Array.from(changedData.keys()).join(",")
             if (!changedFieldnames.length) { return }
                 
-            __set_isLoadingEditing(true)
+            s__isLoadingEditing(true)
 
             let the_data = Object.fromEntries(changedData) 
             // /*debug*/ dlog("the_data = Object.fromEntries(changedData)",the_data,"*")
@@ -137,15 +137,15 @@ export const UnitFormComponent = ({
                 setRefreshCount(refreshCount+1)
                 if (res)
                 {
-                    __set_succesfulRequest(res.ok)
+                    s__succesfulRequest(res.ok)
                     // if (isDevEnvironment) { console.log("Succesfully updated", res) }
                     await refetch()
-                    __set_isLoadingEditing(false)
+                    s__isLoadingEditing(false)
                     changedData_actions.reset()
                 }
             } catch (err)    {
-                __set_succesfulRequest(false)
-                __set_isLoadingEditing(false)
+                s__succesfulRequest(false)
+                s__isLoadingEditing(false)
                 changedData_actions.reset()
                 console.log("error")
                 console.log(err)
@@ -163,117 +163,119 @@ export const UnitFormComponent = ({
         </div >
     )
     return(<>
-        <div className="flex-between mq_xs_md_flex-col">
 
-            <div className="flex-col pt-3">
-                <h1 className="tx-bold-5 ims-tx-dark flex ">
-                    {isValidUnit ? `${editMode ? 'Edit' : 'Details'} - Trailer` : "Add Unit"}
-                </h1>
-            </div>
-            <div className="flex mq_xs_md_flex-col">
-                <div className="flex-wrap">
-                    {isValidUnit && !editMode && <>
+        
+    <div className="flex-between mq_xs_md_flex-col">
 
-                        <button onClick={__toggle_standardModal} className="pa-1">
-                            <div className="tx-smd ims-tx-faded tx-bold-6 opaci-hov-75 pa-1 flex-center flex-row mq_xs_flex-col">
-                                <BsCollection className="ml-2 tx-mdl " />
-                                <div className="px-1"> <span>History</span> <span className="pl-1">(3)</span> </div>
-                            </div>
-                        </button>
-                        <button onClick={__toggle_standardModal} className="pa-1">
-                            <div className="tx-smd ims-tx-faded tx-bold-6 opaci-hov-75 pa-1 flex-center flex-row mq_xs_flex-col">
-                                <BsFileEarmark className="ml-2 tx-mdl " />
-                                <div className="px-1"> <span>Documents</span> <span className="pl-1">(9)</span> </div>
-                            </div>
-                        </button>
-                        <button onClick={__toggle_standardModal} className="pa-1">
-                            <div className="tx-smd ims-tx-faded tx-bold-6 opaci-hov-75 pa-1 flex-center flex-row mq_xs_flex-col">
-                                <BsPencilSquare className="ml-2 tx-mdl " />
-                                <div className="px-1"> <span>Notes</span> <span className="pl-1">(6)</span> </div>
-                            </div>
-                        </button>
-                    </>}
-                </div>
-                <div>
-                    {editMode && <>
-                        <button onClick={__toggle_editMode}  className="pa-1">
-                            <IMS_FadedButton content="Cancel" />
-                        </button>
-                    </>}
-                    <button onClick={handleTopBottomSave} className={`pa-1 ${blockIfEditing}`}>
-                        <IMS_PrimaryButton content={!isValidUnit || editMode ? "Save" : isLoadingEditing ? "Editing" : "Edit"}
-                            precontent={<div className="pr-2 pt-1"><BsPencil/></div>}
-                        />
+        <div className="flex-col pt-3">
+            <h1 className="tx-bold-5 ims-tx-dark flex ">
+                {isValidUnit ? `${editMode ? 'Edit' : 'Details'} - Trailer` : "Add Unit"}
+            </h1>
+        </div>
+        <div className="flex mq_xs_md_flex-col">
+            <div className="flex-wrap">
+                {isValidUnit && !editMode && <>
+
+                    <button onClick={__toggle_standardModal} className="pa-1">
+                        <div className="tx-smd ims-tx-faded tx-bold-6 opaci-hov-75 pa-1 flex-center flex-row mq_xs_flex-col">
+                            <BsCollection className="ml-2 tx-mdl " />
+                            <div className="px-1"> <span>History</span> <span className="pl-1">(3)</span> </div>
+                        </div>
                     </button>
+                    <button onClick={__toggle_standardModal} className="pa-1">
+                        <div className="tx-smd ims-tx-faded tx-bold-6 opaci-hov-75 pa-1 flex-center flex-row mq_xs_flex-col">
+                            <BsFileEarmark className="ml-2 tx-mdl " />
+                            <div className="px-1"> <span>Documents</span> <span className="pl-1">(9)</span> </div>
+                        </div>
+                    </button>
+                    <button onClick={__toggle_standardModal} className="pa-1">
+                        <div className="tx-smd ims-tx-faded tx-bold-6 opaci-hov-75 pa-1 flex-center flex-row mq_xs_flex-col">
+                            <BsPencilSquare className="ml-2 tx-mdl " />
+                            <div className="px-1"> <span>Notes</span> <span className="pl-1">(6)</span> </div>
+                        </div>
+                    </button>
+                </>}
+            </div>
+            <div>
+                {editMode && <>
+                    <button onClick={__toggle_editMode}  className="pa-1">
+                        <IMS_FadedButton content="Cancel" />
+                    </button>
+                </>}
+                <button onClick={handleTopBottomSave} className={`pa-1 ${blockIfEditing}`}>
+                    <IMS_PrimaryButton content={!isValidUnit || editMode ? "Save" : isLoadingEditing ? "Editing" : "Edit"}
+                        precontent={<div className="pr-2 pt-1"><BsPencil/></div>}
+                    />
+                </button>
 
-                    <div className="pos-rel">
-                        <div className={((isLoadingEditing || isLoadingRefetching) && refreshCount>1 ? "appear-appear" : "")+" appear-hiding-2 right-0 pos-abs mx-3"}
-                            style={{transform:"translate(150%,-80%)"}}
-                        >
-                            <div className=" opaci-10 ims-tx-shadow-2 hover-1 tx-xl"><BsHourglassSplit /></div>
-                        </div>
-                        <div className={(!isLoadingEditing && refreshCount>1 ? "appear-once-2" : "")+" appear-hiding right-0 appear-hiding-2 pos-abs  mx-3"}
-                            style={{transform:"translate(150%,-100%)"}}
-                        >
-                            {succesfulRequest ? <div className="tx-green opaci-75 hover-2 tx-xl"><BsCheckAll /></div> : 
-                                <div className="tx-red opaci-50 shakefull-2 tx-xl"><BsExclamationTriangle /></div>}
-                        </div>
+                <div className="pos-rel">
+                    <div className={((isLoadingEditing || isLoadingRefetching) && refreshCount>1 ? "appear-appear" : "")+" appear-hiding-2 right-0 pos-abs mx-3"}
+                        style={{transform:"translate(150%,-80%)"}}
+                    >
+                        <div className=" opaci-10 ims-tx-shadow-2 hover-1 tx-xl"><BsHourglassSplit /></div>
                     </div>
-
+                    <div className={(!isLoadingEditing && refreshCount>1 ? "appear-once-2" : "")+" appear-hiding right-0 appear-hiding-2 pos-abs  mx-3"}
+                        style={{transform:"translate(150%,-100%)"}}
+                    >
+                        {succesfulRequest ? <div className="tx-green opaci-75 hover-2 tx-xl"><BsCheckAll /></div> : 
+                            <div className="tx-red opaci-50 shakefull-2 tx-xl"><BsExclamationTriangle /></div>}
+                    </div>
                 </div>
+
             </div>
         </div>
+    </div>
 
-        <div className="flex pt-2 pb-3"> {isValidUnit  && (
-            !editMode 
-                ? <UnitSummary unit={unit} />
-                : <UnitSummaryForm unit={unit} />
-        ) } </div>
+    <div className="flex pt-2 pb-3"> {isValidUnit  && (
+        !editMode 
+            ? <UnitSummary unit={unit} />
+            : <UnitSummaryForm unit={unit} />
+    ) } </div>
 
-        <hr/>
-        <main className="pt-8 mt-3 pos-rel" ref={$domObject}>
-            <UnitMainForm refetch={refetch} editMode={editMode} unit={unit} optMapObj={optMapObj} updateNewData={updateNewData} />
-            <UnitMultiInputForm orgsList={orgsList} /* customerList={customerList} */ peoplesObj={peoplesObj}
-                updateNewData={updateNewData} values={customFormValues}
-                editMode={editMode} unit={unit} optMapObj={optMapObj}
-            />
-
-
-            
-            {(!editMode) && 
-                <div className={`flex flex-justify-end  mb-6 w-100 `}>
-                    <button onClick={handleTopBottomSave} className={`pa-1 ${blockIfEditing}`}>
-                        <IMS_PrimaryButton content={!isValidUnit || editMode ? "Save" : isLoadingEditing ? "Editing" : "Edit"}
-                            precontent={<div className="pr-2 pt-1"><BsPencil/></div>}
-                        />
-                    </button>
-                </div>
-            }
+    <hr/>
+    <main className="pt-8 mt-3 pos-rel" ref={$mainDOMObject}>
+        <UnitMainForm refetch={refetch} editMode={editMode} unit={unit} optMapObj={optMapObj} updateNewData={updateNewData} />
+        <UnitMultiInputForm orgsList={orgsList} /* customerList={customerList} */ peoplesObj={peoplesObj}
+            updateNewData={updateNewData} values={customFormValues}
+            editMode={editMode} unit={unit} optMapObj={optMapObj}
+        />
 
 
-            {(!isValidUnit || editMode) && 
-                <div className="flex-justify-end w-100 pos-rel">
-                    {(isValidUnit && editMode) && 
-                        <button onClick={__toggle_editMode}  className="pa-1">
-                            <IMS_FadedButton content="Cancel" />
-                        </button>
-                    }
-                    <button onClick={handleTopBottomSave} className="pa-1">
-                        <IMS_PrimaryButton content={"Save"} />
-                    </button>
-
-                </div>
-            }
-
-        </main>
-
-        {standardModal &&
-            <StandardModal title="Documents" subtitle="Upload, remove and view files accompanying this trailer" handleClose={__toggle_standardModal}>
-                <div className="pa-8 ">
-                    <NputFile  label="Upload File" display={"display"} value={"test"} editMode={editMode} />
-                </div>
-            </StandardModal>
+        
+        {(!editMode) && 
+            <div className={`flex flex-justify-end  mb-6 w-100 `}>
+                <button onClick={handleTopBottomSave} className={`pa-1 ${blockIfEditing}`}>
+                    <IMS_PrimaryButton content={!isValidUnit || editMode ? "Save" : isLoadingEditing ? "Editing" : "Edit"}
+                        precontent={<div className="pr-2 pt-1"><BsPencil/></div>}
+                    />
+                </button>
+            </div>
         }
+
+
+        {(!isValidUnit || editMode) && 
+            <div className="flex-justify-end w-100 pos-rel">
+                {(isValidUnit && editMode) && 
+                    <button onClick={__toggle_editMode}  className="pa-1">
+                        <IMS_FadedButton content="Cancel" />
+                    </button>
+                }
+                <button onClick={handleTopBottomSave} className="pa-1">
+                    <IMS_PrimaryButton content={"Save"} />
+                </button>
+
+            </div>
+        }
+
+    </main>
+
+    {standardModal &&
+        <StandardModal title="Documents" subtitle="Upload, remove and view files accompanying this trailer" handleClose={__toggle_standardModal}>
+            <div className="pa-8 ">
+                <NputFile  label="Upload File" display={"display"} value={"test"} editMode={editMode} />
+            </div>
+        </StandardModal>
+    }
 
     </>)
 }

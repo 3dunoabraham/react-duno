@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { useMap, MapOrEntries } from 'usehooks-ts';
 
 
-
 export const useObjMap = (theObj) =>
 {
     const mapArray:MapOrEntries<string, any> = useMemo(() => {

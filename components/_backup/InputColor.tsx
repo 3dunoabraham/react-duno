@@ -1,10 +1,10 @@
 import { ChangeEvent, useState, useMemo, useRef, useEffect } from 'react'
-import { useToggle, useOnClickOutside, useEventListener, useDebounce } from 'usehooks-ts'
+import { useOnClickOutside, useEventListener, useDebounce } from 'usehooks-ts'
 import { BsChevronDown, BsChevronUp, BsX, BsPlusLg } from 'react-icons/bs'
 
 
 // import { isDevEnvironment, dd } from '@/scripts/helpers/devHelper';
-import { cx } from '@/scripts/helpers/stringHelper'
+import { jss } from '@/scripts/helpers/stringHelper'
 // ReactFunctionComponent
 export const InputColor = ({
     reference,  inputName,
@@ -12,16 +12,16 @@ export const InputColor = ({
 }) => {
     /****** CREATE ******/
     useEffect(() => {
-        __set_theColor(reference)
+        s__theColor(reference)
     },[])
 
 
 
     /****** DATA ******/
     const $domContainer = useRef(null)
-    const [theColor, __set_theColor] = useState<string>(reference)
+    const [theColor, s__theColor] = useState<string>(reference)
     const debouncedValue = useDebounce(theColor, 999)
-    const [updateCount, __set_updateCount] = useState(0)
+    const [updateCount, s__updateCount] = useState(0)
 
 
 
@@ -32,7 +32,7 @@ export const InputColor = ({
 
         // console.log(`theColor | ${theColor}`,reference,"|",updateCount)
         updateNewData({ inputName, value:`${theColor}`})
-        __set_updateCount(updateCount+1)
+        s__updateCount(updateCount+1)
         // console.log(`updated and summed`)
 
     }
@@ -40,10 +40,10 @@ export const InputColor = ({
         makeTheUpdate()
     }, [debouncedValue])
     const handleChange = (event) => {
-        __set_theColor(event.target.value)
+        s__theColor(event.target.value)
     }
     const handleBlur = (event) => {
-        __set_theColor(event.target.value)
+        s__theColor(event.target.value)
         makeTheUpdate()
     }
 

@@ -4,7 +4,7 @@ import { AiOutlineLoading } from 'react-icons/ai'
 
 
 // ReactFunctionComponent
-export const OInputImagesJustUploaded = ({
+export const OInputNImagesJustUploaded = ({
     debug,theKey,handleDeleteImage = null,
     validatedFileType,foundFilename,foundSize,
     percentComplete,

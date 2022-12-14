@@ -9,7 +9,7 @@ import Link from 'next/link'
 
 import { DEFAULT_STATE_ARRAY } from '@/scripts/api/states';
 import { API_UNIT_OPTS_BASE, API_ADDRESSES } from '@/scripts/api/constants';
-import { parseFullNameJson } from '@/scripts/helpers/reorgHelper';
+import { parseFullNameJson } from '@/scripts/helpers/parseHelper';
 import { fetchJsonArray } from '@/scripts/helpers/fetchHelper';
 import { IUnit, IUnitModelStyle } from '@/scripts/types/unit'
 import { DEFAULT_UNIT, DEFAULT_MODEL_STYLE_OBJARRAY /*, DEFAULT_TITLE_STATE_OBJARRAY */ } from '@/scripts/types/unit/constants'
@@ -26,8 +26,8 @@ export default function UnitPage({
     contentType,
 }) {
     useEffectOnce(() => {
-        if (fetchedUnit) __set_currentId(fetchedUnit.uid)
-        __set_defaultQueriedUnit( {...DEFAULT_UNIT, ...queriedUnit.data[0],...{
+        if (fetchedUnit) s__currentId(fetchedUnit.uid)
+        s__defaultQueriedUnit( {...DEFAULT_UNIT, ...queriedUnit.data[0],...{
             investors: {
                 current_investor: queriedUnit.data[0] && queriedUnit.data[0].current_investor,
                 previous_investor: queriedUnit.data[0] && queriedUnit.data[0].previous_investor,
@@ -45,14 +45,14 @@ export default function UnitPage({
 
     const router = useRouter()
     const { id } = router.query
-    const [currentId,__set_currentId] = useState(router.query.id)
-    const [isLoadingRefetching,__set_isLoadingRefetching] = useState(false)
+    const [currentId,s__currentId] = useState(router.query.id)
+    const [isLoadingRefetching,s__isLoadingRefetching] = useState(false)
 
     const queriedUnit = useQuery({
         queryKey: ['unitData'],
         initialData: fetchedUnit,
         queryFn: async () => {
-            __set_isLoadingRefetching(true)
+            s__isLoadingRefetching(true)
             let jsonRes:any;
             if (online)
             {
@@ -62,7 +62,7 @@ export default function UnitPage({
                 {
                     // console.log("parseFullNameJson(jsonRes.Data[0].current_investor)")
                     // console.log(parseFullNameJson(jsonRes.Data[0].current_investor))
-                    __set_defaultQueriedUnit( {...DEFAULT_UNIT, ...jsonRes.Data[0],...{
+                    s__defaultQueriedUnit( {...DEFAULT_UNIT, ...jsonRes.Data[0],...{
                         investors: {
                             current_investor: parseFullNameJson(jsonRes.Data[0].current_investor),
                             previous_investor: parseFullNameJson(jsonRes.Data[0].previous_investor),
@@ -75,12 +75,12 @@ export default function UnitPage({
                     }})
                 }
             }
-            __set_isLoadingRefetching(false)
+            s__isLoadingRefetching(false)
             return jsonRes ? jsonRes.Data : null
         }
     })
 
-    const [defaultQueriedUnit, __set_defaultQueriedUnit] = useState();
+    const [defaultQueriedUnit, s__defaultQueriedUnit] = useState();
     
     if (queriedUnit.isLoading) return 'Loading...'
     if (queriedUnit.error) return ErrorBlock({err:queriedUnit.error})

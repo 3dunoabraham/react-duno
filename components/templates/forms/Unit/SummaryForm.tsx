@@ -13,14 +13,14 @@ export const UnitSummaryForm =({ unit }) =>
     // useEffectOnce(() => {
     //     console.log("unit.vin")
     //     console.log(unit.vin)
-    //     // __set_vinValue(unit.vin)
+    //     // s__vinValue(unit.vin)
     // })
 
 
 
     /****** DATA ******/
     // const $domObject = useRef(null)
-    const [vinValue, __set_vinValue] = useState<string>('')
+    const [vinValue, s__vinValue] = useState<string>('')
 
 
 

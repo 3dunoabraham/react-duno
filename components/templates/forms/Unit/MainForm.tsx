@@ -130,8 +130,8 @@ export const UnitMainForm = ({
                 <div className="flex-col">
                     <></>
                     <div className="">
-                        <OInputNImages uid={unit.uid} label="Upload File" display={unit.image} updateNewData={updateGallery} refetch={refetch}
-                            value={unit.images} editMode={editMode} filelistString={unit.images} max={(unit.size && unit.size.width) ? parseInt(unit.size.width.inches) : 0}
+                        <OInputNImages uid={unit.uid} filelistString={unit.images} 
+                            updateNewData={updateGallery} refetch={refetch}
                         />
                     </div>
                 </div>

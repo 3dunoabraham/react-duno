@@ -6,7 +6,7 @@ import { useState } from 'react'
 import HomeCss from '@/styles/modules/Home.module.css'
 // ReactFunctionPageComponent
 export default function Home() {
-    const [loadingNewPage, __set_loadingNewPage] = useState(false)
+    const [loadingNewPage, s__loadingNewPage] = useState(false)
 
     return (
         <div className="ims-body flex-center">
@@ -20,12 +20,12 @@ export default function Home() {
                                 <h2 className="ims-cardlink-title">Dashboard &rarr;</h2> <p className="ims-cardlink-desc">Control Panel</p>
                             </a>
                         </Link>
-                        <Link href="/units"><a  className="ims-cardlink" onClick={() => {__set_loadingNewPage(true)}} >
+                        <Link href="/units"><a  className="ims-cardlink" onClick={() => {s__loadingNewPage(true)}} >
                                 <h2 className="ims-cardlink-title">Inventory &rarr;</h2>
                                 <p className="ims-cardlink-desc">Unit List</p>
                             </a>
                         </Link>
-                        <Link href="/manufacturers"><a  className="ims-cardlink" onClick={() => {__set_loadingNewPage(true)}} >
+                        <Link href="/manufacturers"><a  className="ims-cardlink" onClick={() => {s__loadingNewPage(true)}} >
                                 <h2 className="ims-cardlink-title">Dealers &rarr;</h2>
                                 <p className="ims-cardlink-desc">Order List</p>
                             </a>

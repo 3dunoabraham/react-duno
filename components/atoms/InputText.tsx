@@ -10,15 +10,15 @@ export const InputText = ({
 }) => {
     /****** CREATE ******/
     useEffectOnce(() => {
-        __set_theValue(reference)
+        s__theValue(reference)
     })
 
 
 
     /****** DATA ******/
     const $domObject = useRef(null)
-    const [theValue, __set_theValue] = useState<string>('')
-    const [updateCount, __set_updateCount] = useState(0)
+    const [theValue, s__theValue] = useState<string>('')
+    const [updateCount, s__updateCount] = useState(0)
     const debouncedValue = useDebounce<string>(theValue, 999)
     const isSameAsReference = useMemo(() => debouncedValue == reference, [debouncedValue,reference]);
 
@@ -29,9 +29,9 @@ export const InputText = ({
         const _newValue = e.target.value
         if (_newValue === reference && updateCount == 0) return
 
-        __set_theValue(`${e.target.value}`)
+        s__theValue(`${e.target.value}`)
         updateNewData({ inputName, value: `${e.target.value}`})
-        __set_updateCount(updateCount+1)
+        s__updateCount(updateCount+1)
     }
     const updateValueWithDebounce = () =>
     {
@@ -39,12 +39,12 @@ export const InputText = ({
         if (theValue === reference && updateCount == 0) return
             
         updateNewData({ inputName, value: debouncedValue})
-        __set_updateCount(updateCount+1)
+        s__updateCount(updateCount+1)
     }
     useEventListener('blur', handle_onblur, $domObject)
     useEffect(() => {updateValueWithDebounce() }, [debouncedValue,reference])
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        __set_theValue(parseFunction(event.target.value,theValue))
+        s__theValue(parseFunction(event.target.value,theValue))
     }
 
 

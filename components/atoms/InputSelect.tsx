@@ -4,7 +4,7 @@ import { BsChevronDown, BsChevronUp, BsX, BsTrash, BsPlusLg } from 'react-icons/
 
 
 import { isDevEnvironment } from '@/scripts/helpers/devHelper';
-import { cx, cxWSwitch, isEqInLowerCase } from '@/scripts/helpers/stringHelper'
+import { jss, jssWSwitch, isEqInLowerCase } from '@/scripts/helpers/stringHelper'
 import { PostButton } from '@/components/atoms/PostButton'
 export interface OInputSelectProps {
     optMap?: any; sublabel?: string; defaultDisplay?: string; label?: string;
@@ -63,8 +63,8 @@ export const InputSelect = ({
 }:InputSelectProps) => {
     /****** CREATE ******/
     useEffect(() => {
-        __set_theId(reference)
-        __set_displayValue(display == "None" ? "" : display)
+        s__theId(reference)
+        s__displayValue(display == "None" ? "" : display)
     },[])
 
 
@@ -72,11 +72,11 @@ export const InputSelect = ({
     /****** DATA ******/
     const $displayInput = useRef(null)
     const $domContainer = useRef(null)
-    const [addNewMode, __toggle_addNewMode, __set_addNewMode] = useToggle(false)
-    const [isOpen, __toggle_isOpen, __set_isOpen] = useToggle(false);
-    const [displayValue, __set_displayValue] = useState<string>('')
-    const [theId, __set_theId] = useState<string>('')
-    const [descriptionInput, __set_descriptionInput] = useState<string>('')
+    const [addNewMode, __toggle_addNewMode, s__addNewMode] = useToggle(false)
+    const [isOpen, __toggle_isOpen, s__isOpen] = useToggle(false);
+    const [displayValue, s__displayValue] = useState<string>('')
+    const [theId, s__theId] = useState<string>('')
+    const [descriptionInput, s__descriptionInput] = useState<string>('')
     const isDisplayAndTypeMatching = useMemo(() =>{
         let theType = optMap.get(`${theId}`)
         if (!theType) return true
@@ -123,15 +123,15 @@ export const InputSelect = ({
 
     /****** UPDATE ******/
     const setNewSelection = (option) => {
-        if (!!optSubName) {__set_theId(`${option.peopleid}`); __set_displayValue(option[optName][optSubName]) }
-        if (!optSubName) {__set_theId(`${option.id}`); __set_displayValue(option[optName]) }
+        if (!!optSubName) {s__theId(`${option.peopleid}`); s__displayValue(option[optName][optSubName]) }
+        if (!optSubName) {s__theId(`${option.id}`); s__displayValue(option[optName]) }
         
-        __set_isOpen(false)
+        s__isOpen(false)
         let newUpdateObject = { inputName, value:`${!optSubName ? option.id : option.peopleid}`}
         updateNewData(newUpdateObject)
     }
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        __set_displayValue(parseFunction(event.target.value,displayValue))
+        s__displayValue(parseFunction(event.target.value,displayValue))
     }
     const handleClickOutside = () => {
         if (displayValue == "" && display != "None" && display != "")
@@ -141,8 +141,8 @@ export const InputSelect = ({
         }
         
         let theType = optMap.get(`${theId}`)
-        if (isDisplayAndTypeMatching && display != "None" && display != "") return __set_isOpen(false)
-        if (!FILTERED_optMap.size) return __set_isOpen(false)
+        if (isDisplayAndTypeMatching && display != "None" && display != "") return s__isOpen(false)
+        if (!FILTERED_optMap.size) return s__isOpen(false)
         
         let _value = FILTERED_optMap.entries().next().value[1]
         if (!optSubName && !!_value[optName])
@@ -159,10 +159,10 @@ export const InputSelect = ({
                 setNewSelection({..._value})
             }
         } 
-        __set_isOpen(false)
+        s__isOpen(false)
     }
     const superClearInput = () => {clearInput(); handleClickOutside() }
-    const clearInput = () => {__set_displayValue(''); $displayInput.current.focus() }
+    const clearInput = () => {s__displayValue(''); $displayInput.current.focus() }
     const handle_onkeypress = (e) => {if (e.keyCode == 9) {handleClickOutside()} }
     useOnClickOutside($domContainer, handleClickOutside)
     useEventListener('keydown', handle_onkeypress, $displayInput)
@@ -176,10 +176,10 @@ export const InputSelect = ({
         <div className="pos-rel  w-100" ref={$domContainer}>
             <input type="text" defaultValue={theId} hidden />
 
-            <div className={cx("flex  w-100  ims-tx-dark ims-border-faded border-r-8",false?" ims-border-error ":"")}>
+            <div className={jss("flex  w-100  ims-tx-dark ims-border-faded border-r-8",false?" ims-border-error ":"")}>
 
-                <input ref={$displayInput} value={displayValue} onClick={() => __set_isOpen(true)} onChange={handleChange} 
-                    type="text" placeholder={config.placeholder} className={cx("py-2 tx-mdl block opaci-hov-75 noborder w-100 ml-1 clickble",compact ? "px-1" : "px-4")}
+                <input ref={$displayInput} value={displayValue} onClick={() => s__isOpen(true)} onChange={handleChange} 
+                    type="text" placeholder={config.placeholder} className={jss("py-2 tx-mdl block opaci-hov-75 noborder w-100 ml-1 clickble",compact ? "px-1" : "px-4")}
                     readOnly={config.isReadOnly}
                 />
                 {erasable && isOpen && <div onClick={clearInput} className="px-1 flex-center opaci-hov-50 clickble  tx-lg">
@@ -210,7 +210,7 @@ export const InputSelect = ({
                             {/*WIP:for when the user wants to add a new option on the fly*/false && addNewMode &&
                                 <div className="flex-col py-2  w-100">
                                     <hr className="w-100" />
-                                    <input type="text" defaultValue={descriptionInput} onChange={(e) => {__set_descriptionInput(e.target.value)}} className="mt-2 mb-1" />
+                                    <input type="text" defaultValue={descriptionInput} onChange={(e) => {s__descriptionInput(e.target.value)}} className="mt-2 mb-1" />
                                     <PostButton  theData={newDataObject} />
                                 </div>
                             }

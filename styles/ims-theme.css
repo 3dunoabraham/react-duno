@@ -28,6 +28,15 @@
   text-shadow: 1px 1px 4px var(--primary-color);
 }
 
+.ims-circ-button {
+  /*clickble ims-bg-primary-trans ims-tx-primary flex-center tx-mdl  border-r-100p */
+  cursor: pointer;
+  background: var(--primary-trans);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+}
 
 .ims-border-faded {border:  1px solid var(--border-faded)}
 .ims-border-error {border:  1px solid var(--tx-error)}

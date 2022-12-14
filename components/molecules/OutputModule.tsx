@@ -1,5 +1,5 @@
 import { ChangeEvent, useState, useMemo, useEffect } from 'react'
-import { useEffectOnce, useToggle, useOnClickOutside, useMap, MapOrEntries, useMediaQuery } from 'usehooks-ts'
+import { useEffectOnce, useOnClickOutside, useMap, MapOrEntries, useMediaQuery } from 'usehooks-ts'
 import { BsChevronDown, BsChevronUp, BsX, BsPlusLg } from 'react-icons/bs'
 
 
@@ -7,14 +7,14 @@ import { tenYearsAgoDateString, tenYearsFutureDateString } from '@/scripts/helpe
 import { useObjMap } from '@/scripts/helpers/useHooksHelper'
 import { validateFloat, validateInteger, validateBigint, validateStringLength } from '@/scripts/helpers/validationHelper'
 // import { dlog, dd } from '@/scripts/helpers/devHelper'
-import { cx, cxWSwitch } from '@/scripts/helpers/stringHelper'
+import { jss, jssWSwitch } from '@/scripts/helpers/stringHelper'
 import { PostButton } from '@/components/atoms/PostButton'
 import { InputSelect } from '@/components/atoms/InputSelect'
 import { InputText } from '@/components/atoms/InputText'
 import { InputDate } from '@/components/molecules/InputDate'
 // import { InputColor } from '@/components/molecules/InputColor'
 // import { MNputRadioSelect } from '@/components/molecules/MNputRadioSelect'
-export interface ModuleOutputProps {
+export interface OutputModuleProps {
     uid: any; 
     inputName: string;
     label: string;
@@ -28,30 +28,30 @@ export interface ModuleOutputProps {
     updateNewData?: (arg:any) => void;
 }
 // ReactFunctionComponent
-export const ModuleOutput = ({
+export const OutputModule = ({
     uid, inputName, label, sublabel, addFieldMode, inputsMapObj, values,
     optsObj = {}, flex = "wrap", needsFullObjectAtAPI = true, editMode, debug = false,
     updateNewData,
-}: ModuleOutputProps) => {
+}: OutputModuleProps) => {
     /****** CREATE ******/
     useEffect(() => {
-        __set_formObject({})
+        s__formObject({})
         if (typeof inputsMapObj == "undefined") {return }
         if (!inputsMapObj) {return }
         Object.keys(inputsMapObj).map((item, index) => {
             const inputName = inputsMapObj[item].inputName ? inputsMapObj[item].inputName : item
             if (!values)
             {
-                __set_formObject(current => ({...current,...{[item]:inputsMapObj[inputName].value}}))
+                s__formObject(current => ({...current,...{[item]:inputsMapObj[inputName].value}}))
             } else {
-                __set_formObject(current => ({...current,...{[item]:""}}))
+                s__formObject(current => ({...current,...{[item]:""}}))
                 if (values[inputName])
                 {
-                    __set_formObject(current => ({...current,...{[item]:values[inputName]}}))
+                    s__formObject(current => ({...current,...{[item]:values[inputName]}}))
                     switch (inputsMapObj[item].customFormat)
                     {
                         case "price":
-                            // __set_formObject(current => ({...current,...{[item]:
+                            // s__formObject(current => ({...current,...{[item]:
                             //     validateFloat(
                             //         parseFloat(values[inputName]).toFixed(2),
                             //         values[inputName],
@@ -59,10 +59,10 @@ export const ModuleOutput = ({
                             //         2,
                             //     )}})
                             // )
-                            __set_formObject(current => ({...current,...{[item]:parseFloat(values[inputName]).toFixed(2)}}))
+                            s__formObject(current => ({...current,...{[item]:parseFloat(values[inputName]).toFixed(2)}}))
                             break;
                         // case "radio":
-                        //     __set_formObject(current => ({...current,...{[inputsMapObj[item].radioName]:values[inputsMapObj[item].radioName]}}))
+                        //     s__formObject(current => ({...current,...{[inputsMapObj[item].radioName]:values[inputsMapObj[item].radioName]}}))
                         //     break;
                     }
                 } else {
@@ -72,7 +72,7 @@ export const ModuleOutput = ({
                         switch (inputsMapObj[item].customFormat)
                         {
                             // case "price":
-                            //     __set_formObject(current => ({...current,...{[item]:""}}))
+                            //     s__formObject(current => ({...current,...{[item]:""}}))
                             //     break;
                         }
                     }
@@ -95,8 +95,8 @@ export const ModuleOutput = ({
     }, [inputsMapObj]);
     const [inputsMap, inputsMap_actions] = useMap(inputsMapArray);
     // const [inputsMap2, inputsMap2_actions] = useObjMap(inputsMapObj);
-    const [modifiedObject,__set_modifiedObject] = useState({})
-    const [formObject,__set_formObject] = useState({})
+    const [modifiedObject,s__modifiedObject] = useState({})
+    const [formObject,s__formObject] = useState({})
     const autogenMapArray = useMemo(() => (inputsMapArray.filter(([k,v]) => !!v && !v.autogen)),[inputsMapArray])
     const hasAutogenOutputs = useMemo(() => (inputsMapArray.some(([k,v]) => !!v && v.autogen)),[inputsMapArray])
     const [formMapArray,formMapArray_actions] = useMap();
@@ -127,7 +127,7 @@ export const ModuleOutput = ({
         const indexOf = Object.keys(inputsMapObj).filter(i=>(!!inputsMapObj[i].inputName && inputsMapObj[i].inputName == data.inputName))[0]
         let newFieldObj = !!indexOf ? {[inputsMapObj[indexOf].inputName]:`${data.value}`} : data
         let newDataObj = {...modifiedObject,...newFieldObj}
-        __set_modifiedObject(newDataObj)
+        s__modifiedObject(newDataObj)
         // dd("#2 newDataObj",newDataObj,values)
         let valuesThatChanged = {...values}
         if (!needsFullObjectAtAPI)
@@ -158,7 +158,7 @@ export const ModuleOutput = ({
         <div className="flex w-100  mq_xs_md_flex-col">
             <div className="flex flex-1 w-max-400px pt-0 ">
                 <div className="flex-1 flex-col flex-align-start w-20 tx-bold-5 tx-smd ims-tx-lightdark pr-4 invisible">
-                    <div className={cx(smallDevice && "tx-mdl")}>{label}</div>
+                    <div className={jss(smallDevice && "tx-mdl")}>{label}</div>
                     {!!sublabel &&
                         <div className="tx-bold-3 tx-sm pt-1">{sublabel}</div>
                     }

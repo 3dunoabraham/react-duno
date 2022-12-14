@@ -1,5 +1,5 @@
 import { ChangeEvent, useState, useMemo, useEffect } from 'react'
-import { useEffectOnce, useToggle, useOnClickOutside, useMap, MapOrEntries, useMediaQuery } from 'usehooks-ts'
+import { useEffectOnce, useOnClickOutside, useMap, MapOrEntries, useMediaQuery } from 'usehooks-ts'
 import { BsChevronDown, BsChevronUp, BsX, BsPlusLg } from 'react-icons/bs'
 
 
@@ -7,14 +7,14 @@ import { tenYearsAgoDateString, tenYearsFutureDateString } from '@/scripts/helpe
 import { useObjMap } from '@/scripts/helpers/useHooksHelper'
 import { validateFloat, validateInteger, validateBigint, validateStringLength } from '@/scripts/helpers/validationHelper'
 // import { dlog, dd } from '@/scripts/helpers/devHelper'
-import { cx, cxWSwitch } from '@/scripts/helpers/stringHelper'
+import { jss, jssWSwitch } from '@/scripts/helpers/stringHelper'
 import { PostButton } from '@/components/atoms/PostButton'
 import { InputSelect } from '@/components/atoms/InputSelect'
 import { InputText } from '@/components/atoms/InputText'
 import { InputDate } from '@/components/molecules/InputDate'
 // import { InputColor } from '@/components/_backup/InputColor'
 import { OInputRadioSelect } from '@/components/molecules/OInputRadioSelect'
-export interface ModuleOInputProps {
+export interface OInputModuleProps {
     uid: any; 
     inputName: string;
     label: string;
@@ -28,7 +28,7 @@ export interface ModuleOInputProps {
     updateNewData?: (arg:any) => void;
 }
 // ReactFunctionComponent
-export const ModuleOInput = ({
+export const OInputModule = ({
     uid,
     inputName,
     label,
@@ -41,26 +41,26 @@ export const ModuleOInput = ({
     needsFullObjectAtAPI = true,
     editMode, debug = false,
     updateNewData,
-}: ModuleOInputProps) => {
+}: OInputModuleProps) => {
     /****** CREATE ******/
     useEffect(() => {
-        __set_formObject({})
+        s__formObject({})
         if (typeof inputsMapObj == "undefined") {return }
         if (!inputsMapObj) {return }
         Object.keys(inputsMapObj).map((item, index) => {
             const inputName = inputsMapObj[item].inputName ? inputsMapObj[item].inputName : item
             if (!values)
             {
-                __set_formObject(current => ({...current,...{[item]:inputsMapObj[inputName].value}}))
+                s__formObject(current => ({...current,...{[item]:inputsMapObj[inputName].value}}))
             } else {
-                __set_formObject(current => ({...current,...{[item]:""}}))
+                s__formObject(current => ({...current,...{[item]:""}}))
                 if (values[inputName])
                 {
-                    __set_formObject(current => ({...current,...{[item]:values[inputName]}}))
+                    s__formObject(current => ({...current,...{[item]:values[inputName]}}))
                     switch (inputsMapObj[item].customFormat)
                     {
                         case "price":
-                            // __set_formObject(current => ({...current,...{[item]:
+                            // s__formObject(current => ({...current,...{[item]:
                             //     validateFloat(
                             //         parseFloat(values[inputName]).toFixed(2),
                             //         values[inputName],
@@ -68,10 +68,10 @@ export const ModuleOInput = ({
                             //         2,
                             //     )}})
                             // )
-                            __set_formObject(current => ({...current,...{[item]:parseFloat(values[inputName]).toFixed(2)}}))
+                            s__formObject(current => ({...current,...{[item]:parseFloat(values[inputName]).toFixed(2)}}))
                             break;
                         // case "radio":
-                        //     __set_formObject(current => ({...current,...{[inputsMapObj[item].radioName]:values[inputsMapObj[item].radioName]}}))
+                        //     s__formObject(current => ({...current,...{[inputsMapObj[item].radioName]:values[inputsMapObj[item].radioName]}}))
                         //     break;
                     }
                 } else {
@@ -81,7 +81,7 @@ export const ModuleOInput = ({
                         switch (inputsMapObj[item].customFormat)
                         {
                             // case "price":
-                            //     __set_formObject(current => ({...current,...{[item]:""}}))
+                            //     s__formObject(current => ({...current,...{[item]:""}}))
                             //     break;
                         }
                     }
@@ -102,8 +102,8 @@ export const ModuleOInput = ({
             Object.keys(inputsMapObj).map((item) => [item, inputsMapObj[item]])
     }, [inputsMapObj]);
     const [inputsMap, inputsMap_actions] = useMap(inputsMapArray);
-    const [modifiedObject,__set_modifiedObject] = useState({})
-    const [formObject,__set_formObject] = useState({})
+    const [modifiedObject,s__modifiedObject] = useState({})
+    const [formObject,s__formObject] = useState({})
     const autogenMapArray = useMemo(() => (inputsMapArray.filter(([k,v]) => !!v && !v.autogen)),[inputsMapArray])
     const hasAutogenOutputs = useMemo(() => (inputsMapArray.some(([k,v]) => !!v && v.autogen)),[inputsMapArray])
     const [formMapArray,formMapArray_actions] = useMap();
@@ -124,7 +124,7 @@ export const ModuleOInput = ({
         const indexOf = Object.keys(inputsMapObj).filter(i=>(!!inputsMapObj[i].inputName && inputsMapObj[i].inputName == data.inputName))[0]
         let newFieldObj = !!indexOf ? {[inputsMapObj[indexOf].inputName]:`${data.value}`} : data
         let newDataObj = {...modifiedObject,...newFieldObj}
-        __set_modifiedObject(newDataObj)
+        s__modifiedObject(newDataObj)
         let valuesThatChanged = {...values}
         if (!needsFullObjectAtAPI)
         {
@@ -146,7 +146,7 @@ export const ModuleOInput = ({
         <div className="flex w-100  mq_xs_md_flex-col">
             <div className="flex flex-1 w-max-400px pt-0 ">
                 <div className="flex-1 flex-col flex-align-start w-20 tx-bold-5 tx-smd ims-tx-lightdark pr-4">
-                    <div className={cx(smallDevice && "tx-mdl")}>{label}</div>
+                    <div className={jss(smallDevice && "tx-mdl")}>{label}</div>
                     {!!sublabel && <div className="tx-bold-3 tx-sm pt-1">{sublabel}</div> }
                 </div>
             </div>
@@ -173,19 +173,19 @@ export const ModuleOInput = ({
                         </div>}
                         {/*|{key}|*/}
                         {!theInputObj.inputName && theInputObj.value && (
-                            <div className={cx("  tx-smd ",theInputObj.path ? " ims-tx-link tx-bold-5 clickble opaci-hov--50" : " ims-tx-faded opaci-50 ")}>
+                            <div className={jss("  tx-smd ",theInputObj.path ? " ims-tx-link tx-bold-5 clickble opaci-hov--50" : " ims-tx-faded opaci-50 ")}>
                                 .{theInputObj.value}.
                             </div>
                         )}
                         {!!theInputObj.inputName && !values[theInputObj.inputName] && (
-                            <div className={cx(" tx-smd ",theInputObj.path ? " ims-tx-link tx-bold-5 clickble  opaci-hov--50" : " ims-tx-faded ")}>
+                            <div className={jss(" tx-smd ",theInputObj.path ? " ims-tx-link tx-bold-5 clickble  opaci-hov--50" : " ims-tx-faded ")}>
                                 ---
                             </div>
                         ) }
                         {!!theInputObj.inputName && values[theInputObj.inputName] && (
                             <div className={"flex-center flex-justify-start autoverflow "+
-                                    cxWSwitch(theInputObj.customFormat,["narrow","price","integer",""],[150,120,80,200])+
-                                    cx(" tx-smd ",theInputObj.path ? " ims-tx-link tx-bold-5 clickble tx-md opaci-hov--50" : " ims-tx-faded  ")}
+                                    jssWSwitch(theInputObj.customFormat,["narrow","price","integer",""],[150,120,80,200])+
+                                    jss(" tx-smd ",theInputObj.path ? " ims-tx-link tx-bold-5 clickble tx-md opaci-hov--50" : " ims-tx-faded  ")}
                             >
                                 {theInputObj.customFormat == "price" && (values[theInputObj.inputName] == "0.00" ? "---" : `$${values[theInputObj.inputName]}` )}
                                 {theInputObj.widget == "color" && (
@@ -222,7 +222,7 @@ export const ModuleOInput = ({
                         */}
                         {theInputObj.widget == "string"
                           &&<div className={
-                                    cxWSwitch(theInputObj.customFormat,["tiny","narrow","price","integer","entity",""],[100,150,120,120,240,200])}
+                                    jssWSwitch(theInputObj.customFormat,["tiny","narrow","price","integer","entity",""],[100,150,120,120,240,200])}
                                 >
                                 <InputText   inputName={theInputObj.inputName} updateNewData={handleUpdateNewData} reference={formObject[key]}
                                     parseFunction={theInputObj.limit ? (newVal,prevVal)=>{
@@ -235,13 +235,13 @@ export const ModuleOInput = ({
                             </div>
                         }
                         {theInputObj.widget == "date"
-                          &&<div className={cxWSwitch(theInputObj.customFormat,["narrow",""],[150,350])}>
+                          &&<div className={jssWSwitch(theInputObj.customFormat,["narrow",""],[150,350])}>
                                 <InputDate minDate={tenYearsAgoDateString} maxDate={tenYearsFutureDateString} inputName={theInputObj.inputName} updateNewData={handleUpdateNewData} reference={formObject[key]}   />
                             </div>
                         }
                         {theInputObj.widget == "select" && theInputObj.customFormat != "radio"
                           &&<div className={ !theInputObj.customWidth
-                                    ? cxWSwitch(theInputObj.customFormat, ["tiny","narrow","entity","intrange","","enum"],
+                                    ? jssWSwitch(theInputObj.customFormat, ["tiny","narrow","entity","intrange","","enum"],
                                                                         [100,200,250,100,200,250])
                                     : `w-max-${theInputObj.customWidth}px`
                                 }
@@ -277,7 +277,7 @@ export const ModuleOInput = ({
                         }
                         {theInputObj.widget == "select" && theInputObj.customFormat == "radio"
                           &&<div className={
-                                    cxWSwitch(theInputObj.customFormat, ["tiny","narrow","entity","intrange","","enum"],
+                                    jssWSwitch(theInputObj.customFormat, ["tiny","narrow","entity","intrange","","enum"],
                                                                         [200,150,220,100,200,250])}
                               >
                               {!true && <>

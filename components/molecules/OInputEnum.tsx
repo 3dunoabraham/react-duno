@@ -1,12 +1,12 @@
 import { ChangeEvent, useState, useMemo, useRef, useEffect } from 'react'
-import { useToggle, useOnClickOutside, useEventListener, useMap  } from 'usehooks-ts'
+import { useOnClickOutside, useEventListener, useMap  } from 'usehooks-ts'
 import { BsChevronDown, BsChevronUp, BsX, BsPlusLg } from 'react-icons/bs'
 
 
 import { useObjMap } from '@/scripts/helpers/useHooksHelper';
 import { validateInteger } from '@/scripts/helpers/validationHelper';
 // import { isDevEnvironment, dd } from '@/scripts/helpers/devHelper';
-import { cx, cxWSwitch } from '@/scripts/helpers/stringHelper'
+import { jss, jssWSwitch } from '@/scripts/helpers/stringHelper'
 import { PostButton } from '@/components/atoms/PostButton'
 import { InputSelect, InputSelectProps } from '@/components/atoms/InputSelect'
 export interface OInputEnumProps {

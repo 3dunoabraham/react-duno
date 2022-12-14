@@ -14,7 +14,7 @@ export const NputFile = ({label, display, value, editMode, }: NputFileProps) => 
 export const InputFile = ({reference, ...others }) => {
     /****** DATA ******/
     const $theInput = useRef<HTMLInputElement>()
-    const [firstFile, __set_firstFile] = useState<{name:string,type:string}>()
+    const [firstFile, s__firstFile] = useState<{name:string,type:string}>()
     const foundExt = useMemo(() => firstFile?.type ? (firstFile.type.replace(/(.*)\//g, '')) : "", [firstFile])
     const foundExtInFilename = useMemo(() => firstFile?.name ? (firstFile.name.match(/\.[0-9a-z]+$/i)[0]) : "", [firstFile])
     const foundFilename = useMemo(() => firstFile?.name, [firstFile])
@@ -25,7 +25,7 @@ export const InputFile = ({reference, ...others }) => {
     const handleChange = () => {
         console.log($theInput.current.files)
         const firstFile = $theInput.current.files[0]
-        __set_firstFile(firstFile)
+        s__firstFile(firstFile)
         const payload = new FormData();
         payload.append('user-file', firstFile, 'file.ext');
 

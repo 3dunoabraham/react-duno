@@ -1,10 +1,10 @@
 import { ChangeEvent, useState, useMemo, ReactNode } from 'react'
-import { useEffectOnce, useToggle, useOnClickOutside, useMap, MapOrEntries, useMediaQuery } from 'usehooks-ts'
+import { useEffectOnce, useOnClickOutside, useMap, MapOrEntries, useMediaQuery } from 'usehooks-ts'
 import { BsChevronDown, BsChevronUp, BsX, BsPlusLg } from 'react-icons/bs'
 
 
 import { validateInteger } from '@/scripts/helpers/validationHelper'
-import { firstUpperCase, cx, cxWSwitch } from '@/scripts/helpers/stringHelper'
+import { firstUpperCase, jss, jssWSwitch } from '@/scripts/helpers/stringHelper'
 import { PostButton } from '@/components/atoms/PostButton'
 import { InputSelect } from '@/components/atoms/InputSelect'
 import { InputText } from '@/components/atoms/InputText'
@@ -86,7 +86,7 @@ export const OInputNMeasure = ({
 
         <div className="flex w-50 pt-0 ">
             <div className="flex-1 flex-col flex-align-start w-20 tx-bold-5 tx-smd ims-tx-lightdark pr-4">
-                <div className={cx(smallDevice && "tx-mdl")}>{label}</div>
+                <div className={jss(smallDevice && "tx-mdl")}>{label}</div>
                 {!!sublabel &&
                     <div className="tx-bold-3 tx-sm pt-1">{sublabel}</div>
                 }

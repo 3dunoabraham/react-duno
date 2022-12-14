@@ -10,7 +10,7 @@ import FooterLayout from './FooterLayout'
 export const SidebarExpandableItem = ({
     itemGroupObj,
 }) => {
-    const [isOpen, __set_isOpen] = useState(false);
+    const [isOpen, s__isOpen] = useState(false);
 
 
 
@@ -18,7 +18,7 @@ export const SidebarExpandableItem = ({
 
 
     <>
-        <div className="flex-center py-4 clickble opaci-ahov--50" onClick={()=>{__set_isOpen(!isOpen)}}>
+        <div className="flex-center py-4 clickble opaci-ahov--50" onClick={()=>{s__isOpen(!isOpen)}}>
             <div className="pl-6 pr-3 tx-center tx-lg">
                 {itemGroupObj.icon}
             </div>
@@ -42,7 +42,7 @@ export const SidebarExpandableItem = ({
 export const SidebarLinkItem = ({
     x,
 }) => {
-    const [containerWidth, __set_containerWidth] = useState("400px");
+    const [containerWidth, s__containerWidth] = useState("400px");
 
 
 
@@ -74,10 +74,10 @@ export const SidebarLayout = ({
 
     /****** CREATE ******/
     useEffectOnce(() => {
-        // __set_theValue(reference)
+        // s__theValue(reference)
     })
 
-    const [containerWidth, __set_containerWidth] = useState("400px");
+    const [containerWidth, s__containerWidth] = useState("400px");
     const sidebarObj = {
         manufacturers: {
             title: "Dealers",

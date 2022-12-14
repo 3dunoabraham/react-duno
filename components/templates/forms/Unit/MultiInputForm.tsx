@@ -3,9 +3,10 @@ import { useMap } from 'usehooks-ts'
 
 
 import { ddom } from '@/scripts/helpers/devHelper'
-import { firstUpperCase, parseJsonSingleQt, parseStrSingleQt, parseJsonSingleQtFixNone } from '@/scripts/helpers/stringHelper'
-import { ModuleOutput } from '@/components/molecules/ModuleOutput'
-import { ModuleOInput } from '@/components/molecules/ModuleOInput'
+import { firstUpperCase } from '@/scripts/helpers/stringHelper'
+import { parseJsonSingleQt, parseStrSingleQt, parseJsonSingleQtFixNone } from '@/scripts/helpers/parseHelper'
+import { OutputModule } from '@/components/molecules/OutputModule'
+import { OInputModule } from '@/components/molecules/OInputModule'
 // ReactFunctionComponent
 export const UnitMultiInputForm =({
     unit, orgsList,
@@ -114,7 +115,7 @@ export const UnitMultiInputForm =({
             <div className="w-100">
                 <hr className="mb-3 w-100" style={{opacity:"40%"}} />
                 <div className={`flex-col  w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <ModuleOInput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["price"]._.label}
+                    <OInputModule uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["price"]._.label}
                         flex={inputsMapObj["price"]._.flex}
                         inputsMapObj={inputsMapObj["price"]} editMode={editMode} values={values["price"]}   inputName={"price"}
                         addFieldMode  
@@ -124,7 +125,7 @@ export const UnitMultiInputForm =({
             <div className="w-100">
                 <hr className="mb-3 w-100" style={{opacity:"40%"}} />
                 <div className={`flex-col  w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <ModuleOInput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["characteristics"]._.label}
+                    <OInputModule uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["characteristics"]._.label}
                         flex={inputsMapObj["characteristics"]._.flex}
                         inputsMapObj={inputsMapObj["characteristics"]} editMode={editMode} values={values["characteristics"]}  
                         inputName={"characteristics"} 
@@ -139,7 +140,7 @@ export const UnitMultiInputForm =({
             <div className="w-100">
                 <hr className="mb-3 w-100" style={{opacity:"40%"}} />
                 <div className={`flex-col  w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <ModuleOInput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["registration_title"]._.label}
+                    <OInputModule uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["registration_title"]._.label}
                         flex={inputsMapObj["registration_title"]._.flex}
                         inputsMapObj={inputsMapObj["registration_title"]} editMode={editMode} values={values["registration_title"]} 
                         inputName={"registration_title"} 
@@ -152,13 +153,13 @@ export const UnitMultiInputForm =({
             <div className="w-100">
                 <hr className="mb-3 w-100" style={{opacity:"40%"}} />
                 <div className={`flex-col  w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <ModuleOInput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["locations"]._.label}
+                    <OInputModule uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["locations"]._.label}
                         flex={inputsMapObj["locations"]._.flex} 
                         inputsMapObj={inputsMapObj["locations"]} editMode={editMode} values={values["locations"]}   inputName={"locations"}
                         addFieldMode  optsObj={{company:orgsList,customer:peoplesObj_customerList}}  needsFullObjectAtAPI={false} 
                     />
                     {/*WIP:for when the user wants to see auto generated fields*/false && !editMode &&
-                        <ModuleOutput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["locations"]._.label}
+                        <OutputModule uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["locations"]._.label}
                             flex={inputsMapObj["locations"]._.flex}  
                             inputsMapObj={inputsMapObj["locations"]} editMode={false} values={values["locations"]}   inputName={"locations"}
                             addFieldMode  optsObj={{company:orgsList,customer:peoplesObj_customerList}}  needsFullObjectAtAPI={false} 
@@ -170,7 +171,7 @@ export const UnitMultiInputForm =({
             <div className="w-100">
                 <hr className="mb-3 w-100" style={{opacity:"40%"}} />
                 <div className={`flex-col  w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <ModuleOInput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["gps"]._.label}
+                    <OInputModule uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["gps"]._.label}
                         flex={inputsMapObj["gps"]._.flex}
                         inputsMapObj={inputsMapObj["gps"]} editMode={editMode} values={values["gps"]}   inputName={"gps"}
                         addFieldMode  
@@ -181,7 +182,7 @@ export const UnitMultiInputForm =({
             <div className="w-100">
                 <hr className="mb-3 w-100" style={{opacity:"40%"}} />
                 <div className={`flex-col  w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`}>
-                    <ModuleOInput uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["investors"]._.label}
+                    <OInputModule uid={unit.uid} updateNewData={updateNewData} label={inputsMapObj["investors"]._.label}
                         flex={inputsMapObj["investors"]._.flex} 
                         inputsMapObj={inputsMapObj["investors"]} editMode={editMode} values={values["investors"]}   inputName={"investors"}
                         addFieldMode  optsObj={{current_investor:peoplesObj_investorList,previous_investor:peoplesObj_investorList}} 

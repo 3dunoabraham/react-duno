@@ -17,12 +17,15 @@ export const StandardModal = ({
     subtitle,
     children,
 }: ModalProps) => {
-    const $domObject = useRef(null)
+    const $divObject = useRef(null)
+    useOnClickOutside($divObject, handleClose)
 
-    useOnClickOutside($domObject, handleClose)
 
-    return(<div className="flex w-100 h-100vh pos-fixed top-0 left-0 flex-center bg-b-opaci-50 z-999">
-        <div className="bg-white w-100 w-max-500px block z-1001   border-r-12" ref={$domObject} >
+
+    return(
+
+    <div className="flex w-100 h-100vh pos-fixed top-0 left-0 flex-center bg-b-opaci-50 z-999">
+        <div className="bg-white w-100 w-max-500px block z-1001   border-r-12" ref={$divObject} >
             <div className="flex-between px-4 pt-4">
                 <span className="tx-mdl tx-bold-5">{title}</span>
                 <button onClick={handleClose} className="opaci-hov-25 tx-mdl">
@@ -36,5 +39,8 @@ export const StandardModal = ({
                 {children}
             </div>
         </div>
-    </div>)
+    </div>
+
+        
+    )
 }
