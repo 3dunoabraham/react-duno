@@ -35,7 +35,7 @@ import { OInputNImagesJustUploaded } from '@/components/molecules/OInputNImagesJ
 import SliderCss from '@/styles/modules/Slider.module.css'
 type I_OInputNImages = {
     uid: string; filelistString: string;
-    debug: boolean;
+    debug?: boolean;
     updateNewData: (newObj:any)=>void; refetch: ()=>void;
 }
 // ReactFunctionComponent
