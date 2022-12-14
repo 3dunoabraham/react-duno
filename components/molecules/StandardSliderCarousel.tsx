@@ -4,7 +4,7 @@ import { useOnClickOutside, useMap, useMediaQuery, useInterval, useEventListener
 
 import SliderCss from '@/styles/modules/Slider.module.css'
 export const StandardSliderCarousel = ({
-    GW, filteredFileList, loadedImages, loadedImages_actions,
+    GW, filteredFileList, loadedImages, loadedImages_do,
     isClicking, s__isClicking,
     pageOffset, s__pageOffset
 })=>
@@ -78,7 +78,7 @@ export const StandardSliderCarousel = ({
                 <div style={{width:GW+"px",minWidth:GW+"px",aspectRatio:"cover"}}>
                     <img className="w-100 noclick" alt="imgsliderthumbnail"
                         style={{objectFit:"cover",height:GW/1.5+"px",}}
-                        onLoad={() => loadedImages_actions.set(index,true)} 
+                        onLoad={() => loadedImages_do.set(index,true)} 
                         src={item}  
                     />
                 </div>

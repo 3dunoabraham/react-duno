@@ -2,6 +2,7 @@ import { useMemo, useRef } from 'react'
 import { useMap } from 'usehooks-ts'
 
 
+// import { dlog, dd, isDevEnvironment } from '@/scripts/helpers/devHelper';
 import { useArrayMapPlus } from '@/scripts/helpers/useHooksHelper'
 import { IUnit, IUnitBaseOpts } from '@/scripts/types/unit'
 import { firstUpperCase } from '@/scripts/helpers/stringHelper'
@@ -10,7 +11,6 @@ import { OInputSelect } from '@/components/atoms/InputSelect'
 import { OInputEnum } from '@/components/molecules/OInputEnum'
 import { OInputNImages } from '@/components/molecules/OInputNImages'
 import { OInputNMeasure } from '@/components/molecules/OInputNMeasure'
-// import { dlog, dd, isDevEnvironment } from '@/scripts/helpers/devHelper';
 export interface UnitMainFormProps {
     updateNewData?: any;
     unit?: IUnit;
@@ -27,24 +27,51 @@ export const UnitMainForm = ({
     refetch=()=>{},
 }: UnitMainFormProps) => {
     /****** DATA ******/
-    const [conditions, conditions_actions, conditions_obj] = useArrayMapPlus(optMapObj.conditions,"id", unit.condition,"id");
-    const [statuses, statuses_actions, statuses_obj] = useArrayMapPlus(optMapObj.statuses,"id", unit.status,"id");
-    const [model_styles, model_styles_actions, model_styles_obj] = useArrayMapPlus(optMapObj.model_styles,"id", unit.model_style,"label");
-
-    const [distributors, distributors_actions, distributors_obj] = useArrayMapPlus(optMapObj.distributors,"id", unit.distributor,"name");
-    const [manufacturers, manufacturers_actions, manufacturers_obj] = useArrayMapPlus(optMapObj.manufacturers,"id", unit.manufacturer,"name");
-    const [dealers, dealers_actions, dealers_obj] = useArrayMapPlus(optMapObj.dealers,"id", unit.dealer,"name");
-    const [owners, owners_actions, owners_obj] = useArrayMapPlus(optMapObj.owners,"id", unit.owner,"name");
-    // const isValidUnit = useMemo(() => unit.uid != "0000-0000", [unit]);
-    // const isAddMode = useMemo(() => !isValidUnit && !editMode, [isValidUnit,editMode]);
-    const unit_brand = useMemo(() => { return !optMapObj ? -1 : optMapObj.manufacturers.filter(object => {return object.name == unit.brand; })[0] } , [optMapObj,unit]);
     const DEFAULT_INPUT_KEYMAP_OBJECT = {
         "size": {
-            width: {title:"Width", format_title:"ft/in", format_titles:["feet","inches"], value: "11", floatField: "9", },
-            length: {title:"Length", format_title:"ft/in", format_titles:["feet","inches"], value: "11", floatField: "9", },
-            height: {title:"Height", format_title:"ft/in", format_titles:["feet","inches"], value: "11", floatField: "9", },
+            width: {
+                title:"Width", value: "11", floatField: "9", 
+                format_title:"ft/in", format_titles:["feet","inches"],
+            },
+            length: {
+                title:"Length", value: "11", floatField: "9", 
+                format_title:"ft/in", format_titles:["feet","inches"],
+            },
+            height: {
+                title:"Height", value: "11", floatField: "9", 
+                format_title:"ft/in", format_titles:["feet","inches"],
+            },
         },
     }
+    const [conditions, conditions_do, conditions_obj] = (
+        useArrayMapPlus(optMapObj.conditions,"id", unit.condition,"id")
+    );
+    const [statuses, statuses_do, statuses_obj] = (
+        useArrayMapPlus(optMapObj.statuses,"id", unit.status,"id")
+    );
+    const [model_styles, model_styles_do, model_styles_obj] = (
+        useArrayMapPlus(optMapObj.model_styles,"id", unit.model_style,"label")
+    );
+
+    const [distributors, distributors_do, distributors_obj] = (
+        useArrayMapPlus(optMapObj.distributors,"id", unit.distributor,"name")
+    );
+    const [manufacturers, manufacturers_do, manufacturers_obj] = (
+        useArrayMapPlus(optMapObj.manufacturers,"id", unit.manufacturer,"name")
+    );
+    const [dealers, dealers_do, dealers_obj] = (
+        useArrayMapPlus(optMapObj.dealers,"id", unit.dealer,"name")
+    );
+    const [owners, owners_do, owners_obj] = (
+        useArrayMapPlus(optMapObj.owners,"id", unit.owner,"name")
+    );
+    // const isValidUnit = useMemo(() => unit.uid != "0000-0000", [unit]);
+    // const isAddMode = useMemo(() => !isValidUnit && !editMode, [isValidUnit,editMode]);
+    const unit_brand = useMemo(() =>
+        !optMapObj ? -1 : optMapObj.manufacturers.filter(object => {return object.name == unit.brand; })[0]
+    , [optMapObj,unit]);
+
+
 
     /****** UPDATE ******/
     const updateGallery = (newDataObj) => {
@@ -55,6 +82,7 @@ export const UnitMainForm = ({
     const updateEntityField = (newDataObj) => {
         updateNewData(newDataObj)
     }
+
 
 
     /****** HTML ******/
@@ -104,7 +132,8 @@ export const UnitMainForm = ({
                     />}
                 </div>
                 <div className={` flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`} >
-                    {<OInputSelect  label="Distributor" sublabel="The company providing unit to Dealer" isEntity  config={{isReadOnly:true}}
+                    {<OInputSelect  label="Distributor" sublabel="The company providing unit to Dealer" isEntity
+                        config={{isReadOnly:true}}
                         display={unit.distributor} value={distributors_obj ? distributors_obj.id : unit.distributor }
                         optMap={distributors} optName={"name"}
                         editMode={editMode} addMode  updateNewData={updateEntityField}   inputName="distributor"
@@ -112,7 +141,8 @@ export const UnitMainForm = ({
                 </div>
                 <div className={` flex w-100   ${editMode ? 'pb-4 pr-6' : 'pb-8'}`} >
                     {<OInputSelect  label="Manufacturer" sublabel="Known sometimes as “Retailer”. Who Built the unit?"
-                        display={unit.manufacturer} value={manufacturers_obj ? manufacturers_obj.id : unit.manufacturer } config={{isReadOnly:true}}
+                        display={unit.manufacturer} value={manufacturers_obj ? manufacturers_obj.id : unit.manufacturer }
+                        config={{isReadOnly:true}}
                         optMap={manufacturers} optName={"name"}
                         editMode={editMode} addMode  updateNewData={updateEntityField}   inputName="manufacturer"
                     />}

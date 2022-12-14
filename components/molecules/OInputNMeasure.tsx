@@ -32,21 +32,21 @@ export const OInputNMeasure = ({
     /*** MOUNTED ***/
     useEffectOnce(() => {
         let _value = typeof value == "string" ? JSON.parse(value) : value
-        // if (!inputkeyobj) return Object.keys(inputkeyobj).map((item, index) => {inputkeyForm_actions.set(item,[0,0])})
+        // if (!inputkeyobj) return Object.keys(inputkeyobj).map((item, index) => {inputkeyForm_do.set(item,[0,0])})
 
-        Object.keys(inputkeyobj).map((item, index) => {inputkeyForm_actions.set(item, _value ? (_value[item] ? Object.values(_value[item]) : [0,0]) : [0,0]) })
+        Object.keys(inputkeyobj).map((item, index) => {inputkeyForm_do.set(item, _value ? (_value[item] ? Object.values(_value[item]) : [0,0]) : [0,0]) })
     })
 
     const inputkeyArray:MapOrEntries<string, any> = useMemo(() => {
         return !inputkeyobj && !Object.keys(inputkeyobj).length ? [] : Object.keys(inputkeyobj).map((item) => [item, inputkeyobj[item]])
     } , [inputkeyobj]);
-    const [inputkeyMap, inputkeyMap_actions] = useMap(inputkeyArray);
-    const [inputkeyForm, inputkeyForm_actions] = useMap();
+    const [inputkeyMap, inputkeyMap_do] = useMap(inputkeyArray);
+    const [inputkeyForm, inputkeyForm_do] = useMap();
 
     const measureArraySpecific:any = Array.from(Array(61).keys()).map(i => ([`${i}`,{label:`${i}`,id:`${i}`}]))
     const measureArrayGeneral:any = Array.from(Array(13).keys()).map(i => ([`${i}`,{label:`${i}`,id:`${i}`}]))
-    const [measureMapSpecific, measureMapSpecific_actions] = useMap<string, any>(measureArraySpecific)
-    const [measureMapGeneral, measureMapGeneral_actions] = useMap<string, any>(measureArrayGeneral)
+    const [measureMapSpecific, measureMapSpecific_do] = useMap<string, any>(measureArraySpecific)
+    const [measureMapGeneral, measureMapGeneral_do] = useMap<string, any>(measureArrayGeneral)
     const local_updateNewData = (newData) => {
         // let fixedNullValue = newData.value === "" ? 
         let spreatParse = Object.keys(inputkeyobj).map(item => {
@@ -60,7 +60,7 @@ export const OInputNMeasure = ({
 
             if (inputkeyobj[item].format_titles[0] == newData. inputName.split(":")[1])
             {
-                inputkeyForm_actions.set(item, [newData.value,inputkeyForm.get(item)[1]])
+                inputkeyForm_do.set(item, [newData.value,inputkeyForm.get(item)[1]])
                 return `"${item}":`+
                     `{"${inputkeyobj[item].format_titles[0]}":${newData.value},`+
                     `"${inputkeyobj[item].format_titles[1]}":${inputkeyForm.get(item)[1]}}`
@@ -68,7 +68,7 @@ export const OInputNMeasure = ({
 
             if (inputkeyobj[item].format_titles[1] == newData. inputName.split(":")[1])
             {
-                inputkeyForm_actions.set(item, [inputkeyForm.get(item)[0],newData.value])
+                inputkeyForm_do.set(item, [inputkeyForm.get(item)[0],newData.value])
                 return `"${item}":`+
                     `{"${inputkeyobj[item].format_titles[0]}":${inputkeyForm.get(item)[0]},`+
                     `"${inputkeyobj[item].format_titles[1]}":${newData.value}}`

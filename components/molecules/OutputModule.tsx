@@ -93,24 +93,24 @@ export const OutputModule = ({
         return !inputsMapObj && !Object.keys(inputsMapObj).length ? [] :
             Object.keys(inputsMapObj).map((item) => [item, inputsMapObj[item]])
     }, [inputsMapObj]);
-    const [inputsMap, inputsMap_actions] = useMap(inputsMapArray);
-    // const [inputsMap2, inputsMap2_actions] = useObjMap(inputsMapObj);
+    const [inputsMap, inputsMap_do] = useMap(inputsMapArray);
+    // const [inputsMap2, inputsMap2_do] = useObjMap(inputsMapObj);
     const [modifiedObject,s__modifiedObject] = useState({})
     const [formObject,s__formObject] = useState({})
     const autogenMapArray = useMemo(() => (inputsMapArray.filter(([k,v]) => !!v && !v.autogen)),[inputsMapArray])
     const hasAutogenOutputs = useMemo(() => (inputsMapArray.some(([k,v]) => !!v && v.autogen)),[inputsMapArray])
-    const [formMapArray,formMapArray_actions] = useMap();
+    const [formMapArray,formMapArray_do] = useMap();
 
     // const optMapArray = useMemo(() => { return !optObjArray ? [] :
     //     optObjArray.map(object => {return [`${object.id}`, object]; }) } , [optObjArray]);
-    // const [optMap, optMap_actions] = useMap<string, any>(optMapArray)
-    const [mapmapmap, mapmapmap_actions] = useMap<string, any>()
+    // const [optMap, optMap_do] = useMap<string, any>(optMapArray)
+    const [mapmapmap, mapmapmap_do] = useMap<string, any>()
     const optMapObj = useMemo(() => { 
         // let asd = {}
         for (let key in optsObj)
         {
             // console.log("optsObj[key]",key,optsObj[key])
-            mapmapmap_actions.set(key, new Map(optsObj[key].map(object => {return [`${object.id}`, object]; })) )
+            mapmapmap_do.set(key, new Map(optsObj[key].map(object => {return [`${object.id}`, object]; })) )
             // asd[key] = new Map(optsObj[key].map(object => {return [`${object.id}`, object]; })) 
             // asd[key] = useMap(optsObj[key].map(object => {return [`${object.id}`, object]; })) 
             // optMapObj[]

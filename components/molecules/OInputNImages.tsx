@@ -35,13 +35,13 @@ import { OInputNImagesJustUploaded } from '@/components/molecules/OInputNImagesJ
 import SliderCss from '@/styles/modules/Slider.module.css'
 type I_OInputNImages = {
     uid: string; filelistString: string;
-    debug?: boolean;
+    config?: any;
     updateNewData: (newObj:any)=>void; refetch: ()=>void;
 }
 // ReactFunctionComponent
 export const OInputNImages = ({
     uid, filelistString,
-    debug = true,
+    config = {},
     updateNewData, refetch=()=>{},
 }: I_OInputNImages) => {
     /****** DATA ******/
@@ -63,8 +63,8 @@ export const OInputNImages = ({
     const [percentComplete, s__percentComplete] =   useState<number>(0);
     const [firstFile, s__firstFile] =               useState<{name:string,type:string,size:number}>()
     const [autoincrementID, s__autoincrementID] =   useState<number>(0)
-    const [loadedImages, loadedImages_actions] =    useMap<string, any>(new Map())
-    const [imgMap, imgMap_actions] =                useMap(new Map())
+    const [loadedImages, loadedImages_do] =    useMap<string, any>(new Map())
+    const [imgMap, imgMap_do] =                useMap(new Map())
     /****** MEMO ******/
     const currentPage = useMemo(() =>  parseInt((-pageOffset/GW).toString()) , [pageOffset])
     const filteredFiles = useMemo(() => (filelistString == "[]") ? [] : parseImgArrayStrQtless(filelistString)
@@ -84,14 +84,14 @@ export const OInputNImages = ({
 
 
 
-    /****** LISTENERS ******/
+    /****** UPDATE ******/
     useOnClickOutside($divObject, () => {s__isOpen(false) })
     const setNextPage = () => { (pageOffset > -GW*(filteredFiles.length-1))&&s__pageOffset(pageOffset-GW) }
     const setPrevPage = () => { (pageOffset < 0)&&s__pageOffset(pageOffset+GW) }
     const handleDrop = (e) => {}
     const handleDeleteImage = async (theImgName,theKey) => {
         await sendDeleteRequest(theImgName)
-        imgMap_actions.remove(theKey)
+        imgMap_do.remove(theKey)
     }
     const removeCurrentImage = async () => {
         let theImgName = filteredFiles[currentPage].replace(STATIC_IMAGE_BASE,"")
@@ -165,7 +165,7 @@ export const OInputNImages = ({
                 size:firstCurrentFile.size,  name:firstCurrentFile.name.replace(" ","_"),
                 lastModified:firstCurrentFile.lastModified,  type:firstCurrentFile.type,
             }
-            imgMap_actions.set(autoincrementID,newSavedImage)
+            imgMap_do.set(autoincrementID,newSavedImage)
             s__autoincrementID(autoincrementID+1)
             s__firstFile(null)
             await refetch()
@@ -183,7 +183,7 @@ export const OInputNImages = ({
     <div className="flex-col border-r-8  ims-bg-faded w-100 pos-rel" >
         <StandardSliderCarousel {...{
             GW,filteredFileList:filteredFiles,
-            loadedImages,loadedImages_actions,
+            loadedImages,loadedImages_do,
             isClicking,s__isClicking,
             pageOffset, s__pageOffset}}
         />
@@ -278,7 +278,10 @@ export const OInputNImages = ({
 
         {isGalleryModal &&
             <StandardModal  title="Images" subtitle="Upload or remove images associated with this trailer"
-                handleClose={()=>{if (!isUploading) { s__isGalleryModal(!isGalleryModal) }}}
+                handleClose={()=>{
+                    if (!isUploading) { s__isGalleryModal(!isGalleryModal) }
+                    imgMap_do.reset()
+                }}
             >
 
                 {!!imgMap.size && <div className="">
@@ -290,7 +293,7 @@ export const OInputNImages = ({
 
                             <OInputNImagesJustUploaded {...{
                                             theKey:x,
-                                            debug,
+                                            debug:config.debug,
                                             handleDeleteImage,
                                             validatedFileType: true,
                                             foundFilename:theItem.name.replace(" ","_"),
@@ -303,7 +306,7 @@ export const OInputNImages = ({
 
                 {!!$theInput.current && !!firstFile && (<>
                     <OInputNImagesJustUploaded {...{
-                                    debug,theKey:0,
+                                    debug:config.debug,theKey:0,
                                     validatedFileType,foundFilename,foundSize,
                                     percentComplete:percentComplete-1}}
                     />

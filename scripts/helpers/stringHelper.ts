@@ -4,6 +4,9 @@ export const isValidImgExt = (theType, theExt) => {
 // export const incInLowerCase = (subString,theString) => {
 //     return (`${subString}`.toLowerCase() === theString.toLowerCase())
 // }
+export const isIncInLowerCase = (subString,theString) => {
+    return (`${subString}`.toLowerCase().includes(`${theString}`.toLowerCase()))
+}
 export const isEqInLowerCase = (subString,theString) => {
     return (`${subString}`.toLowerCase() === `${theString}`.toLowerCase())
 }

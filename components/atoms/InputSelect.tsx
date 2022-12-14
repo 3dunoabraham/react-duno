@@ -4,12 +4,12 @@ import { BsChevronDown, BsChevronUp, BsX, BsTrash, BsPlusLg } from 'react-icons/
 
 
 import { isDevEnvironment } from '@/scripts/helpers/devHelper';
-import { jss, jssWSwitch, isEqInLowerCase } from '@/scripts/helpers/stringHelper'
+import { jss, jssWSwitch, isEqInLowerCase, isIncInLowerCase } from '@/scripts/helpers/stringHelper'
 import { PostButton } from '@/components/atoms/PostButton'
 export interface OInputSelectProps {
     optMap?: any; sublabel?: string; defaultDisplay?: string; label?: string;
      inputName?: string; display?: string; value?: string; optName?: any;
-    /* CONFIG */ editMode?: boolean; isEntity?: boolean; addMode?: boolean; debug?: boolean; erasable?: boolean; config?: any;
+    /* CONFIG */ editMode?: boolean; isEntity?: boolean; addMode?: boolean; erasable?: boolean; config?: any;
     /* UPDATE */ updateNewData?: any;
 }
 // ReactFunctionComponent
@@ -18,7 +18,7 @@ export const OInputSelect = ({
     optMap, sublabel, defaultDisplay, label,  inputName, display, value,
     isEntity, editMode, addMode,
     config = {},
-    debug = false, erasable = true, 
+    erasable = true, 
     updateNewData,
 }: OInputSelectProps) => {
     return (<>
@@ -36,9 +36,11 @@ export const OInputSelect = ({
                 </div>
                 :
                 <div className="flex ">
-                    <InputSelect erasable={erasable}  inputName={ inputName} isEntity={isEntity} debug={debug} config={config}
+                    <InputSelect erasable={erasable}  inputName={ inputName}
+                        isEntity={isEntity} debug={config.debug} config={config}
                         updateNewData={updateNewData} addMode={addMode} optMap={optMap} reference={value}
-                        optName={optName} display={(display == "None" && !!defaultDisplay) ? defaultDisplay : display}
+                        optName={optName}
+                        display={(display == "None" && !!defaultDisplay) ? defaultDisplay : display}
                     />
                 </div>
             }
@@ -49,8 +51,10 @@ export const OInputSelect = ({
 
 
 export interface InputSelectProps {
-    inputName?: string; display?: string; reference?: string; optName?: any; optMap?: any; flex?: string; optSubName?: string;
-    /* CONFIG */ editMode?: boolean; isEntity?: boolean; addMode?: boolean; debug?: boolean; erasable?: boolean; compact?: boolean; config?: any;
+    inputName?: string; display?: string; reference?: string; optName?: any;
+    optMap?: any; flex?: string; optSubName?: string;
+    /* CONFIG */ editMode?: boolean; isEntity?: boolean; addMode?: boolean;
+    debug?: boolean; erasable?: boolean; compact?: boolean; config?: any;
     /* UPDATE */ updateNewData?: any; parseFunction?: any;
 }
 // CORE ReactFunctionComponent
@@ -98,12 +102,13 @@ export const InputSelect = ({
         return new Map(
             [...optMap].filter(([key, value]) =>
                 {
-                    // console.log("***********--- optName,",optName,key, value,value[optName])
-                    if (value[optName] && typeof value[optName] == "string")
+                //     // console.log("***********--- optName,",optName,key, value,value[optName])
+                    if (!value[optName]) return true
+                    if (typeof value[optName] == "string")
                     {
-                        return value[optName] && value[optName].toLowerCase().includes(`${displayValue}`.toLowerCase())
+                        return isIncInLowerCase(`${value[optName]}`,`${displayValue}`)
                     }
-                    return value[optName] && value[optName][optSubName].toLowerCase().includes(`${displayValue}`.toLowerCase())
+                    return isIncInLowerCase(`${value[optName][optSubName]}`,`${displayValue}`)
                 }
             )
         )
@@ -179,7 +184,9 @@ export const InputSelect = ({
             <div className={jss("flex  w-100  ims-tx-dark ims-border-faded border-r-8",false?" ims-border-error ":"")}>
 
                 <input ref={$displayInput} value={displayValue} onClick={() => s__isOpen(true)} onChange={handleChange} 
-                    type="text" placeholder={config.placeholder} className={jss("py-2 tx-mdl block opaci-hov-75 noborder w-100 ml-1 clickble",compact ? "px-1" : "px-4")}
+                    type="text" placeholder={config.placeholder}
+                    className={jss( "py-2 tx-mdl block opaci-hov-75 noborder w-100 ml-1 clickble",
+                                    compact ? "px-1" : "px-4")}
                     readOnly={config.isReadOnly}
                 />
                 {erasable && isOpen && <div onClick={clearInput} className="px-1 flex-center opaci-hov-50 clickble  tx-lg">
@@ -192,7 +199,10 @@ export const InputSelect = ({
             </div>
 
             {isOpen &&
-                <div className={" pos-abs bottom-0 ims-border-faded border-r-8  right-0 w-100 ims-box-shadow-1 tx-mdl z-999 bg-white  "+(isOpen ? "" : "")} 
+                <div className={
+                    " pos-abs bottom-0 ims-border-faded border-r-8 "+
+                    " right-0 w-100 ims-box-shadow-1 tx-mdl z-999 bg-white  "+
+                    (isOpen ? "" : "")} 
                     style={{transform:"translateY(99%)", maxHeight: "320px", overflowY: "auto"}}
                 >
                     {(FILTERED_optMap.size == 0 || optMap.size == 0) && <>
@@ -201,27 +211,31 @@ export const InputSelect = ({
                         </div>
                     </>}
                     {Array.from(FILTERED_optMap.entries()).map(([key, optField],index) => (
-                        <div key={index} className="ims-hov-primary-faded clickble " onClick={() => {setNewSelection(!optSubName ? optField : optField)}}>
+                        <div key={index} className="ims-hov-primary-faded clickble "
+                            onClick={() => {setNewSelection(!optSubName ? optField : optField)}}
+                        >
                             <div className="pa-3">{optSubName ? optField[optName][optSubName] : optField[optName]}</div>
                         </div>
                     ))}
                     {addMode &&
-                        <div className="bg-white   " >
+                        <div className="bg-white  tx-md" >
                             {/*WIP:for when the user wants to add a new option on the fly*/false && addNewMode &&
                                 <div className="flex-col py-2  w-100">
                                     <hr className="w-100" />
-                                    <input type="text" defaultValue={descriptionInput} onChange={(e) => {s__descriptionInput(e.target.value)}} className="mt-2 mb-1" />
+                                    <input type="text" defaultValue={descriptionInput}
+                                        onChange={(e) => {s__descriptionInput(e.target.value)}} className="mt-2 mb-1"
+                                    />
                                     <PostButton  theData={newDataObject} />
                                 </div>
                             }
                             <hr />
                             <div onClick={() => { __toggle_addNewMode() }}
-                                className="clickble opaci-hov--50 flex-center gap-2 tx-md  pa-2 pt-3 tx-bold-5 ims-tx-primary tx-center"
+                                className="clickble opaci-hov--50 flex-center tx-bold-5 ims-tx-primary "
                             >
                                 {!addNewMode ?
-                                    <><small><BsPlusLg /></small><span className="pb-1">Add New</span></>
+                                    <><small><BsPlusLg /></small><span className="pa-3">Add New</span></>
                                     :
-                                    <><span><BsX /></span><span className="pb-1">Cancel</span></>
+                                    <><span><BsX /></span><span className="pa-3">Cancel</span></>
                                 }
                             </div>
                         </div>

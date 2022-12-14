@@ -49,7 +49,7 @@ export const UnitFormComponent = ({
     const [succesfulRequest, s__succesfulRequest] = useState<boolean>(true);
     const [editMode, __toggle_editMode, s__editMode] = useToggle(false);
     const [standardModal, __toggle_standardModal, s__standardModal] = useToggle(false);
-    const [changedData, changedData_actions] = useMap()
+    const [changedData, changedData_do] = useMap()
     const [newBaseData, s__newBaseData] = useState()
     const { isBrowser } = useSsr()
     const isFirst = useIsFirstRender()
@@ -89,7 +89,7 @@ export const UnitFormComponent = ({
     const updateNewData = (newDataObj) => {
 
         /*debug*/ dd("#R0000T updateNewData reached", newDataObj)
-        changedData_actions.set(newDataObj. inputName, newDataObj.value)
+        changedData_do.set(newDataObj. inputName, newDataObj.value)
     }
     const resetForm = () => {
         alert("reseting form")
@@ -141,12 +141,12 @@ export const UnitFormComponent = ({
                     // if (isDevEnvironment) { console.log("Succesfully updated", res) }
                     await refetch()
                     s__isLoadingEditing(false)
-                    changedData_actions.reset()
+                    changedData_do.reset()
                 }
             } catch (err)    {
                 s__succesfulRequest(false)
                 s__isLoadingEditing(false)
-                changedData_actions.reset()
+                changedData_do.reset()
                 console.log("error")
                 console.log(err)
                     await refetch()
