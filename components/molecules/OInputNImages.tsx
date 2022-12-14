@@ -36,7 +36,7 @@ import SliderCss from '@/styles/modules/Slider.module.css'
 type I_OInputNImages = {
     uid: string; filelistString: string;
     debug: boolean;
-    updateNewData: ()=>void; refetch: ()=>void;
+    updateNewData: (newObj:any)=>void; refetch: ()=>void;
 }
 // ReactFunctionComponent
 export const OInputNImages = ({
