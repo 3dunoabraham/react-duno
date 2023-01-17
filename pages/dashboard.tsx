@@ -35,10 +35,24 @@ function Dashboard({
         // if (!theMessage) return
         if (!token) return
 
-        let new_tokensArray = {...tokensArray, ...{[token]:{order:0,half:0,full:0}}}
+        let new_tokensArray = {...tokensArray, ...{[token]:{order:0,half:0,full:0,price:0}}}
         s__tokensArray(new_tokensArray)
         s__LS_tokensArray((prevValue) => JSON.stringify(new_tokensArray))
         // s__theMessage("")
+    }
+
+    const updateTokenOrder = (token:string, substate:string) => {
+        if (!token) return
+        let value = prompt("Enter Value")
+        if (!value) return
+        let new_tokensArray = {...tokensArray, ...{[token]:
+            {
+                ...tokensArray[token],
+                ...{[substate]: value}
+            }
+        }}
+        s__tokensArray(new_tokensArray)
+        s__LS_tokensArray((prevValue) => JSON.stringify(new_tokensArray))
     }
 
     const removeToken = (token:string) => {
@@ -57,9 +71,9 @@ function Dashboard({
         queryKey: ['usdt'],
         queryFn: async () => online ? await fetchMultipleJsonArray(tokensReqObj) : DEFAULT_TOKEN,        
     })
-    useEffect(()=>{
-        console.log(queryUSDT.data)
-    },[queryUSDT])
+    // useEffect(()=>{
+    //     console.log(queryUSDT.data)
+    // },[queryUSDT])
     const API_BASEURL = "https://api.binance.com/api/v3/ticker/price?symbol="
     const DEFAULT_TOKENS_ARRAY = ["btc","eth"]
     const baseToken = "usdt"
@@ -105,10 +119,31 @@ function Dashboard({
                             </h1>
                         </div>
                         {tokensArray[aToken] &&
-                            <div className="flex-center">
-                                <div className="opaci-chov--50 bg-w-opaci-90  tx-black px-3 py-1 bord-r-15 mx-1">State: {tokensArray[aToken].order}</div>
-                                <div className="opaci-chov--50 bg-w-opaci-50  px-3 py-1 bord-r-15 mx-1">First: {tokensArray[aToken].half}</div>
-                                <div className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1">Second: {tokensArray[aToken].full}</div>
+                            <div className="flex-col">
+                                <div className="flex">
+                                    <div onClick={()=>{updateTokenOrder(aToken,"price")}}
+                                        className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1"
+                                    >
+                                        Price: {tokensArray[aToken].price
+                                    }</div>
+                                    <div onClick={()=>{updateTokenOrder(aToken,"order")}}
+                                        className="opaci-chov--50 bg-w-opaci-90  tx-black px-3 py-1 bord-r-15 mx-1 mt-1"
+                                    >
+                                        State: {tokensArray[aToken].order
+                                    }</div>
+                                </div>
+                                <div className="flex">
+                                    <div onClick={()=>{updateTokenOrder(aToken,"half")}}
+                                        className="opaci-chov--50 bg-w-opaci-50  px-3 py-1 bord-r-15 mx-1 mt-1"
+                                    >
+                                        First: {tokensArray[aToken].half
+                                    }</div>
+                                    <div onClick={()=>{updateTokenOrder(aToken,"full")}}
+                                        className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1"
+                                    >
+                                        Second: {tokensArray[aToken].full
+                                    }</div>
+                                </div>
                             </div>
                         }
                         {/* <textarea className="bord-r-10 tx-lg px-4 py-2 tx-black my-2" placeholder="message"></textarea> */}
