@@ -178,9 +178,9 @@
 
 /* ------------------------------------------ BACKGROUND ------------------------------------------ */
 .bg-black { background: black; }.bg-white { background: white; }
-.bg-w-opaci-100 { background: #ffffff; }.bg-w-opaci-50 { background: #ffffff77; }
+.bg-w-opaci-90 { background: #ffffffbb; }.bg-w-opaci-50 { background: #ffffff77; }
 .bg-w-opaci-20 { background: #ffffff22; }.bg-w-opaci-10 { background: #ffffff11; }
-.bg-b-opaci-100 { background: #000000; }.bg-b-opaci-50 { background: #00000077; }
+.bg-b-opaci-90 { background: #000000bb; }.bg-b-opaci-50 { background: #00000077; }
 .bg-b-opaci-20 { background: #00000022; }.bg-b-opaci-10 { background: #00000011; }
 .bg-w-opaci-hov-100:hover { background: #ffffff; }
 .bg-w-opaci-hov-50:hover { background: #ffffff77; }
