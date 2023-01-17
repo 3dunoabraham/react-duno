@@ -20,7 +20,7 @@ export default ({
 	</Head>
 	<div className="flex-1 w-100">
 		{children}    
-	    <div className="pa-2 py-8 flex-center  tx-white footer z-999 block w-100 pos-rel">
+	    <div className=" py-8 flex-center  tx-white footer z-999 block w-100 pos-rel">
 			<div className="tx-lg tx-white  clickble underline">
 				<Link href="/">
 					<a className="pa-2 py-8">Go Home</a>
