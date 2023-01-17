@@ -59,7 +59,7 @@ function Gallery({
                     Dynamic Dollar Cost Average Grid
                 </span>
             </h1>
-            <a className="duno-btn py-4 px-8 bord-r-50 tx-lg"
+            <a className="duno-btn tx-white py-4 px-8 bord-r-50 tx-lg"
                 href="/dashboard"
                 style={{boxShadow:"0px 0px 25px #CF589433"}}
             >
