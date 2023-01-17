@@ -49,5 +49,5 @@ export const parseDecimals = (x:number) => {
     {
       return x.toFixed(1)
     }
-    return parseInt(x)
+    return parseInt(`${x}`)
   };
