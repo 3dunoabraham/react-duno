@@ -23,7 +23,7 @@ function Dashboard({
 }: {}) {
     
     const [LS_tokensArray, s__LS_tokensArray] = useLocalStorage('localTokensArray', "{}")
-    const [tokensArray,s__tokensArray] = useState({})
+    const [tokensArray,s__tokensArray] = useState<any>({})
     useEffect(()=>{
         s__tokensArray(JSON.parse(LS_tokensArray))
     },[])
@@ -46,7 +46,8 @@ function Dashboard({
         // if (!theMessage) return
         if (!token) return
 
-        let new_tokensArray = Object.keys(tokensArray).map((aTokenKey)=>aTokenKey!=token)
+        let new_tokensArray:any = {...tokensArray}
+        delete new_tokensArray[token]
         s__tokensArray(new_tokensArray)
         s__LS_tokensArray((prevValue) => JSON.stringify(new_tokensArray))
         // s__theMessage("")
@@ -83,8 +84,8 @@ function Dashboard({
                 
                 {DEFAULT_TOKENS_ARRAY.map((aToken,index)=>{
                     return (
-                    <div className="flex w-100" key={index}>
-                        <div className="px-8 py-4 w-100   flex-1" >
+                    <div className="flex   w-100" key={index}>
+                        <div className="px-8 py-4 w-100    mb-4  flex-1" >
                             <h1 className="tx-xl flex-col flex-align-start mr-100 " >
                                 {queryUSDT.isLoading && 
                                     <span className="flex">
@@ -103,24 +104,31 @@ function Dashboard({
                                 }
                             </h1>
                         </div>
-                        {/* <textarea className="bord-r-10 tx-lg px-4 py-2 tx-black my-2" placeholder="message"></textarea> */}
-                        {!(aToken in tokensArray) && 
-                            <div className="tx-bold  px-8 " onClick={()=>{joinToken(aToken)}}>
-                                <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
-                                    
-                                    style={{boxShadow:"0px 0px 25px #CF589433"}}
-                                >
-                                    JOIN
-                                </button>
+                        {tokensArray[aToken] &&
+                            <div className="flex-center">
+                                <div className="opaci-chov--50 bg-w-opaci-90  tx-black px-3 py-1 bord-r-15 mx-1">State: {tokensArray[aToken].order}</div>
+                                <div className="opaci-chov--50 bg-w-opaci-50  px-3 py-1 bord-r-15 mx-1">First: {tokensArray[aToken].half}</div>
+                                <div className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1">Second: {tokensArray[aToken].full}</div>
                             </div>
                         }
+                        {/* <textarea className="bord-r-10 tx-lg px-4 py-2 tx-black my-2" placeholder="message"></textarea> */}
                         {(aToken in tokensArray) && 
-                            <div className="tx-bold  px-8 invert" onClick={()=>{removeToken(aToken)}} >
+                            <div className="tx-bold flex-center px-8 " onClick={()=>{removeToken(aToken)}}>
                                 <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
                                     
                                     style={{boxShadow:"0px 0px 25px #CF589433"}}
                                 >
                                     LEAVE
+                                </button>
+                            </div>
+                        }
+                        {!(aToken in tokensArray) && 
+                            <div className="tx-bold flex-center px-8 invert" onClick={()=>{joinToken(aToken)}} >
+                                <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
+                                    
+                                    style={{boxShadow:"0px 0px 25px #CF589433"}}
+                                >
+                                    JOIN
                                 </button>
                             </div>
                         }
