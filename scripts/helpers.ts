@@ -1,8 +1,19 @@
 
+export async function fetchJsonArray(theUrl:any, propName = "") {
+  try {
+      let theRequest = await fetch(theUrl);
+      let headerCType = theRequest.headers.get("content-type");
+      let theResult = headerCType && headerCType.includes("application/json") ? await theRequest.json() : []
+      let theParsedResult = propName == "" ? theResult : theResult[propName]
+      return theParsedResult
+  } catch (err) {
+      return []
+  }
+}
 export async function fetchMultipleJsonArray(requestsObj:any) {
     let reqKeys =  Object.keys(requestsObj)
     let requests =  Object.keys(requestsObj).map((reqKey) => {
-        console.log("requestsObj[reqKey][0]", requestsObj[reqKey][0])
+        // console.log("requestsObj[reqKey][0]", requestsObj[reqKey][0])
         return fetch(requestsObj[reqKey][0])
     })
     return Promise.all(requests).then((responsesArray) => {
