@@ -5,12 +5,13 @@ import { fetchJsonArray, fetchMultipleJsonArray, parseDecimals } from "../script
 import { useLocalStorage } from "usehooks-ts";
 
 function Dashboard({
+    
 }: {}) {
     // const _StrategyResult = useMemo(() => {
     //     return getStrategyResult 
     // }
     // ,[])
-    const TIMEFRAME = "1d"
+    // const TIMEFRAME =  "1d"
     const [clientIP, s__clientIP] = useState('');
 
   //creating function to load ip address from the API
@@ -59,6 +60,9 @@ function Dashboard({
     const [LS_tokensArray, s__LS_tokensArray] = useLocalStorage('localTokensArray', "{}")
     const [LS_uid, s__LS_uid] = useLocalStorage('uid', "")
     const [uid, s__uid] = useState("")
+    const [chopAmount,s__chopAmount] = useState<any>(0)
+    const [timeframe,s__timeframe] = useState<any>("1d")
+    const [wavelength,s__wavelength] = useState<any>(33)
     const [tokensArray,s__tokensArray] = useState<any>({})
     const [klinesArray,s__klinesArray] = useState<any>([])
     const parsedKlines = useMemo(()=>{
@@ -104,12 +108,25 @@ function Dashboard({
         s__LS_tokensArray((prevValue) => JSON.stringify(new_tokensArray))
     }
 
-    const getKlineArray = async() => {
-        const theArray = await fetchJsonArray(  API_KLINE_BASEURL+"BTCUSDT")
+    const setNewTimeframe = async(aTimeframe:string) => {
+        if (!confirm("change timeframe and request new klines")) return
+        s__timeframe(aTimeframe)
+        getKlineArray(aTimeframe)
+    }
+    const getKlineArray = async(t="1d") => {
+        let urlBase = `https://api.binance.com/api/v3/klines?interval=${t}&symbol=`
+        const theArray = await fetchJsonArray(  
+            urlBase
+            +"BTCUSDT"
+        )
+        console.log("NEW klinesArray!!",urlBase +"BTCUSDT")
         s__klinesArray(theArray)
     }
+    const p__klinesArray = useMemo(()=>{
+        return klinesArray.slice(chopAmount,500)
+    },[klinesArray,chopAmount])
     const removeToken = (token:string) => {
-        if (!confirm("Confirm?")) return
+        if (!confirm("Confirm exit?")) return
         // if (!theMessage) return
         if (!token) return
 
@@ -128,7 +145,9 @@ function Dashboard({
     //     console.log(queryUSDT.data)
     // },[queryUSDT])
     const API_PRICE_BASEURL = "https://api.binance.com/api/v3/ticker/price?symbol="
-    const API_KLINE_BASEURL = `https://api.binance.com/api/v3/klines?interval=${TIMEFRAME}&symbol=`
+    const API_KLINE_BASEURL = useMemo(()=>{
+        return `https://api.binance.com/api/v3/klines?interval=${timeframe}&symbol=`
+    },[timeframe])
     const DEFAULT_TOKENS_ARRAY = ["btc","eth"]
     const baseToken = "usdt"
     const tokensReqObj:any = (
@@ -146,15 +165,22 @@ function Dashboard({
         let minPrice = klinesArray.length ? klinesArray[0][3] : 99999999999
         for (let kline of klinesArray)
         {
-
-            maxPrice = kline[2] > maxPrice ? kline[2] : maxPrice
-            minPrice = kline[3] < minPrice ? kline[3] : minPrice
+            maxPrice = parseFloat(kline[2]) > maxPrice ? parseFloat(kline[2]) : maxPrice
+            console.log(maxPrice)
+            minPrice = parseFloat(kline[3]) < minPrice ? parseFloat(kline[3]) : minPrice
             // console.log("kline", kline)
         }
         // return klinesArray.reduce((p:any, c:any) => p["6"] > c ? p["6"] : c,0);
         let min = parseFloat(`${parseDecimals(minPrice)}`)
         let max = parseFloat(`${parseDecimals(maxPrice)}`)
+        console.log({
+            minMaxAvg:(max+min)/2,
+            range:max-min,
+            min,
+            max,
+        })
         return {
+            minMaxAvg:(max+min)/2,
             range:max-min,
             min,
             max,
@@ -163,30 +189,31 @@ function Dashboard({
 
     return (
     <div className="body pos-rel flex-col flex-justify-start noverflow">
+        {!uid && <div className="h-100px w-100px z-999 "></div>}
 
-        <div className="bg-glass-6  pos-abs bord-r-10 tx-white py-100 z-999 fade-in w-1080px noverflow flex flex-between"
+        {!uid && (
+                <div className="tx-bold flex-center px-8 " onClick={()=>{register()}}>
+                    <button className="clickble tx-ls-5  tx-white opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
+                        
+                        style={{boxShadow:"0px 0px 25px #CF589433"}}
+                    >
+                        Register
+                    </button>
+                </div>
+            )}
+
+        
+        <div
+            className={
+                "bg-glass-6   bord-r-10 tx-white mt-8 py-8 z-999 fade-in w-1080px noverflow flex flex-between"
+            }
             style={{
-                transform:"translateY(200px)", border:"1px solid #777",
+                border:"1px solid #777",
                 boxShadow:"0 10px 50px -20px #00000077"
             }}
         >
             <div className=" flex-col w-100 ">
-                {!uid && (
-                    <div className="tx-bold flex-center px-8 " onClick={()=>{register()}}>
-                        <button className="clickble tx-ls-5  tx-white opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
-                            
-                            style={{boxShadow:"0px 0px 25px #CF589433"}}
-                        >
-                            Register
-                        </button>
-                    </div>
-                )}
 
-                {!!uid && 
-                    <div className="bg-w-opaci-50 bord-r-50 px-2 py-1 tx-sm ">
-                        {uid}
-                    </div>
-                }
                 <div className="flex pos-rel block  w-90 box-shadow-5 bg-w-opaci-10 hov-bord-1-w autoverflow  my-3 bord-r-5"
                     style={{
                         resize:"both",
@@ -195,7 +222,7 @@ function Dashboard({
                         // borderTop:"1px solid green",
                     }}
                 >
-                {klinesArray.map((aKline:any,index:any) => {
+                {p__klinesArray.map((aKline:any,index:any) => {
                     return (
                         <div key={index}
                             className=" _ddr block pos-abs "
@@ -217,7 +244,7 @@ function Dashboard({
                         </div>
                     )
                 })}
-                {klinesArray.map((aKline:any,index:any) => {
+                {p__klinesArray.map((aKline:any,index:any) => {
                     return (
                         <div key={index}
                             className=" _ddg block pos-abs"
@@ -239,14 +266,115 @@ function Dashboard({
                         </div>
                     )
                 })}
+                {klinesArray.map((aKline:any,index:any) => {
+                    return (
+                        <div key={index}
+                            className="  block pos-abs"
+                            style={{
+                                width: "2px",
+                                height: "2px",
+                                left: `${index/500*100}%`,
+                                background: `rgba(${index/2},99,99,0.3)`,
+                                top:`
+                                    ${50}%
+                                `,
+                            }}
+                        >
+                        </div>
+                    )
+                })}
+                
+                {klinesArray.map((aKline:any,index:any) => {
+                    return (
+                        <div key={index}
+                            className="  block pos-abs"
+                            style={{
+                                width: "2px",
+                                height: "2px",
+                                left: `${index/500*100}%`,
+                                background: `rgba(${(500-index)/2},99,99,0.3)`,
+                                top:`
+                                    ${75+Math.sin(index/wavelength)*20}%
+                                `,
+                            }}
+                        >
+                        </div>
+                    )
+                })}
                 </div>
                 {klinesStats.min} - {klinesStats.max}
                 <div className="opaci-50">
                     range: {klinesStats.range}
                 </div>
-                <div className="opaci-50">
-                    timeframe: {TIMEFRAME}
+                <div className="flex-col ">
+                    timeframe: {timeframe}
+                    <div className="flex ">
+                        {["15m","12h","1d","1w"].map((aTimeframe,index)=>{
+                            return (
+                                <button className="ma-1 px-3 py-2 tx-lg opaci-chov--50 bg-w-opaci-50 bord-r-8 tx-white"
+                                    key={index} onClick={()=>setNewTimeframe(aTimeframe)}
+                                >
+                                    {aTimeframe}
+                                </button>
+                            )
+                        })}
+                    </div>
                 </div>
+                <div className="w-90">
+                    <div className="w-100">
+                        <input className="w-100" type="range"
+                            min="0" max={500} step="1"
+                            value={chopAmount}
+                            onChange={(e)=>{s__chopAmount(e.target.value)}}
+                        />
+                    </div>
+                </div>
+                <div className="flex-col ">
+                    wavelength: {wavelength}
+                    <div className="flex ">
+                        {["33","55","66"].map((aWavelength,index)=>{
+                            return (
+                                <button className="ma-1 px-3 py-2 tx-lg opaci-chov--50 bg-w-opaci-50 bord-r-8 tx-white"
+                                    key={index} onClick={()=>s__wavelength(aWavelength)}
+                                >
+                                    {aWavelength}
+                                </button>
+                            )
+                        })}
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div
+            className={
+                "bg-glass-6   bord-r-10 tx-white mt-8 py-8 z-999 fade-in w-1080px noverflow flex flex-between"
+            }
+            style={{
+                border:"1px solid #777",
+                boxShadow:"0 10px 50px -20px #00000077"
+            }}
+        >
+            <div className=" flex-col w-100 ">
+                {!uid && (
+                    <div className="tx-bold flex-center px-8 " onClick={()=>{register()}}>
+                        <button className="clickble tx-ls-5  tx-white opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
+                            
+                            style={{boxShadow:"0px 0px 25px #CF589433"}}
+                        >
+                            Register
+                        </button>
+                    </div>
+                )}
+
+                {!!uid && 
+                    <div className="bg-w-opaci-50 bord-r-50 px-2 py-1 tx-sm ">
+                        {uid}
+                    </div>
+                }
+                
                 {/*uid &&*/ DEFAULT_TOKENS_ARRAY.map((aToken,index)=>{
                     let theStrategyResult = queryUSDT.data && (aToken in tokensArray) ?(
                         getStrategyResult(tokensArray[aToken],parseFloat(queryUSDT.data[index].price))
@@ -347,7 +475,9 @@ function Dashboard({
                             </div>
                         }
                         {!(aToken in tokensArray) && 
-                            <div className="tx-bold flex-center px-8 invert" onClick={()=>{joinToken(aToken)}} >
+                            <div className={`tx-bold flex-center px-8 invert ${!uid && "opaci-50"}`}
+                                onClick={()=>{!!uid && joinToken(aToken)}} 
+                            >
                                 <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
                                     
                                     style={{boxShadow:"0px 0px 25px #CF589433"}}
