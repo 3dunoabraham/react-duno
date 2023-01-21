@@ -1,31 +1,80 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useQuery } from '@tanstack/react-query'
-import { fetchMultipleJsonArray, parseDecimals } from "../scripts/helpers";
+import { fetchJsonArray, fetchMultipleJsonArray, parseDecimals } from "../scripts/helpers";
 import { useLocalStorage } from "usehooks-ts";
-
-
-async function test() {
-    console.log("test");
-    let result = getBotUpdates();
-}
-
-const getBotUpdates = () =>
-    fetch(
-        "https://api.telegram.org/bot5389030729:AAF9fnNmzr2wf-B0PMgax0yDowu0DUILZYQ/getUpdates"
-    ).then((response) => {
-        console.log("response", response);
-        return response.json();
-    });
-
 
 function Dashboard({
 }: {}) {
-    
+    // const _StrategyResult = useMemo(() => {
+    //     return getStrategyResult 
+    // }
+    // ,[])
+    const TIMEFRAME = "1d"
+    const [clientIP, s__clientIP] = useState('');
+
+  //creating function to load ip address from the API
+  const getData = async (randomThousand:any) => {
+
+    const res:any = await fetch('https://geolocation-db.com/json/')
+    // console.log("resresresresresresresres");
+    let awaited = await res.json()
+    // console.log(awaited);
+    // console.log(res.data);
+    s__clientIP(awaited.IPv4)
+    let new_uid = `${awaited.IPv4}:${randomThousand}`
+    s__uid(new_uid)
+    s__LS_uid(new_uid)
+  }
+  
+
+
+    const register = () => {
+        let randomThousand = parseInt(`${(Math.random()*9000) + 1000}`)
+
+        if (confirm(`IP+${randomThousand}\nWould you like to Register?`))
+        {
+            getData(randomThousand)
+        }
+    }
+    const getStrategyResult = (tokenConfig:any, livePrice:number) => {
+        let {floor, ceil, state, buy, sell} = tokenConfig
+        if (!state) return 0
+
+        let floorPrice = parseFloat(floor)
+        let ceilPrice = parseFloat(ceil)
+        let isInRange = state == 1
+        let isAtLimit = state == 2
+        // console.log("(isFirstOrder && livePrice < floorPrice) state", isFirstOrder , livePrice , floorPrice, state)
+        if (isInRange && livePrice < floorPrice) 
+        {
+            return buy == 1 ? 2 : 1
+        }
+        if (isInRange && livePrice < ceilPrice) 
+        {
+            
+        }
+        return 0
+    }    
     const [LS_tokensArray, s__LS_tokensArray] = useLocalStorage('localTokensArray', "{}")
+    const [LS_uid, s__LS_uid] = useLocalStorage('uid', "")
+    const [uid, s__uid] = useState("")
     const [tokensArray,s__tokensArray] = useState<any>({})
+    const [klinesArray,s__klinesArray] = useState<any>([])
+    const parsedKlines = useMemo(()=>{
+        let parsedKlinesArray:any = []
+        parsedKlinesArray = klinesArray
+        // parsedKlinesArray
+        return parsedKlinesArray
+    },[klinesArray])
     useEffect(()=>{
         s__tokensArray(JSON.parse(LS_tokensArray))
+        // if (!process.browser) return
+        s__uid(LS_uid)
+        s__clientIP(LS_uid.split(":")[0])
+        // console.log("getKlineArray")
+        getKlineArray()
+        // console.log("getKlineArray resss", klinesArray)
     },[])
     const joinToken = (token:string) => {
         // if (!confirm("Confirm?")) return
@@ -35,7 +84,7 @@ function Dashboard({
         // if (!theMessage) return
         if (!token) return
 
-        let new_tokensArray = {...tokensArray, ...{[token]:{order:0,half:0,full:0,price:0}}}
+        let new_tokensArray = {...tokensArray, ...{[token]:{mode:0,state:0,buy:0,sell:0,floor:0,ceil:0}}}
         s__tokensArray(new_tokensArray)
         s__LS_tokensArray((prevValue) => JSON.stringify(new_tokensArray))
         // s__theMessage("")
@@ -55,6 +104,10 @@ function Dashboard({
         s__LS_tokensArray((prevValue) => JSON.stringify(new_tokensArray))
     }
 
+    const getKlineArray = async() => {
+        const theArray = await fetchJsonArray(  API_KLINE_BASEURL+"BTCUSDT")
+        s__klinesArray(theArray)
+    }
     const removeToken = (token:string) => {
         if (!confirm("Confirm?")) return
         // if (!theMessage) return
@@ -74,20 +127,43 @@ function Dashboard({
     // useEffect(()=>{
     //     console.log(queryUSDT.data)
     // },[queryUSDT])
-    const API_BASEURL = "https://api.binance.com/api/v3/ticker/price?symbol="
+    const API_PRICE_BASEURL = "https://api.binance.com/api/v3/ticker/price?symbol="
+    const API_KLINE_BASEURL = `https://api.binance.com/api/v3/klines?interval=${TIMEFRAME}&symbol=`
     const DEFAULT_TOKENS_ARRAY = ["btc","eth"]
     const baseToken = "usdt"
     const tokensReqObj:any = (
         DEFAULT_TOKENS_ARRAY.reduce((acc, aToken) => (
-            { ...acc, [aToken]: [`${API_BASEURL}${(aToken+baseToken).toUpperCase()}`] }
+            { ...acc, [aToken]: [`${API_PRICE_BASEURL}${(aToken+baseToken).toUpperCase()}`] }
         ), {})
     )
-    console.log(tokensReqObj)
+    // console.log(tokensReqObj)
     const online = true
     const DEFAULT_TOKEN = {}
 
+    const klinesStats = useMemo(()=>{
+        // console.log("klinesArray", klinesArray)
+        let maxPrice = 0
+        let minPrice = klinesArray.length ? klinesArray[0][3] : 99999999999
+        for (let kline of klinesArray)
+        {
+
+            maxPrice = kline[2] > maxPrice ? kline[2] : maxPrice
+            minPrice = kline[3] < minPrice ? kline[3] : minPrice
+            // console.log("kline", kline)
+        }
+        // return klinesArray.reduce((p:any, c:any) => p["6"] > c ? p["6"] : c,0);
+        let min = parseFloat(`${parseDecimals(minPrice)}`)
+        let max = parseFloat(`${parseDecimals(maxPrice)}`)
+        return {
+            range:max-min,
+            min,
+            max,
+        }
+    },[klinesArray])
+
     return (
-    <div className="body pos-rel flex-col flex-justify-start">
+    <div className="body pos-rel flex-col flex-justify-start noverflow">
+
         <div className="bg-glass-6  pos-abs bord-r-10 tx-white py-100 z-999 fade-in w-1080px noverflow flex flex-between"
             style={{
                 transform:"translateY(200px)", border:"1px solid #777",
@@ -95,8 +171,86 @@ function Dashboard({
             }}
         >
             <div className=" flex-col w-100 ">
-                
-                {DEFAULT_TOKENS_ARRAY.map((aToken,index)=>{
+                {!uid && (
+                    <div className="tx-bold flex-center px-8 " onClick={()=>{register()}}>
+                        <button className="clickble tx-ls-5  tx-white opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
+                            
+                            style={{boxShadow:"0px 0px 25px #CF589433"}}
+                        >
+                            Register
+                        </button>
+                    </div>
+                )}
+
+                {!!uid && 
+                    <div className="bg-w-opaci-50 bord-r-50 px-2 py-1 tx-sm ">
+                        {uid}
+                    </div>
+                }
+                <div className="flex pos-rel block  w-90 box-shadow-5 bg-w-opaci-10 hov-bord-1-w autoverflow  my-3 bord-r-5"
+                    style={{
+                        resize:"both",
+                        height:"400px",
+                        // borderBottom:"1px solid red",
+                        // borderTop:"1px solid green",
+                    }}
+                >
+                {klinesArray.map((aKline:any,index:any) => {
+                    return (
+                        <div key={index}
+                            className=" _ddr block pos-abs "
+                            style={{
+                                width: "2px",
+                                height: "1px",
+                                left: `${index/500*100}%`,
+                                bottom:`
+                                    ${parseInt(`
+                                        ${(
+                                            (parseFloat(aKline[3])-klinesStats.min)
+                                            /
+                                            (klinesStats.range)
+                                        )*100}
+                                    `)}%
+                                `,
+                            }}
+                        >
+                        </div>
+                    )
+                })}
+                {klinesArray.map((aKline:any,index:any) => {
+                    return (
+                        <div key={index}
+                            className=" _ddg block pos-abs"
+                            style={{
+                                width: "2px",
+                                height: "2px",
+                                left: `${index/500*100}%`,
+                                bottom:`
+                                    ${parseInt(`
+                                        ${(
+                                            (parseFloat(aKline[2])-klinesStats.min)
+                                            /
+                                            (klinesStats.range)
+                                        )*100}
+                                    `)}%
+                                `,
+                            }}
+                        >
+                        </div>
+                    )
+                })}
+                </div>
+                {klinesStats.min} - {klinesStats.max}
+                <div className="opaci-50">
+                    range: {klinesStats.range}
+                </div>
+                <div className="opaci-50">
+                    timeframe: {TIMEFRAME}
+                </div>
+                {/*uid &&*/ DEFAULT_TOKENS_ARRAY.map((aToken,index)=>{
+                    let theStrategyResult = queryUSDT.data && (aToken in tokensArray) ?(
+                        getStrategyResult(tokensArray[aToken],parseFloat(queryUSDT.data[index].price))
+                    ) : 0
                     return (
                     <div className="flex   w-100" key={index}>
                         <div className="px-8 py-4 w-100    mb-4  flex-1" >
@@ -118,30 +272,65 @@ function Dashboard({
                                 }
                             </h1>
                         </div>
+                        {false && tokensArray[aToken] &&
+                            <div className="flex-center px-4">
+                               {/* parsedKlines */}
+                               {JSON.stringify(parsedKlines)}
+                            </div>
+                        }
+                        {tokensArray[aToken] &&
+                            <div className="flex-center">
+                                <div onClick={()=>{updateTokenOrder(aToken,"mode")}}
+                                    className="opaci-chov--50 bg-w-opaci-90  tx-black px-3 py-1 bord-r-15 mx-1 mt-1"
+                                >
+                                    Mode: {tokensArray[aToken].mode}
+                                </div>
+                                <div className="flex-center px-4">
+                                    <div onClick={queryUSDT.refetch} className="px-2 py-1 bg-b-opaci-50 opaci-chov--50 bord-r-5">Refresh</div>
+                                </div>
+                            </div>
+                        }
                         {tokensArray[aToken] &&
                             <div className="flex-col">
+                            <div className="flex">
+                                <div onClick={()=>{updateTokenOrder(aToken,"state")}}
+                                    className="opaci-chov--50 bg-w-opaci-90  tx-black px-3 py-1 bord-r-15 mx-1 mt-1"
+                                >
+                                    State: {tokensArray[aToken].state}
+                                </div>
+                                {/* |{theStrategyResult}| */}
+                                {tokensArray[aToken] && queryUSDT.data &&
+                                    <div className="flex-center px-4">
+                                        {theStrategyResult == 0 && <div>Wait</div>}
+                                        {theStrategyResult == 1 && <div>Buy <br/> 1st <br/> Half</div>}
+                                        {theStrategyResult == 2 && <div>Buy <br/> 2nd <br/> Half</div>}
+                                        {/* <div className="px-2 py-1 bg-white bord-r-5 tx-green opaci-chov--50">Do Trade</div>
+                                        <div className="px-2 py-1 bg-white bord-r-5 tx-red">Don't <br /> Trade</div> */}
+                                    </div>
+                                }
+                            </div>
                                 <div className="flex">
-                                    <div onClick={()=>{updateTokenOrder(aToken,"price")}}
+                                    <div onClick={()=>{updateTokenOrder(aToken,"floor")}}
                                         className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1"
                                     >
-                                        Price: {tokensArray[aToken].price
-                                    }</div>
-                                    <div onClick={()=>{updateTokenOrder(aToken,"order")}}
-                                        className="opaci-chov--50 bg-w-opaci-90  tx-black px-3 py-1 bord-r-15 mx-1 mt-1"
+                                        Min: {tokensArray[aToken].floor}
+                                    </div>
+                                    <div onClick={()=>{updateTokenOrder(aToken,"ceil")}}
+                                        className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1"
                                     >
-                                        State: {tokensArray[aToken].order
-                                    }</div>
+                                        Max: {tokensArray[aToken].ceil}
+                                    </div>
                                 </div>
                                 <div className="flex">
-                                    <div onClick={()=>{updateTokenOrder(aToken,"half")}}
+                                    <div onClick={()=>{updateTokenOrder(aToken,"buy")}}
                                         className="opaci-chov--50 bg-w-opaci-50  px-3 py-1 bord-r-15 mx-1 mt-1"
                                     >
-                                        First: {tokensArray[aToken].half
+                                        Buy: {tokensArray[aToken].buy
                                     }</div>
-                                    <div onClick={()=>{updateTokenOrder(aToken,"full")}}
+                                    <div onClick={()=>{updateTokenOrder(aToken,"sell")}}
                                         className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1"
                                     >
-                                        Second: {tokensArray[aToken].full
+                                        Sell: {tokensArray[aToken].sell
                                     }</div>
                                 </div>
                             </div>
@@ -174,7 +363,7 @@ function Dashboard({
         </div>
 
         {/* Images will go here */}
-        <div className="flex-col flex-justify-center huerotate-1  tx-white" >
+        <div className="flex-col flex-justify-center huerotate-1 opaci-25 tx-white" >
             <div className="w-700px spin-120 " >
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"  style={{transform:"translate(0,-33%)"}}>
                       <path  fill="#CF5894"
@@ -225,3 +414,4 @@ export default () => {
     </div>
     )
 }
+
