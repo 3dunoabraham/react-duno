@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from '@tanstack/react-query'
-import { fetchJsonArray, fetchMultipleJsonArray, getStrategyResult, parseDecimals, parseUTCDateString, parseUTCString } from "../scripts/helpers";
+import { fetchJsonArray, fetchMultipleJsonArray, getStrategyResult, parseDecimals, parseUTCDateString, parseUTCString, timeDifference } from "../scripts/helpers";
 import { BsFillGearFill } from "react-icons/bs"
 import { ChartSinLine, ChartHigherLine, ChartLowerLine, ChartMiddleLine, ChartTopBottomLine } from "../components/chart/lines";
 import { DEFAULT_TIMEFRAME_ARRAY } from "../scripts/constants";
@@ -68,14 +68,21 @@ function Dashboard({}: {}) {
         let startDate = parseUTCDateString(new Date(p__klinesArray.length ? p__klinesArray[0][0] : 0))
         let midDate = parseUTCDateString(new Date(p__klinesArray.length ? p__klinesArray[250][0] : 0))
         let endDate = parseUTCDateString(new Date(p__klinesArray.length ? p__klinesArray[499][0] : 0))
+        let range = max-min
+        
+        let dropPercent = 100-parseInt(`${p__klinesArray.length ? min/max*100 : 0}`)
+        // !!p__klinesArray.length && console.log("asdasdas", p__klinesArray[0])
+        let timeDiff = p__klinesArray.length ? timeDifference(p__klinesArray[499][0], p__klinesArray[0][0]) : ""
         return {
             minMaxAvg:(max+min)/2,
-            range:max-min,
+            range,
             min,
             max,
             endDate,
             midDate,
             startDate,
+            dropPercent,
+            timeDiff,
         }
     },[p__klinesArray])
 
@@ -214,7 +221,7 @@ function Dashboard({}: {}) {
                                         <div className="">-</div>
                                         <div className="">{klinesStats.max}</div>
                                         <div className="px-2 flex nowrap opaci-50">
-                                            range: {klinesStats.range}
+                                            {klinesStats.range} ({klinesStats.dropPercent}%)
                                         </div>
                                     </div>
                                     <div className="flex">
@@ -355,6 +362,21 @@ function Dashboard({}: {}) {
                 </div>
 
                 
+                <div className=" flex  flex-justify-between w-90"
+                >
+                    <div className="flex-1 px-2 opaci-10">
+                        <hr/>
+                    </div>
+                    <div className="opaci-50">
+                        <div className=" left-0 top-0">{klinesStats.timeDiff}</div>
+                    </div>
+                    <div className=" opaci-10 px-2 ">
+                        <hr className="px-2"/>
+                    </div>
+                    <div className="opaci-50">
+                        <div className=" left-0 top-0">{klinesStats.dropPercent}%</div>
+                    </div>
+                </div>
                 {loadings != "" && <div className="flex  w-90 bg-w-opaci-10  my-3 bord-r-8 h-400px"></div> }   
                 
                 {loadings == "" &&
