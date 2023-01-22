@@ -175,7 +175,7 @@
 .flex-around { display: flex; justify-content: space-around; align-items: center }
 .flex-align-start { display: flex; align-items: flex-start !important; } /* SPECIAL SPECIFIC */
 .flex-align-end { display: flex; align-items: flex-end !important; }
-.flex-align-stetch { display: flex; align-items: stretch !important; }
+.flex-align-stretch { display: flex; align-items: stretch !important; }
 .flex-justify-start { display: flex; justify-content: flex-start !important; }
 .flex-justify-end { display: flex; justify-content: flex-end !important; }
 .flex-justify-stretch { display: flex; justify-content: stretch !important; }
@@ -188,6 +188,14 @@
 .gap-1 { gap: 5px }.gap-2 { gap: 10px }.gap-3 { gap: 15px }.gap-4 { gap: 20px }.gap-5 { gap: 25px }
 .gap-6 { gap: 30px }.gap-7 { gap: 35px }.gap-8 { gap: 40px }.gap-50 { gap: 50px }.gap-100 { gap: 100px }
 
+.boxstretch {
+	display: flex;
+	align-items: flex-start;
+	height: 200px;
+  }
+  .boxstretch>* {
+	  align-self: stretch;
+  }
 
 
 /* ------------------------------------------ BACKGROUND ------------------------------------------ */

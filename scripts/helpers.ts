@@ -36,6 +36,7 @@ export async function fetchMultipleJsonArray(requestsObj:any) {
 }
 
 export const parseDecimals = (x:number) => {
+  x = parseFloat(`${x}`)
     if (x == 0) return 0
     if (x < 0.000001)
     {
@@ -110,7 +111,7 @@ export const parseUTCDateString = (_theDate) => {
 }
 export const timeDifference = (date1,date2) => {
   var difference = parseInt(date1) - parseInt(date2);
-  console.log("difference", difference)
+  // console.log("difference", difference)
   var weeksDifference = Math.floor(difference/1000/60/60/24/7);
   difference -= weeksDifference*1000*60*60*24*7
 

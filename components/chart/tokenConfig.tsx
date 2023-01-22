@@ -65,6 +65,8 @@ export const TokenConfigStateButtons = ({
                 <br/>
                 {theToken && theToken.ceil}
             </div>
+        </div>
+        <div className="flex-center w-100">
             <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"buy")}}
                 className="opaci-chov--50 bg-w-opaci-50  px-3 py-1 bord-r-15 mx-1 mt-1 tx-center"
             >
