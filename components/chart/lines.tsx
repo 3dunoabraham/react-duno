@@ -36,10 +36,17 @@ export const ChartSinLine = ({
                 width: "2px",
                 height: "2px",
                 left: `${index/500*100}%`,
-                background: `rgba(${(500-index)/2},99,99,0.7)`,
-                top:`
-                ${50+ (Math.sin(index/wavelength + Math.sin((index)/wavelength)*10 )*40)  }%
-                `,
+                background: `rgba(${(-200+index)},127,${(100-index)},0.8)`,
+                top:(
+                wavelength < 400 ? 
+                `
+                    ${90-(index/10)+ (Math.sin(index/wavelength + Math.sin((index)/wavelength)*20 )*(50*(index/500)))  }%
+                `
+                :
+                `
+                    ${10+(index/10)+ (Math.sin(index/wavelength + Math.sin((index)/wavelength)*20 )*(40*(index/500)))  }%
+                `
+                ),
             }}
             >
         </div>
@@ -56,11 +63,12 @@ export const ChartLowerLine = ({
         {klinesArray.map((aKline:any,index:any) => {
         return (
             <div key={index}
-                className=" _ddr block pos-abs "
+                className=" block pos-abs "
                 style={{
                     width: "2px",
                     height: "1px",
-                    left: `${index/500*100}%`,
+                    left: `${(index/500*100) }%`,
+                    background:`#ff0000`,
                     bottom:`
                     ${parseInt(`
                     ${(
@@ -86,11 +94,12 @@ export const ChartHigherLine = ({
         {klinesArray.map((aKline:any,index:any) => {
             return (
             <div key={index}
-                className=" _ddg block pos-abs"
+                className="  block pos-abs"
                 style={{
                     width: "2px",
                     height: "2px",
                     left: `${index/500*100}%`,
+                    background:`#00ff0077`,
                     bottom:`
                     ${parseInt(`
                         ${(

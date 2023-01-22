@@ -33,7 +33,7 @@ function Dashboard({}: {}) {
     const [chopAmount,s__chopAmount] = useState<any>(0)
     const DEFAULT_TIMEFRAME = "15m"
     const [timeframe,s__timeframe] = useState<any>(DEFAULT_TIMEFRAME)
-    const [wavelength,s__wavelength] = useState<any>(-160)
+    const [wavelength,s__wavelength] = useState<any>(-340)
     const [tokensArray,s__tokensArray] = useState<any>({})
     const [klinesArray,s__klinesArray] = useState<any[]>([])
     const [clientIP, s__clientIP] = useState('');
@@ -53,10 +53,10 @@ function Dashboard({}: {}) {
         // console.log("s__klinesArray",slicedArray.length)
         // while (lastIndex < 500)
         for (let index = 0; index < chopAmount; index++) {
-            slicedArray.unshift(klinesArray[499])            
+            slicedArray.push(klinesArray[499])            
         }
 
-        return slicedArray.slice(0,500)
+        return slicedArray.slice(slicedArray.length-500,slicedArray.length)
     },[klinesArray,chopAmount])
     const queryUSDT:any = useQuery({
         queryKey: ['usdt'],
@@ -258,7 +258,7 @@ function Dashboard({}: {}) {
                             
                             
                         </div>
-                        <div className="flex-wrap w-220px ">
+                        <div className="flex-wrap w-200px ">
                             {DEFAULT_TIMEFRAME_ARRAY.map((aTimeframe,index)=>{
                                 return (
                                 <button className="ma-1 pa-2  opaci-chov--50 bg-w-opaci-10 bord-r-8 tx-white"
@@ -271,7 +271,7 @@ function Dashboard({}: {}) {
                             })}
                         </div>
                         {tokensArray &&  tokensArray[selectedToken] && tokensArray[selectedToken][0] &&
-                            <div className="flex-wrap w-300px  ">
+                            <div className="flex-wrap w-  ">
                                 <TokenConfigStateButtons 
                                     timeframe={timeframe}
                                     index={DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)}
@@ -314,7 +314,7 @@ function Dashboard({}: {}) {
                         <div className="w-100">
                             <div className="w-100">
                                 <input className="w-100" type="range"
-                                    min={-333} max={333} step="5"
+                                    min={-360} max={2000} step="5"
                                     value={wavelength}
                                     onChange={(e)=>{s__wavelength(e.target.value)}}
                                 />
@@ -334,10 +334,13 @@ function Dashboard({}: {}) {
                             />
                         </div>
                         <div className="flex-wrap w-250px ">
-                            {["-220","-160","220","1000","-1000"].map((aWavelength,index)=>{
+                            {["-340","250","630"].map((aWavelength,index)=>{
                                 return (
                                 <button className="ma-1  px-2 py-2  opaci-chov--50 bg-w-opaci-20  tx-lg bord-r-8 tx-white"
-                                    style={{border: `2px solid rgb(${aWavelength},99,99)`}}
+                                    style={{
+                                        border: `2px solid rgb(${(200-parseInt(aWavelength))},99,99)`,
+                                        boxShadow:wavelength==aWavelength?"0 6px 9px 1px #000000aa":""
+                                    }}
                                     key={index} onClick={()=>s__wavelength(aWavelength)}
                                 >
                                     {aWavelength}
@@ -395,7 +398,9 @@ function Dashboard({}: {}) {
                     >
                         
                         <div className="pa-1 pos-abs right-0 bottom-0">{klinesStats.min}</div>
+                        <div className="pa-1 pos-abs right-0 top-75p opaci-50">{(klinesStats.min+klinesStats.minMaxAvg)/2}</div>
                         <div className="pa-1 pos-abs right-0 top-50p">{klinesStats.minMaxAvg}</div>
+                        <div className="pa-1 pos-abs right-0 top-25p opaci-50">{(klinesStats.max+klinesStats.minMaxAvg)/2}</div>
                         <div className="pa-1 pos-abs right-0 top-0">{klinesStats.max}</div>
                         <ChartHigherLine klinesArray={p__klinesArray} klinesStats={klinesStats} />
                         <ChartLowerLine klinesArray={p__klinesArray} klinesStats={klinesStats} />

@@ -37,7 +37,7 @@ export const TokenConfigStateButtons = ({
             <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"state")}}
                 className="opaci-chov--50 bg-w-opaci-90  tx-black px-3 py-1 bord-r-15 mx-1 mt-1"
             >
-                State: {theToken.state}
+                State: {theToken && theToken.state}
             </div>
             {/* |{theStrategyResult}| */}
             {theToken && queryUSDT.data &&
@@ -56,28 +56,28 @@ export const TokenConfigStateButtons = ({
             >
                 Min
                 <br/>
-                {theToken.floor}
+                {theToken && theToken.floor}
             </div>
             <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"ceil")}}
                 className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1 tx-center"
             >
                 Max
                 <br/>
-                {theToken.ceil}
+                {theToken && theToken.ceil}
             </div>
             <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"buy")}}
                 className="opaci-chov--50 bg-w-opaci-50  px-3 py-1 bord-r-15 mx-1 mt-1 tx-center"
             >
                 Buy
                 <br/>
-                {theToken.buy
+                {theToken && theToken.buy
             }</div>
             <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"sell")}}
                 className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1 tx-center"
             >
                 Sell
                 <br/>
-                {theToken.sell
+                {theToken && theToken.sell
             }</div>
         </div>
     </div>

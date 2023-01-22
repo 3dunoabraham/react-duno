@@ -11,6 +11,8 @@
 .bottom-0 { bottom: 0; } .bottom-1 { bottom: 5px; } .bottom-2 { bottom: 10px; }
 .bottom-3 { bottom: 15px; } .bottom-4 { bottom: 20px; } .bottom-5 { bottom: 25px; }
 .top-50p {  top: 50%; }.left-50p {  left: 50%; }.right-50p {  right: 50%; }.bottom-50p {  bottom: 50%; }
+.top-25p {  top: 25%; }.left-25p {  left: 25%; }.right-25p {  right: 25%; }.bottom-25p {  bottom: 25%; }
+.top-75p {  top: 75%; }.left-75p {  left: 75%; }.right-75p {  right: 75%; }.bottom-75p {  bottom: 75%; }
 
 .z-1 { z-index: 1; } .z-2 { z-index: 2; } .z-3 { z-index: 3; } .z-5 { z-index: 5; } 
 .z-10 { z-index: 10; } .z-50 { z-index: 50; } .z-100 { z-index: 100; }
