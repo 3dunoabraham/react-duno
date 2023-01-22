@@ -245,8 +245,8 @@ export const getStaticProps = async () => {
         process.env.NEXT_PUBLIC_SUPABASE_URL || "",
         process.env.SUPABASE_SERVICE_ROLE_KEY || ""
     );
-    let links = (await supabaseAdmin.from("links").select("*").order("id")).data
-    let services = (await supabaseAdmin.from("services").select("*").order("id")).data
+    let links = (await supabaseAdmin.from("links").select("*").order("id")).data || []
+    let services = (await supabaseAdmin.from("services").select("*").order("id")).data || []
     // console.log("links, services")
     // console.log(links, services)
     return {
