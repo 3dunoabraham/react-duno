@@ -189,6 +189,7 @@
 
 
 /* ------------------------------------------ BACKGROUND ------------------------------------------ */
+.nobg { background: transparent;}
 .bg-black { background: black; }.bg-white { background: white; }
 .bg-w-opaci-90 { background: #ffffffbb; }.bg-w-opaci-50 { background: #ffffff77; }
 .bg-w-opaci-20 { background: #ffffff22; }.bg-w-opaci-10 { background: #ffffff11; }

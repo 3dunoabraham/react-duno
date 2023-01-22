@@ -36,7 +36,7 @@ export const ChartSinLine = ({
                 width: "2px",
                 height: "2px",
                 left: `${index/500*100}%`,
-                background: `rgba(${(500-index)/2},99,99,0.3)`,
+                background: `rgba(${(500-index)/2},99,99,0.7)`,
                 top:`
                 ${50+ (Math.sin(index/wavelength + Math.sin(index/wavelength)*10 )*40)  }%
                 `,

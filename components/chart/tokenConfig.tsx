@@ -32,8 +32,8 @@ export const TokenConfigStateButtons = ({
     )},[queryUSDT,])
 
     return (
-    <div className="flex-col">
-        <div className="flex">
+    <div className="flex-col  w-100 ">
+        <div className="flex-center w-100 ">
             <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"state")}}
                 className="opaci-chov--50 bg-w-opaci-90  tx-black px-3 py-1 bord-r-15 mx-1 mt-1"
             >
@@ -50,28 +50,34 @@ export const TokenConfigStateButtons = ({
                 </div>
             }
         </div>
-        <div className="flex">
+        <div className="flex-center w-100">
             <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"floor")}}
-                className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1"
+                className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1 tx-center"
             >
-                Min: {theToken.floor}
+                Min
+                <br/>
+                {theToken.floor}
             </div>
             <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"ceil")}}
-                className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1"
+                className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1 tx-center"
             >
-                Max: {theToken.ceil}
+                Max
+                <br/>
+                {theToken.ceil}
             </div>
-        </div>
-        <div className="flex">
             <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"buy")}}
-                className="opaci-chov--50 bg-w-opaci-50  px-3 py-1 bord-r-15 mx-1 mt-1"
+                className="opaci-chov--50 bg-w-opaci-50  px-3 py-1 bord-r-15 mx-1 mt-1 tx-center"
             >
-                Buy: {theToken.buy
+                Buy
+                <br/>
+                {theToken.buy
             }</div>
             <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"sell")}}
-                className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1"
+                className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1 tx-center"
             >
-                Sell: {theToken.sell
+                Sell
+                <br/>
+                {theToken.sell
             }</div>
         </div>
     </div>
