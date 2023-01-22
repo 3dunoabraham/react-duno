@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from '@tanstack/react-query'
-import { fetchJsonArray, fetchMultipleJsonArray, getStrategyResult, parseDecimals } from "../scripts/helpers";
+import { fetchJsonArray, fetchMultipleJsonArray, getStrategyResult, parseDecimals, parseUTCDateString, parseUTCString } from "../scripts/helpers";
 import { BsFillGearFill } from "react-icons/bs"
 import { ChartSinLine, ChartHigherLine, ChartLowerLine, ChartMiddleLine, ChartTopBottomLine } from "../components/chart/lines";
 import { DEFAULT_TIMEFRAME_ARRAY } from "../scripts/constants";
@@ -57,21 +57,27 @@ function Dashboard({}: {}) {
     const DEFAULT_TOKEN = {}
     const klinesStats = useMemo(()=>{
         let maxPrice = 0
-        let minPrice = klinesArray.length ? klinesArray[0][3] : 99999999999
-        for (let kline of klinesArray)
+        let minPrice = p__klinesArray.length ? p__klinesArray[0][3] : 99999999999
+        for (let kline of p__klinesArray)
         {
             maxPrice = parseFloat(kline[2]) > maxPrice ? parseFloat(kline[2]) : maxPrice
             minPrice = parseFloat(kline[3]) < minPrice ? parseFloat(kline[3]) : minPrice
         }
         let min = parseFloat(`${parseDecimals(minPrice)}`)
         let max = parseFloat(`${parseDecimals(maxPrice)}`)
+        let startDate = parseUTCDateString(new Date(p__klinesArray.length ? p__klinesArray[0][0] : 0))
+        let midDate = parseUTCDateString(new Date(p__klinesArray.length ? p__klinesArray[250][0] : 0))
+        let endDate = parseUTCDateString(new Date(p__klinesArray.length ? p__klinesArray[499][0] : 0))
         return {
             minMaxAvg:(max+min)/2,
             range:max-min,
             min,
             max,
+            endDate,
+            midDate,
+            startDate,
         }
-    },[klinesArray])
+    },[p__klinesArray])
 
     
     /********** UPDATE **********/
@@ -350,11 +356,16 @@ function Dashboard({}: {}) {
 
                 
                 {loadings != "" && <div className="flex  w-90 bg-w-opaci-10  my-3 bord-r-8 h-400px"></div> }   
+                
                 {loadings == "" &&
                     <div
                         className="flex pos-rel w-90 box-shadow-5 bg-w-opaci-10 hov-bord-1-w autoverflow  my-3 bord-r-8"
                         style={{ resize:"both", height:"400px", }}
                     >
+                        
+                        <div className="pa-1 pos-abs right-0 bottom-0">{klinesStats.min}</div>
+                        <div className="pa-1 pos-abs right-0 top-50p">{klinesStats.minMaxAvg}</div>
+                        <div className="pa-1 pos-abs right-0 top-0">{klinesStats.max}</div>
                         <ChartHigherLine klinesArray={p__klinesArray} klinesStats={klinesStats} />
                         <ChartLowerLine klinesArray={p__klinesArray} klinesStats={klinesStats} />
 
@@ -364,6 +375,24 @@ function Dashboard({}: {}) {
                                 
                     </div>
                 }
+                <div className=" flex  flex-justify-between w-90"
+                >
+                    <div className="">
+                        {klinesStats.startDate}
+                    </div>
+                    <div className="flex-1 px-2 opaci-10">
+                        <hr/>
+                    </div>
+                    <div className="">
+                        {klinesStats.midDate}
+                    </div>
+                    <div className="flex-1 px-2 opaci-10">
+                        <hr/>
+                    </div>
+                    <div className="">
+                        {klinesStats.endDate}
+                    </div>
+                </div>
 
 
             </div>
