@@ -1,4 +1,5 @@
-
+export const DEFAULT_TIMEFRAME_ARRAY = ["15m","12h","1d","1w"]  
+    
 export const DEFAULT_PLAN_COLUMNS_ARRAY = {
     "id": [
         "","","","","","","",

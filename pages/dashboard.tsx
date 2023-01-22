@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from '@tanstack/react-query'
-import { fetchJsonArray, fetchMultipleJsonArray, parseDecimals } from "../scripts/helpers";
+import { fetchJsonArray, fetchMultipleJsonArray, getStrategyResult, parseDecimals } from "../scripts/helpers";
 import { useLocalStorage } from "usehooks-ts";
 import { ChartSinLine, ChartHigherLine, ChartLowerLine, ChartMiddleLine, ChartTopBottomLine } from "../components/chart/lines";
+import { DEFAULT_TIMEFRAME_ARRAY } from "../scripts/constants";
+import { TokenConfigStateButtons } from "../components/chart/tokenConfig";
 
 function Dashboard({}: {}) {
     /********** CREATE **********/
@@ -27,7 +29,7 @@ function Dashboard({}: {}) {
     const [klinesArray,s__klinesArray] = useState<any[]>([])
     const [clientIP, s__clientIP] = useState('');
     const DEFAULT_TOKEN_OBJ = { mode:0,state:0,buy:0,sell:0, floor:0,ceil:0}
-    const DEFAULT_TIMEFRAME_ARRAY = ["15m","12h","1d","1w"]  
+    // const DEFAULT_TIMEFRAME_ARRAY = ["15m","12h","1d","1w"]  
     const parsedKlines = useMemo(()=>{
         let parsedKlinesArray:any = []
         parsedKlinesArray = klinesArray
@@ -86,20 +88,6 @@ function Dashboard({}: {}) {
             getData(randomThousand)
         }
     }
-    const getStrategyResult = (tokenConfig:any, livePrice:number) => {
-        let {floor, ceil, state, buy, sell} = tokenConfig
-        if (!state) return 0
-        let floorPrice = parseFloat(floor)
-        let ceilPrice = parseFloat(ceil)
-        let isInRange = state == 1
-        let isAtLimit = state == 2
-        // if (isInRange && livePrice < floorPrice) 
-        // {
-        //     return buy == 1 ? 2 : 1
-        // }
-        // if (isInRange && livePrice < ceilPrice) { }
-        return 0
-    }  
     const joinToken = (token:string) => {
         addToken(token)
     }
@@ -116,12 +104,23 @@ function Dashboard({}: {}) {
     }
     const updateTokenOrder = (token:string, timeframe:any, substate:string) => {
         if (!token) return
-        let value = prompt("Enter Value")
+        let value = parseInt(prompt("Enter Value"))
         if (!value) return
-        let timeframeIndex = DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)
+        let timeframeIndex = timeframe
+        // let timeframeIndex = DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)
+        // console.log("timeframe, timeframeIndex", timeframe, timeframeIndex)
         let old_tokensArray = tokensArray[token][timeframeIndex]
-        // s__tokensArray(new_tokensArray)
-        // s__LS_tokensArray((prevValue) => JSON.stringify(new_tokensArray))
+
+        let old_tokensArrayArray = [...tokensArray[token]]
+        old_tokensArrayArray[timeframeIndex] = {...old_tokensArray,...{[substate]:value}}
+        let newTimeframedConfig = old_tokensArrayArray[timeframeIndex]
+        // console.log("old", old_tokensArray)
+        // console.log("new", newTimeframedConfig)
+        // console.log("new", tokensArray)
+        let bigTokensObj = {...tokensArray, ...{[token]:old_tokensArrayArray}}
+        // console.log("new", bigTokensObj)
+        s__tokensArray(bigTokensObj)
+        s__LS_tokensArray((prevValue) => JSON.stringify(bigTokensObj))
     }
     const setNewTimeframe = async(aTimeframe:string) => {
         if (!confirm("change timeframe and request new klines")) return
@@ -209,7 +208,8 @@ function Dashboard({}: {}) {
                         <div className="flex-wrap w-220px ">
                             {DEFAULT_TIMEFRAME_ARRAY.map((aTimeframe,index)=>{
                                 return (
-                                <button className="ma-1 pa-2  opaci-chov--50 bg-w-opaci-50 bord-r-8 tx-white"
+                                <button className="ma-1 pa-2  opaci-chov--50 bg-w-opaci-10 bord-r-8 tx-white"
+                                    // style={{boxShadow:aTimeframe == timeframe && "0px 0px 2px 2px green"}}
                                     key={index} onClick={()=>setNewTimeframe(aTimeframe)}
                                 >
                                     {aTimeframe}
@@ -217,6 +217,41 @@ function Dashboard({}: {}) {
                                 )
                             })}
                         </div>
+                        {tokensArray &&  tokensArray["btc"] && tokensArray["btc"][0] &&
+                            <div className="flex-wrap w-220px ">
+                                <TokenConfigStateButtons 
+                                    timeframe={timeframe}
+                                    index={DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)}
+                                    tokensArray={tokensArray}
+                                    queryUSDT={queryUSDT}
+                                    aToken={"btc"}
+                                    theToken={tokensArray["btc"][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                    updateTokenOrder={updateTokenOrder}
+                                />
+                            </div>
+                        }
+                        
+                        {("btc" in tokensArray) && 
+                            <div className="tx-bold flex-center  mt-2 " >
+                                <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-3 bord-r-50 tx-lg"
+                                    onClick={()=>{removeToken("btc")}}
+                                    style={{boxShadow:"0px 0px 25px #CF589433"}}
+                                >
+                                    LEAVE
+                                </button>
+                            </div>
+                        }
+                        {!("btc" in tokensArray) && 
+                            <div className={`tx-bold flex-center  invert ${!uid && "opaci-50"}`}
+                            >
+                                <button className="clickble tx-ls-5 mt-2 opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
+                                    onClick={()=>{!!uid && joinToken("btc")}} 
+                                    style={{boxShadow:"0px 0px 25px #CF589433"}}
+                                >
+                                    JOIN
+                                </button>
+                            </div>
+                        }
                     </div>
                     <div className="flex-col pa-2 ddb">
                         <div className="w-100 flex flex-align-end">
@@ -275,95 +310,39 @@ function Dashboard({}: {}) {
                 }
 
                 {/*uid &&*/ DEFAULT_TOKENS_ARRAY.map((aToken,index)=>{
+                    if (queryUSDT.isLoading) return
+                    if (queryUSDT.error) return
                     if (!tokensArray[aToken]) return
-                    let theStrategyResult = queryUSDT.data && (aToken in tokensArray) ?(
-                        getStrategyResult(tokensArray[aToken][0],parseFloat(queryUSDT.data[index].price))
-                        ) : 0
+                    if (!tokensArray[aToken][0]) return
+                    let theToken = tokensArray[aToken][0]   
                     return (
                     <div className="flex   w-100" key={index}>
                         <div className="px-8 py-4 w-100    mb-4  flex-1" >
                             <h1 className="tx-xl flex-col flex-align-start mr-100 " >
-                                {queryUSDT.isLoading && 
-                                    <span className="flex">
-                                        <div className="pr-4">
-                                            {aToken.toUpperCase()}:
-                                        </div>
-                                        <div className="px-2 opaci-25 hover-1 tx-xl" >
-                                            ...
-                                        </div>
-                                    </span>
-                                }
-                                {!queryUSDT.isLoading && !queryUSDT.error && 
-                                    <span className="opaci-chov--50" onClick={()=>{joinToken(aToken)}}>
-                                        {aToken.toUpperCase()}: {parseDecimals(queryUSDT.data[index].price)}
-                                    </span>
-                                }
+                                <span className="opaci-chov--50" onClick={()=>{joinToken(aToken)}}>
+                                    {aToken.toUpperCase()}: {parseDecimals(queryUSDT.data[index].price)}
+                                </span>
                             </h1>
                         </div>
-                        {false && tokensArray[aToken][0] &&
+                        <div className="flex-center">
+                            <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"mode")}}
+                                className="opaci-chov--50 bg-w-opaci-90  tx-black px-3 py-1 bord-r-15 mx-1 mt-1"
+                            >
+                                Mode: {theToken.mode}
+                            </div>
                             <div className="flex-center px-4">
-                                {/* parsedKlines */}
-                                {JSON.stringify(parsedKlines)}
+                                <div onClick={queryUSDT.refetch} className="px-2 py-1 bg-b-opaci-50 opaci-chov--50 bord-r-5">Refresh</div>
                             </div>
-                        }
-                        {tokensArray[aToken][0] &&
-                            <div className="flex-center">
-                                <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"mode")}}
-                                    className="opaci-chov--50 bg-w-opaci-90  tx-black px-3 py-1 bord-r-15 mx-1 mt-1"
-                                >
-                                    Mode: {tokensArray[aToken][0].mode}
-                                </div>
-                                <div className="flex-center px-4">
-                                    <div onClick={queryUSDT.refetch} className="px-2 py-1 bg-b-opaci-50 opaci-chov--50 bord-r-5">Refresh</div>
-                                </div>
-                            </div>
-                        }
-                        {tokensArray[aToken][0] &&
-                            <div className="flex-col">
-                                <div className="flex">
-                                    <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"state")}}
-                                        className="opaci-chov--50 bg-w-opaci-90  tx-black px-3 py-1 bord-r-15 mx-1 mt-1"
-                                    >
-                                        State: {tokensArray[aToken][0].state}
-                                    </div>
-                                    {/* |{theStrategyResult}| */}
-                                    {tokensArray[aToken][0] && queryUSDT.data &&
-                                        <div className="flex-center px-4">
-                                            {theStrategyResult == 0 && <div>Wait</div>}
-                                            {theStrategyResult == 1 && <div>Buy <br/> 1st <br/> Half</div>}
-                                            {theStrategyResult == 2 && <div>Buy <br/> 2nd <br/> Half</div>}
-                                            {/* <div className="px-2 py-1 bg-white bord-r-5 tx-green opaci-chov--50">Do Trade</div>
-                                            <div className="px-2 py-1 bg-white bord-r-5 tx-red">Don't <br /> Trade</div> */}
-                                        </div>
-                                    }
-                                </div>
-                                <div className="flex">
-                                    <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"floor")}}
-                                        className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1"
-                                    >
-                                        Min: {tokensArray[aToken][0].floor}
-                                    </div>
-                                    <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"ceil")}}
-                                        className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1"
-                                    >
-                                        Max: {tokensArray[aToken][0].ceil}
-                                    </div>
-                                </div>
-                                <div className="flex">
-                                    <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"buy")}}
-                                        className="opaci-chov--50 bg-w-opaci-50  px-3 py-1 bord-r-15 mx-1 mt-1"
-                                    >
-                                        Buy: {tokensArray[aToken][0].buy
-                                    }</div>
-                                    <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"sell")}}
-                                        className="opaci-chov--50 bg-w-opaci-20  px-3 py-1 bord-r-15 mx-1 mt-1"
-                                    >
-                                        Sell: {tokensArray[aToken][0].sell
-                                    }</div>
-                                </div>
-                            </div>
-                        }
-                        {/* <textarea className="bord-r-10 tx-lg px-4 py-2 tx-black my-2" placeholder="message"></textarea> */}
+                        </div>
+                        <TokenConfigStateButtons 
+                            timeframe={timeframe}
+                            index={index}
+                            tokensArray={tokensArray}
+                            queryUSDT={queryUSDT}
+                            aToken={aToken}
+                            theToken={theToken}
+                            updateTokenOrder={updateTokenOrder}
+                        />
                         {(aToken in tokensArray) && 
                             <div className="tx-bold flex-center px-8 " onClick={()=>{removeToken(aToken)}}>
                                 <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
