@@ -111,6 +111,9 @@ export const parseUTCDateString = (_theDate) => {
 export const timeDifference = (date1,date2) => {
   var difference = parseInt(date1) - parseInt(date2);
 
+  var weeksDifference = Math.floor(difference/1000/60/60/24/7);
+  difference -= weeksDifference*1000*60*60*24*7
+
   var daysDifference = Math.floor(difference/1000/60/60/24);
   difference -= daysDifference*1000*60*60*24
 
@@ -123,8 +126,10 @@ export const timeDifference = (date1,date2) => {
   var secondsDifference = Math.floor(difference/1000);
 
   return(
-    daysDifference + 'd ' +
-    hoursDifference + 'h ' +
-    minutesDifference + 'm ' +
-    secondsDifference + 's ');
+    (!weeksDifference?"": weeksDifference + 'w ' )+
+    (!daysDifference?"": daysDifference + 'd ' )+
+    (!hoursDifference?"": hoursDifference + 'h ' )+
+    (!minutesDifference?"": minutesDifference + 'm ' )+
+    (!secondsDifference?"": secondsDifference + 's ' )
+  )
 }
