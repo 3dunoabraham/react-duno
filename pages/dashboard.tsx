@@ -130,6 +130,14 @@ function Dashboard({}: {}) {
     const getKlineArray = async(t=DEFAULT_TIMEFRAME) => {
         let urlBase = `https://api.binance.com/api/v3/klines?interval=${t}&symbol=`
         const theArray = await fetchJsonArray(urlBase+"BTCUSDT")
+        let lastIndex = theArray.length - 1
+        console.log("s__klinesArray",theArray.length)
+        while (lastIndex < 499)
+        {
+            theArray.unshift(theArray[0])
+            lastIndex++
+        }
+
         s__klinesArray(theArray)
     }
     const removeToken = (token:string) => {
