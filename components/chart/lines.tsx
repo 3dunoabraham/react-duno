@@ -24,8 +24,8 @@ export const ChartMiddleLine = ({klinesArray}:{klinesArray:any[]})=>{
     )
 }
 export const ChartSinLine = ({
-    klinesArray,wavelength
-}:{klinesArray:any[],wavelength:number})=>{
+    klinesArray,wavelength,chopAmount
+}:{klinesArray:any[],wavelength:number,chopAmount:number})=>{
     return (
     <div>
     {klinesArray.map((aKline:any,index:any) => {
@@ -38,7 +38,7 @@ export const ChartSinLine = ({
                 left: `${index/500*100}%`,
                 background: `rgba(${(500-index)/2},99,99,0.7)`,
                 top:`
-                ${50+ (Math.sin(index/wavelength + Math.sin(index/wavelength)*10 )*40)  }%
+                ${50+ (Math.sin(index/wavelength + Math.sin((index)/wavelength)*10 )*40)  }%
                 `,
             }}
             >

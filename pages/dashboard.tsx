@@ -47,7 +47,16 @@ function Dashboard({}: {}) {
         return parsedKlinesArray
     },[klinesArray])
     const p__klinesArray = useMemo(()=>{
-        return klinesArray.slice(chopAmount,500)
+        let slicedArray = [...klinesArray]
+        
+        let lastIndex = slicedArray.length
+        // console.log("s__klinesArray",slicedArray.length)
+        // while (lastIndex < 500)
+        for (let index = 0; index < chopAmount; index++) {
+            slicedArray.unshift(klinesArray[499])            
+        }
+
+        return slicedArray.slice(0,500)
     },[klinesArray,chopAmount])
     const queryUSDT:any = useQuery({
         queryKey: ['usdt'],
@@ -393,7 +402,7 @@ function Dashboard({}: {}) {
 
                         <ChartMiddleLine klinesArray={klinesArray} />
                         <ChartTopBottomLine klinesArray={klinesArray} />
-                        <ChartSinLine klinesArray={klinesArray} wavelength={wavelength} />
+                        <ChartSinLine chopAmount={chopAmount} klinesArray={klinesArray} wavelength={wavelength} />
                                 
                     </div>
                 }
