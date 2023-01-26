@@ -218,175 +218,181 @@ function Dashboard({query}) {
             }}
         >
             <div className={` flex-col${isUIReversed ? "-r" : ""} w-100 `}>
-                {loadings != "" && <div className="flex  w-90 bg-w-10 bord-r-8 my-6 h-300px"></div> }   
+                {loadings != "" && <div className="flex  w-90 bg-w-10 bord-r-8 my-6 h-min-300px"></div> }   
                 {loadings == "" &&
-                    <div className="flex-center flex-align-start w-90 mq_xs_flex-col my-4">
+                    <div className="flex-wrap flex-align-start w-90  my-4">
 
-                        <div className="flex-col">
-                            {/*uid &&*/ DEFAULT_TOKENS_ARRAY.map((aToken,index)=>{
-                                let isQ = true
-                                if (queryUSDT.isLoading) { isQ = false }
-                                if (queryUSDT.error) { isQ = false }
-                                let isK = isQ
-                                if (!tokensArray[aToken] || (tokensArray[aToken] && !tokensArray[aToken][0])) { isQ = false }
-                                let theToken = isQ ? tokensArray[aToken][0] : null
-                                return (
-                                <div className={`flex pa-2 w-350px bord-r-8 mt-2 w-100  ${aToken == selectedToken ? "bg-w-20 " : "bg-b-10 "} `} key={index}>
-                                    <div className="      flex-col w-100 " >
-                                        
-                                        {<div className="tx-lgx  w-100 flex flex-align-start  " >
-                                            {/* <a onClick={()=>{setToken(aToken)}}  className="bord-r-5 px-2 py-1 bg-w-50 opaci-chov--50 tx-white tx-lg">↑</a> */}
-                                            <a className="opaci-chov--50 tx-white" href={"/dashboard?token="+aToken}>
-                                                <span className="px-1">{aToken.toUpperCase()}:</span>
-                                                <span className="tx-ls-2">{isK && parseDecimals(queryUSDT.data[index].price)}</span>
-                                            </a>
-                                        </div>}
-                                        <div className="w-100">
-                                            <div className="flex  opaci-75 ">
-                                                {!!tokensArray[aToken] && (
-                                                    <div className="flex-center  flex-justify-between w-100">
-                                                        {!tokensArray[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state
-                                                            ? <div className="opaci-25">Inactive</div>
-                                                            : <div className="opaci-75">Active</div>
-                                                        }
-                                                        {tokensArray[aToken][0].state == 1 && <>
-                                                            <div className=" tx-sm">
-                                                                open
-                                                            </div>
-                                                        </>}
-                                                        {/* {JSON.stringify(tokensArray[aToken][0])} */}
-                                                    </div>
-                                                )}
-                                                {false && !tokensArray[aToken] && (
-                                                    <div>
-                                                        test
-                                                    </div>
-                                                )}
-                                                {false && JSON.stringify(tokensArray[aToken])}
+                        {/* <div className="flex mq_xs_md_flex-col flex-1"> */}
+                            <div className="flex-col flex-1">
+                                {/*uid &&*/ DEFAULT_TOKENS_ARRAY.map((aToken,index)=>{
+                                    let isQ = true
+                                    if (queryUSDT.isLoading) { isQ = false }
+                                    if (queryUSDT.error) { isQ = false }
+                                    let isK = isQ
+                                    if (!tokensArray[aToken] || (tokensArray[aToken] && !tokensArray[aToken][0])) { isQ = false }
+                                    let theToken = isQ ? tokensArray[aToken][0] : null
+                                    return (
+                                    <div className={`flex pa-2 w-min-350px bord-r-8 mt-2 w-100  ${aToken == selectedToken ? "bg-w-20 " : "bg-b-10 "} `} key={index}>
+                                        <div className="      flex-col w-100 " >
+                                            
+                                            {<div className="tx-lgx  w-100 flex flex-align-start  " >
+                                                {/* <a onClick={()=>{setToken(aToken)}}  className="bord-r-5 px-2 py-1 bg-w-50 opaci-chov--50 tx-white tx-lg">↑</a> */}
+                                                <a className="opaci-chov--50 tx-white" href={"/dashboard?token="+aToken}>
+                                                    <span className="px-1">{aToken.toUpperCase()}:</span>
+                                                    <span className="tx-ls-2">{isK && parseDecimals(queryUSDT.data[index].price)}</span>
+                                                </a>
+                                            </div>}
+                                            <div className="w-100">
+                                                <div className="flex  opaci-75 ">
+                                                    {!!tokensArray[aToken] && (
+                                                        <div className="flex-center  flex-justify-between w-100">
+                                                            {!tokensArray[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state
+                                                                ? <div className="opaci-25">Inactive</div>
+                                                                : <div className="opaci-75">Active</div>
+                                                            }
+                                                            {tokensArray[aToken][0].state == 1 && <>
+                                                                <div className=" tx-sm">
+                                                                    open
+                                                                </div>
+                                                            </>}
+                                                            {/* {JSON.stringify(tokensArray[aToken][0])} */}
+                                                        </div>
+                                                    )}
+                                                    {false && !tokensArray[aToken] && (
+                                                        <div>
+                                                            test
+                                                        </div>
+                                                    )}
+                                                    {false && JSON.stringify(tokensArray[aToken])}
+                                                </div>
                                             </div>
+                                            {/* tokensArray */}
+                                            {false && aToken == selectedToken && isK &&
+                                                <div className="">
+                                                    <div className="flex-center opaci-75 ddg">
+                                                        <div className="">{klinesStats.min}</div>
+                                                        <div className="">-</div>
+                                                        <div className="">{klinesStats.max}</div>
+                                                        <div className="px-2 flex nowrap opaci-30">
+                                                            {klinesStats.range} ({klinesStats.dropPercent}%)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
                                         </div>
-                                        {/* tokensArray */}
-                                        {false && aToken == selectedToken && isK &&
+                                        {aToken == selectedToken &&
                                             <div className="">
-                                                <div className="flex-center opaci-75 ddg">
-                                                    <div className="">{klinesStats.min}</div>
-                                                    <div className="">-</div>
-                                                    <div className="">{klinesStats.max}</div>
-                                                    <div className="px-2 flex nowrap opaci-30">
-                                                        {klinesStats.range} ({klinesStats.dropPercent}%)
+                                                <div className="flex-col">
+                                                    <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"mode")}}
+                                                        className="opaci-chov--50 bg-w-90  tx-black px-3 py-1 bord-r-15 mx-1 ma-1"
+                                                    >
+                                                        Mode: {theToken && theToken.mode}
+                                                    </div>
+                                                    <div className="flex-center px-4">
+                                                        <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-50 opaci-chov--50 bord-r-8 ">
+                                                            Refresh
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         }
                                     </div>
-                                    {aToken == selectedToken &&
-                                        <div className="">
-                                            <div className="flex-col">
-                                                <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"mode")}}
-                                                    className="opaci-chov--50 bg-w-90  tx-black px-3 py-1 bord-r-15 mx-1 ma-1"
-                                                >
-                                                    Mode: {theToken && theToken.mode}
-                                                </div>
-                                                <div className="flex-center px-4">
-                                                    <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-50 opaci-chov--50 bord-r-8 ">
-                                                        Refresh
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                                )
-                            })}
-                        </div>
-
-                        <div className="flex-col pa-2 ddr">
-                            <div className="w-100 flex-center flex-align-end">
-                                <div className="tx-sm pr-1 opaci-50">Timeframe:</div>
-                                <div className="tx-lgx tx-bold-6">{timeframe}</div>
-                                
-                                
-                            </div>
-                            <div className="flex-wrap w-300px ">
-                                {DEFAULT_TIMEFRAME_ARRAY.map((aTimeframe,index)=>{
-                                    return (
-                                    <button className="ma-1 pa-2  opaci-chov--50 bg-w-10 bord-r-8 tx-white"
-                                        // style={{boxShadow:aTimeframe == timeframe && "0px 0px 2px 2px green"}}
-                                        key={index} onClick={()=>setNewTimeframe(aTimeframe)}
-                                    >
-                                        {aTimeframe}
-                                    </button>
                                     )
                                 })}
                             </div>
-                            {tokensArray &&  tokensArray[selectedToken] && tokensArray[selectedToken][0] &&
-                                <div className="flex-wrap w-  ">
-                                    {/* {tokensArray[selectedToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state} */}
-                                    <TokenConfigStateButtons 
-                                        timeframe={timeframe}
-                                        index={DEFAULT_TOKENS_ARRAY.indexOf(selectedToken)}
-                                        tokensArray={tokensArray}
-                                        queryUSDT={queryUSDT}
-                                        aToken={selectedToken}
-                                        theToken={tokensArray[selectedToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
-                                        updateTokenOrder={updateTokenOrder}
-                                    />
+
+                        <div className="mt-2 show-xs_md opaci-10 w-100"><hr className="w-100"/></div>
+                        <div className="flex mq_xs_flex-col ">
+                            <div className="flex-col pa-2 ddr">
+                                <div className="w-100 flex-center flex-align-end">
+                                    <div className="tx-sm pr-1 opaci-50">Timeframe:</div>
+                                    <div className="tx-lgx tx-bold-6">{timeframe}</div>
+                                    
+                                    
                                 </div>
-                            }
-                            
-                        </div>
-                        <div className="flex-col pa-2 ddb">
-                            <div className="w-100 flex flex-align-end">
-                                <div className="tx-sm pr-1 opaci-50">Wavelength:</div>
-                                <div className="tx-lgx tx-bold-6">{wavelength}</div>
+                                <div className="flex-wrap w-300px ">
+                                    {DEFAULT_TIMEFRAME_ARRAY.map((aTimeframe,index)=>{
+                                        return (
+                                        <button className="ma-1 pa-2  opaci-chov--50 bg-w-10 bord-r-8 tx-white"
+                                            // style={{boxShadow:aTimeframe == timeframe && "0px 0px 2px 2px green"}}
+                                            key={index} onClick={()=>setNewTimeframe(aTimeframe)}
+                                        >
+                                            {aTimeframe}
+                                        </button>
+                                        )
+                                    })}
+                                </div>
+                                {tokensArray &&  tokensArray[selectedToken] && tokensArray[selectedToken][0] &&
+                                    <div className="flex-wrap w-  ">
+                                        {/* {tokensArray[selectedToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state} */}
+                                        <TokenConfigStateButtons 
+                                            timeframe={timeframe}
+                                            index={DEFAULT_TOKENS_ARRAY.indexOf(selectedToken)}
+                                            tokensArray={tokensArray}
+                                            queryUSDT={queryUSDT}
+                                            aToken={selectedToken}
+                                            theToken={tokensArray[selectedToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                            updateTokenOrder={updateTokenOrder}
+                                        />
+                                    </div>
+                                }
+                                
                             </div>
-                            <div className="w-100">
+                        {/* </div> */}
+                            <div className="flex-col pa-2 ddb">
+                                <div className="w-90 flex flex-align-end">
+                                    <div className="tx-sm pr-1 opaci-50">Wavelength:</div>
+                                    <div className="tx-lgx tx-bold-6">{wavelength}</div>
+                                </div>
+                                <div className="w-100">
+                                    <div className="w-100">
+                                        <input className="w-100" type="range"
+                                            min={-360} max={1200} step="5"
+                                            value={wavelength}
+                                            onChange={(e)=>{s__wavelength(e.target.value)}}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex-wrap w-250px ">
+                                    {["-300","250","630"].map((aWavelength,index)=>{
+                                        return (
+                                        <button className="fle-col ma-1 pb-3 px-2 py-2  opaci-chov--50 bg-w-20  tx-lg bord-r-8 tx-white"
+                                            style={{
+                                                border: `2px solid rgb(${(200-parseInt(aWavelength))},99,99)`,
+                                                // boxShadow:wavelength==aWavelength?"0 6px 9px 1px #000000aa":""
+                                            }}
+                                            key={index} onClick={()=>s__wavelength(aWavelength)}
+                                        >
+                                            {wavelength==aWavelength && <div className="tx-xs">wave:</div>}
+                                            <div className="">{aWavelength}</div>
+                                        </button>
+                                        )
+                                    })}
+                                </div>
+                                <hr className="w-100 opaci-10 my-3" />
+                                <div className="w-100 flex flex-align-end">
+                                    <div className="tx-sm pr-1 opaci-50">Scope:</div>
+                                    <div className="tx-lg tx-bold-6">
+                                        {<div className="px-1 opaci-50">{chopAmount}</div>}
+                                    </div>
+                                </div>
                                 <div className="w-100">
                                     <input className="w-100" type="range"
-                                        min={-360} max={1200} step="5"
-                                        value={wavelength}
-                                        onChange={(e)=>{s__wavelength(e.target.value)}}
+                                        min="-500" max={0} step="1"
+                                        value={-chopAmount}
+                                        onChange={(e)=>{s__chopAmount(-e.target.value)}}
                                     />
                                 </div>
-                            </div>
-                            <div className="flex-wrap w-250px ">
-                                {["-300","250","630"].map((aWavelength,index)=>{
-                                    return (
-                                    <button className="fle-col ma-1 pb-3 px-2 py-2  opaci-chov--50 bg-w-20  tx-lg bord-r-8 tx-white"
-                                        style={{
-                                            border: `2px solid rgb(${(200-parseInt(aWavelength))},99,99)`,
-                                            // boxShadow:wavelength==aWavelength?"0 6px 9px 1px #000000aa":""
-                                        }}
-                                        key={index} onClick={()=>s__wavelength(aWavelength)}
-                                    >
-                                        {wavelength==aWavelength && <div className="tx-xs">wave:</div>}
-                                        <div className="">{aWavelength}</div>
-                                    </button>
-                                    )
-                                })}
-                            </div>
-                            <hr className="w-100 opaci-10 my-3" />
-                            <div className="w-100 flex flex-align-end">
-                                <div className="tx-sm pr-1 opaci-50">Scope:</div>
-                                <div className="tx-lg tx-bold-6">
-                                    {<div className="px-1 opaci-50">{chopAmount}</div>}
-                                </div>
-                            </div>
-                            <div className="w-100">
-                                <input className="w-100" type="range"
-                                    min="-500" max={0} step="1"
-                                    value={-chopAmount}
-                                    onChange={(e)=>{s__chopAmount(-e.target.value)}}
-                                />
                             </div>
                         </div>
                         
-                        <div className="flex-1 flex-col flex-justify-between  ">
+                        <div className="mt-2 show-xs_md opaci-10 w-100"><hr className="w-100"/></div>
+                        <div className="flex-1 flex-col flex-justify-between   ">
                             {/* <div className="flex"> */}
                                 {!!uid && 
                                     <details className="tx-white w-100 flex-center ">
                                         <summary className="flex flex-justify-end">
-                                            <div className="tx-lg opaci-chov--50 px-1">
+                                            <div className="tx-lg opaci-chov--50 py-2 mt-2 bord-r-8 px-2 bg-w-hov-20">
                                                 <BsFillGearFill />
                                             </div>
                                         </summary>
@@ -404,7 +410,8 @@ function Dashboard({query}) {
                                         </div>
                                     </details>
                                 }
-                                <div className="flex-center w-100 h-150px">
+
+                                <div className="flex-center w-min-200px">
                                     {(selectedToken in tokensArray) && 
                                         <div className="tx-bold flex-center  mt-2 " >
                                             <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-3 bord-r-50 tx-lg"
