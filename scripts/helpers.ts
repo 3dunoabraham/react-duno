@@ -1,11 +1,24 @@
 
-export const getStrategyResult = (tokenConfig:any, livePrice:number) => {
-    let {floor, ceil, state, buy, sell} = tokenConfig
+export const getStrategyResult = (tokenConfig:any, livePrice:number,stats:any) => {
+    let {floor, ceil, state, buy, minMaxAvg, sell} = tokenConfig
     if (!state) return 0
+    if (!stats) return 0
     let floorPrice = parseFloat(floor)
     let ceilPrice = parseFloat(ceil)
     let isInRange = state == 1
-    let isAtLimit = state == 2
+    let hasntBought = buy == 0
+    console.log(livePrice,stats.minMaxAvg)
+    if (isInRange)
+    {
+      if (hasntBought)
+      {
+        if (livePrice < stats.minMaxAvg)
+        {
+          return 1
+        }
+      }
+    }
+    // let isAtLimit = state == 2
     // if (isInRange && livePrice < floorPrice) 
     // {
     //     return buy == 1 ? 2 : 1

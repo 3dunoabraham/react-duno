@@ -8,7 +8,7 @@ import { TokenConfigStateButtons } from "../components/chart/tokenConfig";
 import { useLocalStorage } from "usehooks-ts";
 import { useRouter } from "next/router";
 
-const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","matic","sol"]
+const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","matic","link"]
 function Dashboard({query}) {
     /********** CREATE **********/
     useEffect(()=>{
@@ -88,8 +88,13 @@ function Dashboard({query}) {
         let dropPercent = parseFloat(100-parseInt(`${p__klinesArray.length ? min/max*100 : 0}`)+"")
         // !!p__klinesArray.length && console.log("asdasdas", p__klinesArray[0])
         let timeDiff = p__klinesArray.length ? timeDifference(p__klinesArray[499][0], p__klinesArray[0][0]) : ""
+        let minMaxAvg = parseDecimals((parseFloat(tokenConfirg.ceil)+parseFloat(tokenConfirg.floor))/2)
+        let minMedian = (parseFloat(tokenConfirg.floor)+parseFloat(`${minMaxAvg}`))/2
+        let maxMedian = (parseFloat(tokenConfirg.ceil)+parseFloat(`${minMaxAvg}`))/2
         return {
-            minMaxAvg:(tokenConfirg.ceil+tokenConfirg.floor)/2,
+            minMaxAvg,
+            minMedian,
+            maxMedian,
             range,
             minPrice: min,
             maxPrice: max,
@@ -140,8 +145,9 @@ function Dashboard({query}) {
     }
     const updateTokenOrder = (token:string, timeframe:any, substate:string) => {
         if (!token) return
-        let value = parseFloat(prompt("Enter Value"))
-        if (!value) return
+        let promptVal = prompt("Enter Value")
+        let value = !promptVal ? 0 : parseFloat(promptVal)
+        // if (!value) return
         let timeframeIndex = timeframe
         // let timeframeIndex = DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)
         // console.log("timeframe, timeframeIndex", timeframe, timeframeIndex)
@@ -228,23 +234,24 @@ function Dashboard({query}) {
                                 <div className={`flex pa-2 w-350px bord-r-8 mt-2 w-100  ${aToken == selectedToken ? "bg-w-20 " : "bg-b-10 "} `} key={index}>
                                     <div className="      flex-col w-100 " >
                                         
-                                        {<div className="tx-lgx  w-100 flex-col flex-align-start  " >
-                                            <span className="opaci-chov--50" onClick={()=>{setToken(aToken)}}>
+                                        {<div className="tx-lgx  w-100 flex flex-align-start  " >
+                                            {/* <a onClick={()=>{setToken(aToken)}}  className="bord-r-5 px-2 py-1 bg-w-50 opaci-chov--50 tx-white tx-lg">↑</a> */}
+                                            <a className="opaci-chov--50 tx-white" href={"/dashboard?token="+aToken}>
                                                 <span className="px-1">{aToken.toUpperCase()}:</span>
                                                 <span className="tx-ls-2">{isK && parseDecimals(queryUSDT.data[index].price)}</span>
-                                            </span>
+                                            </a>
                                         </div>}
-                                        <div className="">
-                                            <div className="flex-center opaci-75 ddg">
+                                        <div className="w-100">
+                                            <div className="flex  opaci-75 ">
                                                 {!!tokensArray[aToken] && (
-                                                    <div>
+                                                    <div className="flex-center  flex-justify-between w-100">
                                                         {!tokensArray[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state
-                                                            ? <>Inactive</>
-                                                            : <>Active</>
+                                                            ? <div className="opaci-25">Inactive</div>
+                                                            : <div className="opaci-75">Active</div>
                                                         }
                                                         {tokensArray[aToken][0].state == 1 && <>
-                                                            <div>
-                                                                virtual order open
+                                                            <div className=" tx-sm">
+                                                                open
                                                             </div>
                                                         </>}
                                                         {/* {JSON.stringify(tokensArray[aToken][0])} */}
@@ -317,7 +324,7 @@ function Dashboard({query}) {
                                     {/* {tokensArray[selectedToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state} */}
                                     <TokenConfigStateButtons 
                                         timeframe={timeframe}
-                                        index={DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)}
+                                        index={DEFAULT_TOKENS_ARRAY.indexOf(selectedToken)}
                                         tokensArray={tokensArray}
                                         queryUSDT={queryUSDT}
                                         aToken={selectedToken}
@@ -450,9 +457,11 @@ function Dashboard({query}) {
                     >
                         
                         <div className="pa-1 pos-abs right-0 bottom-0">{klinesStats.min}</div>
-                        <div className="pa-1 pos-abs right-0 top-75p opaci-50">{parseDecimals((klinesStats.min+klinesStats.minMaxAvg)/2)}</div>
+                        <div className="pa-1 pos-abs right-0 top-75p">{klinesStats.minMedian}</div>
+                        {/* <div className="pa-1 pos-abs right-0 top-75p opaci-50">{parseDecimals((klinesStats.min+klinesStats.minMaxAvg)/2)}</div> */}
+                        <div className="pa-1 pos-abs right-0 top-25p">{klinesStats.maxMedian}</div>
                         <div className="pa-1 pos-abs right-0 top-50p">{klinesStats.minMaxAvg}</div>
-                        <div className="pa-1 pos-abs right-0 top-25p opaci-50">{parseDecimals((klinesStats.max+klinesStats.minMaxAvg)/2)}</div>
+                        {/* <div className="pa-1 pos-abs right-0 top-25p opaci-50">{parseDecimals((klinesStats.max+klinesStats.minMaxAvg)/2)}</div> */}
                         <div className="pa-1 pos-abs right-0 top-0">{klinesStats.max}</div>
                         <ChartHigherLine klinesArray={p__klinesArray} klinesStats={klinesStats}
                             tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}

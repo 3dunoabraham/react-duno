@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { DEFAULT_TIMEFRAME_ARRAY } from "../../scripts/constants"
-import { getStrategyResult } from "../../scripts/helpers"
+import { getStrategyResult, parseDecimals } from "../../scripts/helpers"
 
 export const TokenConfigStateButtons = ({
     timeframe,
@@ -24,10 +24,20 @@ export const TokenConfigStateButtons = ({
     // if(!queryUSDT.data) return
     // if(!queryUSDT.data[index]) return
 
-    let theStrategyResult = useMemo(()=>{ return (
+    let theStrategyResult = useMemo(()=>{
+        // console.log("tokenConfig",theToken)
+        
+        let minMaxAvg = parseFloat(`${parseDecimals((parseFloat(theToken.ceil)+parseFloat(theToken.floor))/2)}`)
+        let minMedian = (parseFloat(theToken.floor)+parseFloat(`${minMaxAvg}`))/2
+        let maxMedian = (parseFloat(theToken.ceil)+parseFloat(`${minMaxAvg}`))/2
+        let stats = {
+            minMaxAvg,minMedian,maxMedian
+        }
+        console.log(stats)
+        return (
         queryUSDT.data && queryUSDT.data[index] &&
             (aToken in tokensArray)
-                ? (getStrategyResult(theToken,parseFloat(queryUSDT.data[index].price)))
+                ? (getStrategyResult(theToken,parseFloat(queryUSDT.data[index].price),stats))
                 : 0
     )},[queryUSDT,])
 
@@ -43,8 +53,8 @@ export const TokenConfigStateButtons = ({
             {theToken && queryUSDT.data &&
                 <div className="flex-center px-4">
                     {theStrategyResult == 0 && <div>Wait</div>}
-                    {theStrategyResult == 1 && <div>Buy <br/> 1st <br/> Half</div>}
-                    {theStrategyResult == 2 && <div>Buy <br/> 2nd <br/> Half</div>}
+                    {theStrategyResult == 1 && <div>Buy <br/> 1st Half</div>}
+                    {theStrategyResult == 2 && <div>Buy <br/> 2nd Half</div>}
                     {/* <div className="px-2 py-1 bg-white bord-r-5 tx-green opaci-chov--50">Do Trade</div>
                     <div className="px-2 py-1 bg-white bord-r-5 tx-red">Don't <br /> Trade</div> */}
                 </div>
