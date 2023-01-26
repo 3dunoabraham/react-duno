@@ -18,6 +18,8 @@ function Dashboard({query}) {
         getKlineArray()
     },[])
 
+
+
     /********** DATA **********/
     const API_PRICE_BASEURL = "https://api.binance.com/api/v3/ticker/price?symbol="
     const baseToken = "usdt"
@@ -29,6 +31,7 @@ function Dashboard({query}) {
     const [LS_tokensArray, s__LS_tokensArray] = useLocalStorage('localTokensArray', "{}")
     const [LS_uid, s__LS_uid] = useLocalStorage('uid', "")
     const [uid, s__uid] = useState("")
+    const [isUIReversed,s__isUIReversed] = useState<any>(true)
     const [selectedToken,s__selectedToken] = useState<any>(cryptoToken)
     const [chopAmount,s__chopAmount] = useState<any>(0)
     const DEFAULT_TIMEFRAME = "15m"
@@ -98,7 +101,7 @@ function Dashboard({query}) {
             dropPercent,
             timeDiff,
         }
-    },[p__klinesArray])
+    },[p__klinesArray, tokensArray])
 
     
     /********** UPDATE **********/
@@ -137,7 +140,7 @@ function Dashboard({query}) {
     }
     const updateTokenOrder = (token:string, timeframe:any, substate:string) => {
         if (!token) return
-        let value = parseInt(prompt("Enter Value"))
+        let value = parseFloat(prompt("Enter Value"))
         if (!value) return
         let timeframeIndex = timeframe
         // let timeframeIndex = DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)
@@ -208,10 +211,10 @@ function Dashboard({query}) {
                 boxShadow:"0 10px 50px -20px #00000077"
             }}
         >
-            <div className=" flex-col w-100 ">
-                {loadings != "" && <div className="flex  w-90 bg-w-opaci-10  my-3 bord-r-8 my-8 h-300px"></div> }   
+            <div className={` flex-col${isUIReversed ? "-r" : ""} w-100 `}>
+                {loadings != "" && <div className="flex  w-90 bg-w-10 bord-r-8 my-6 h-300px"></div> }   
                 {loadings == "" &&
-                    <div className="flex-center flex-align-start w-90 mq_xs_flex-col">
+                    <div className="flex-center flex-align-start w-90 mq_xs_flex-col my-4">
 
                         <div className="flex-col">
                             {/*uid &&*/ DEFAULT_TOKENS_ARRAY.map((aToken,index)=>{
@@ -222,7 +225,7 @@ function Dashboard({query}) {
                                 if (!tokensArray[aToken] || (tokensArray[aToken] && !tokensArray[aToken][0])) { isQ = false }
                                 let theToken = isQ ? tokensArray[aToken][0] : null
                                 return (
-                                <div className={`flex pa-2 w-350px bord-r-8 mt-2 w-100  ${aToken == selectedToken ? "bg-w-opaci-20 " : "bg-b-opaci-10 "} `} key={index}>
+                                <div className={`flex pa-2 w-350px bord-r-8 mt-2 w-100  ${aToken == selectedToken ? "bg-w-20 " : "bg-b-10 "} `} key={index}>
                                     <div className="      flex-col w-100 " >
                                         
                                         {<div className="tx-lgx  w-100 flex-col flex-align-start  " >
@@ -273,12 +276,12 @@ function Dashboard({query}) {
                                         <div className="">
                                             <div className="flex-col">
                                                 <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"mode")}}
-                                                    className="opaci-chov--50 bg-w-opaci-90  tx-black px-3 py-1 bord-r-15 mx-1 ma-1"
+                                                    className="opaci-chov--50 bg-w-90  tx-black px-3 py-1 bord-r-15 mx-1 ma-1"
                                                 >
                                                     Mode: {theToken && theToken.mode}
                                                 </div>
                                                 <div className="flex-center px-4">
-                                                    <div onClick={queryUSDT.refetch} className="px-2 py-1 bg-b-opaci-50 opaci-chov--50 bord-r-8 ">
+                                                    <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-50 opaci-chov--50 bord-r-8 ">
                                                         Refresh
                                                     </div>
                                                 </div>
@@ -300,7 +303,7 @@ function Dashboard({query}) {
                             <div className="flex-wrap w-300px ">
                                 {DEFAULT_TIMEFRAME_ARRAY.map((aTimeframe,index)=>{
                                     return (
-                                    <button className="ma-1 pa-2  opaci-chov--50 bg-w-opaci-10 bord-r-8 tx-white"
+                                    <button className="ma-1 pa-2  opaci-chov--50 bg-w-10 bord-r-8 tx-white"
                                         // style={{boxShadow:aTimeframe == timeframe && "0px 0px 2px 2px green"}}
                                         key={index} onClick={()=>setNewTimeframe(aTimeframe)}
                                     >
@@ -342,7 +345,7 @@ function Dashboard({query}) {
                             <div className="flex-wrap w-250px ">
                                 {["-300","250","630"].map((aWavelength,index)=>{
                                     return (
-                                    <button className="fle-col ma-1 pb-3 px-2 py-2  opaci-chov--50 bg-w-opaci-20  tx-lg bord-r-8 tx-white"
+                                    <button className="fle-col ma-1 pb-3 px-2 py-2  opaci-chov--50 bg-w-20  tx-lg bord-r-8 tx-white"
                                         style={{
                                             border: `2px solid rgb(${(200-parseInt(aWavelength))},99,99)`,
                                             // boxShadow:wavelength==aWavelength?"0 6px 9px 1px #000000aa":""
@@ -381,8 +384,14 @@ function Dashboard({query}) {
                                             </div>
                                         </summary>
                                             
-                                        <div className="w-90 flex flex-justify-end">
-                                            <div className="bg-w-opaci-50  bord-r-50 px-2 py-1 tx-sm ">
+                                        <div className="w-90 flex-col flex-justify-end">
+                                            {/* <button className="clickble tx-ls-5 my-2 opaci-50 opaci-chov-50  hov-bord-1-w py-2 px-3 bord-r-50 tx-lg"
+                                                onClick={()=>{s__isUIReversed(!isUIReversed)}}
+                                                style={{boxShadow:"0px 0px 25px #CF589433"}}
+                                            >
+                                                Turn
+                                            </button> */}
+                                            <div className="bg-w-50  bord-r-50 px-2 py-1 tx-sm ">
                                                 {uid}
                                             </div>
                                         </div>
@@ -432,21 +441,18 @@ function Dashboard({query}) {
                         <div className=" left-0 top-0">{klinesStats.dropPercent}%</div>
                     </div>
                 </div>
-                {loadings == "" && <>
-                    {JSON.stringify(tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)])}
-                </>}
-                {loadings != "" && <div className="flex  w-90 bg-w-opaci-10  my-3 bord-r-8 h-400px"></div> }   
+                {loadings != "" && <div className="flex  w-90 bg-w-10  my-3 bord-r-8 h-400px"></div> }   
                 
                 {loadings == "" &&
                     <div
-                        className="flex pos-rel w-90 box-shadow-5 bg-w-opaci-10 hov-bord-1-w autoverflow  my-3 bord-r-8"
+                        className="flex pos-rel w-90 box-shadow-5 bg-w-10 hov-bord-1-w autoverflow  my-3 bord-r-8"
                         style={{ resize:"both", height:"400px", }}
                     >
                         
                         <div className="pa-1 pos-abs right-0 bottom-0">{klinesStats.min}</div>
-                        <div className="pa-1 pos-abs right-0 top-75p opaci-50">{(klinesStats.min+klinesStats.minMaxAvg)/2}</div>
+                        <div className="pa-1 pos-abs right-0 top-75p opaci-50">{parseDecimals((klinesStats.min+klinesStats.minMaxAvg)/2)}</div>
                         <div className="pa-1 pos-abs right-0 top-50p">{klinesStats.minMaxAvg}</div>
-                        <div className="pa-1 pos-abs right-0 top-25p opaci-50">{(klinesStats.max+klinesStats.minMaxAvg)/2}</div>
+                        <div className="pa-1 pos-abs right-0 top-25p opaci-50">{parseDecimals((klinesStats.max+klinesStats.minMaxAvg)/2)}</div>
                         <div className="pa-1 pos-abs right-0 top-0">{klinesStats.max}</div>
                         <ChartHigherLine klinesArray={p__klinesArray} klinesStats={klinesStats}
                             tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
@@ -483,6 +489,17 @@ function Dashboard({query}) {
                     </div>
                     <div className="">
                         {klinesStats.endDate}
+                    </div>
+                </div>
+
+                <div className="flex-center ma-4">
+                    <a  className="px-2 py-1 bg-w-50 ma-1  opaci-chov--50 bord-r-8 tx-white" target={"_blank"}
+                        href={`https://www.tradingview.com/chart/?symbol=BINANCE%3A${cryptoToken.toUpperCase()}${baseToken.toUpperCase()}`}
+                    >
+                        {cryptoToken.toUpperCase()}{baseToken.toUpperCase()} @{timeframe}
+                    </a>
+                    <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                        Refresh
                     </div>
                 </div>
 
