@@ -38,6 +38,34 @@ export const ChartSinLine = ({
                 left: `${index/500*100}%`,
                 background: `rgba(${(-200+index)},127,${(100-index)},0.8)`,
                 top:(
+                `
+                    ${50+ (Math.sin((index/wavelength*10) + (Math.sin(((index)/wavelength)*1)) )*33)  }%
+                `
+                ),
+            }}
+            >
+        </div>
+        )
+    })}
+    </div>
+    )
+}
+// ${50+ (Math.sin(index/wavelength + Math.sin((index)/wavelength)*20 )*(50*(index/500)))  }%
+export const ChartSinLine2 = ({
+    klinesArray,wavelength,chopAmount
+}:{klinesArray:any[],wavelength:number,chopAmount:number})=>{
+    return (
+    <div>
+    {klinesArray.map((aKline:any,index:any) => {
+        return (
+        <div key={index}
+            className="  block pos-abs"
+            style={{
+                width: "2px",
+                height: "2px",
+                left: `${index/500*100}%`,
+                background: `rgba(${(-200+index)},127,${(100-index)},0.8)`,
+                top:(
                 wavelength < 400 ? 
                 `
                     ${90-(index/10)+ (Math.sin(index/wavelength + Math.sin((index)/wavelength)*20 )*(50*(index/500)))  }%
@@ -55,27 +83,30 @@ export const ChartSinLine = ({
     </div>
     )
 }
-export const ChartLowerLine = ({
-    klinesArray,klinesStats
-}:{klinesArray:any[],klinesStats:any})=>{
+export const ChartLowerLastLine = ({
+    klinesArray,klinesStats,
+    tokenConfig
+}:{tokenConfig:any,klinesArray:any[],klinesStats:any})=>{
     return (
     <div>
-        {klinesArray.map((aKline:any,index:any) => {
+        {klinesArray.map((_aKline:any,index:any) => {
+        let aKline = klinesArray[499]
+        if (aKline[3] > klinesStats.max) return <></>
         return (
             <div key={index}
                 className=" block pos-abs "
                 style={{
                     width: "2px",
-                    height: "1px",
+                    height: aKline[3] < klinesStats.min ? "4px" : "2px",
                     left: `${(index/500*100) }%`,
-                    background:`#ff0000`,
+                    background: `#33000077`,
                     bottom:`
                     ${parseInt(`
-                    ${(
-                        (parseFloat(aKline[3])-klinesStats.min)
-                        /
-                        (klinesStats.range)
-                        )*100}
+                        ${aKline[3] < klinesStats.min ? 0 : ((
+                            (parseFloat(aKline[3])-(klinesStats.min))
+                            /
+                            (klinesStats.max-(klinesStats.min))
+                        )*100)}
                         `)}%
                         `,
                 }}
@@ -86,27 +117,99 @@ export const ChartLowerLine = ({
     </div>
     )
 }
-export const ChartHigherLine = ({
-    klinesArray,klinesStats
-}:{klinesArray:any[],klinesStats:any})=>{
+
+export const ChartLowerLine = ({
+    klinesArray,klinesStats,
+    tokenConfig
+}:{tokenConfig:any,klinesArray:any[],klinesStats:any})=>{
     return (
     <div>
         {klinesArray.map((aKline:any,index:any) => {
-            return (
+        if (aKline[3] > klinesStats.max) return <></>
+        return (
+            <div key={index}
+                className=" block pos-abs "
+                style={{
+                    width: "2px",
+                    height: aKline[3] < klinesStats.min ? "4px" : "2px",
+                    left: `${(index/500*100) }%`,
+                    background: aKline[3] < klinesStats.min ? `#ffaa00` : `#ff000099`,
+                    bottom:`
+                    ${parseInt(`
+                        ${aKline[3] < klinesStats.min ? 0 : ((
+                            (parseFloat(aKline[3])-(klinesStats.min))
+                            /
+                            (klinesStats.max-(klinesStats.min))
+                        )*100)}
+                        `)}%
+                        `,
+                }}
+            >
+            </div>
+            )
+        })}
+    </div>
+    )
+}
+export const ChartHigherLastLine = ({
+    klinesArray,klinesStats,
+    tokenConfig
+}:{tokenConfig:any,klinesArray:any[],klinesStats:any})=>{
+    return (
+    <div>
+        {klinesArray.map((_aKline:any,index:any) => {
+        // if (parseFloat(aKline[2]) > tokenConfig.ceil) return <></>
+        let aKline = klinesArray[499]
+        if (aKline[2] < klinesStats.min) return <></>
+        return (
             <div key={index}
                 className="  block pos-abs"
                 style={{
                     width: "2px",
-                    height: "2px",
+                    height: aKline[2] > klinesStats.max ? "3px" : "2px",
                     left: `${index/500*100}%`,
-                    background:`#00ff0077`,
+                    background:`#00330077`,
                     bottom:`
                     ${parseInt(`
-                        ${(
-                            (parseFloat(aKline[2])-klinesStats.min)
+                        ${aKline[2] > klinesStats.max ? 99 : ((
+                            (parseFloat(aKline[2])-(klinesStats.min))
                             /
-                            (klinesStats.range)
-                            )*100}
+                            (klinesStats.max-(klinesStats.min))
+                        )*100)}
+                        `)}%
+                    `,
+                }}
+            >
+            </div>
+            )
+        })}
+    </div>
+    )
+}
+export const ChartHigherLine = ({
+    klinesArray,klinesStats,
+    tokenConfig
+}:{tokenConfig:any,klinesArray:any[],klinesStats:any})=>{
+    return (
+    <div>
+        {klinesArray.map((aKline:any,index:any) => {
+        // if (parseFloat(aKline[2]) > tokenConfig.ceil) return <></>
+        if (aKline[2] < klinesStats.min) return <></>
+        return (
+            <div key={index}
+                className="  block pos-abs"
+                style={{
+                    width: "2px",
+                    height: aKline[2] > klinesStats.max ? "3px" : "2px",
+                    left: `${index/500*100}%`,
+                    background:aKline[2] > klinesStats.max ? `#77ff00` : `#77ff0066`,
+                    bottom:`
+                    ${parseInt(`
+                        ${aKline[2] > klinesStats.max ? 99 : ((
+                            (parseFloat(aKline[2])-(klinesStats.min))
+                            /
+                            (klinesStats.max-(klinesStats.min))
+                        )*100)}
                         `)}%
                     `,
                 }}

@@ -2,12 +2,14 @@ import { useState, useEffect, useMemo } from "react";
 import { useQuery } from '@tanstack/react-query'
 import { fetchJsonArray, fetchMultipleJsonArray, getStrategyResult, parseDecimals, parseUTCDateString, parseUTCString, timeDifference } from "../scripts/helpers";
 import { BsFillGearFill } from "react-icons/bs"
-import { ChartSinLine, ChartHigherLine, ChartLowerLine, ChartMiddleLine, ChartTopBottomLine } from "../components/chart/lines";
+import { ChartSinLine, ChartHigherLine, ChartLowerLine, ChartMiddleLine, ChartTopBottomLine, ChartLowerLastLine, ChartHigherLastLine } from "../components/chart/lines";
 import { DEFAULT_TIMEFRAME_ARRAY } from "../scripts/constants";
 import { TokenConfigStateButtons } from "../components/chart/tokenConfig";
 import { useLocalStorage } from "usehooks-ts";
+import { useRouter } from "next/router";
 
-function Dashboard({}: {}) {
+const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","matic","sol"]
+function Dashboard({query}) {
     /********** CREATE **********/
     useEffect(()=>{
         s__tokensArray(JSON.parse(LS_tokensArray))
@@ -16,12 +18,10 @@ function Dashboard({}: {}) {
         getKlineArray()
     },[])
 
-
-
     /********** DATA **********/
     const API_PRICE_BASEURL = "https://api.binance.com/api/v3/ticker/price?symbol="
     const baseToken = "usdt"
-    const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","matic","sol"]
+    const cryptoToken = DEFAULT_TOKENS_ARRAY.includes(query.token.toLowerCase()) ? query.token.toLowerCase() : "btc"
     const tokensReqObj:any = (
     DEFAULT_TOKENS_ARRAY.reduce((acc, aToken) => (
         { ...acc, [aToken]: [`${API_PRICE_BASEURL}${(aToken+baseToken).toUpperCase()}`] }
@@ -29,11 +29,11 @@ function Dashboard({}: {}) {
     const [LS_tokensArray, s__LS_tokensArray] = useLocalStorage('localTokensArray', "{}")
     const [LS_uid, s__LS_uid] = useLocalStorage('uid', "")
     const [uid, s__uid] = useState("")
-    const [selectedToken,s__selectedToken] = useState<any>("btc")
+    const [selectedToken,s__selectedToken] = useState<any>(cryptoToken)
     const [chopAmount,s__chopAmount] = useState<any>(0)
     const DEFAULT_TIMEFRAME = "15m"
     const [timeframe,s__timeframe] = useState<any>(DEFAULT_TIMEFRAME)
-    const [wavelength,s__wavelength] = useState<any>(-340)
+    const [wavelength,s__wavelength] = useState<any>(-300)
     const [tokensArray,s__tokensArray] = useState<any>({})
     const [klinesArray,s__klinesArray] = useState<any[]>([])
     const [clientIP, s__clientIP] = useState('');
@@ -65,6 +65,9 @@ function Dashboard({}: {}) {
     const online = true
     const DEFAULT_TOKEN = {}
     const klinesStats = useMemo(()=>{
+        if (!tokensArray[cryptoToken]) return {}
+        let tokenConfirg = tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]
+
         let maxPrice = 0
         let minPrice = p__klinesArray.length ? p__klinesArray[0][3] : 99999999999
         for (let kline of p__klinesArray)
@@ -77,16 +80,18 @@ function Dashboard({}: {}) {
         let startDate = parseUTCDateString(new Date(p__klinesArray.length ? p__klinesArray[0][0] : 0))
         let midDate = parseUTCDateString(new Date(p__klinesArray.length ? p__klinesArray[250][0] : 0))
         let endDate = parseUTCDateString(new Date(p__klinesArray.length ? p__klinesArray[499][0] : 0))
-        let range = parseFloat(`${parseDecimals(max-min)}`)
+        let range = parseFloat(`${parseDecimals(tokenConfirg.ceil-tokenConfirg.floor)}`)
         
         let dropPercent = parseFloat(100-parseInt(`${p__klinesArray.length ? min/max*100 : 0}`)+"")
         // !!p__klinesArray.length && console.log("asdasdas", p__klinesArray[0])
         let timeDiff = p__klinesArray.length ? timeDifference(p__klinesArray[499][0], p__klinesArray[0][0]) : ""
         return {
-            minMaxAvg:(max+min)/2,
+            minMaxAvg:(tokenConfirg.ceil+tokenConfirg.floor)/2,
             range,
-            min,
-            max,
+            minPrice: min,
+            maxPrice: max,
+            min: parseFloat(tokenConfirg.floor),
+            max: parseFloat(tokenConfirg.ceil),
             endDate,
             midDate,
             startDate,
@@ -219,13 +224,39 @@ function Dashboard({}: {}) {
                                 return (
                                 <div className={`flex pa-2 w-350px bord-r-8 mt-2 w-100  ${aToken == selectedToken ? "bg-w-opaci-20 " : "bg-b-opaci-10 "} `} key={index}>
                                     <div className="      flex-col w-100 " >
-                                        <div className="tx-lgx  w-100 flex-col flex-align-start  " >
+                                        
+                                        {<div className="tx-lgx  w-100 flex-col flex-align-start  " >
                                             <span className="opaci-chov--50" onClick={()=>{setToken(aToken)}}>
                                                 <span className="px-1">{aToken.toUpperCase()}:</span>
                                                 <span className="tx-ls-2">{isK && parseDecimals(queryUSDT.data[index].price)}</span>
                                             </span>
+                                        </div>}
+                                        <div className="">
+                                            <div className="flex-center opaci-75 ddg">
+                                                {!!tokensArray[aToken] && (
+                                                    <div>
+                                                        {!tokensArray[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state
+                                                            ? <>Inactive</>
+                                                            : <>Active</>
+                                                        }
+                                                        {tokensArray[aToken][0].state == 1 && <>
+                                                            <div>
+                                                                virtual order open
+                                                            </div>
+                                                        </>}
+                                                        {/* {JSON.stringify(tokensArray[aToken][0])} */}
+                                                    </div>
+                                                )}
+                                                {false && !tokensArray[aToken] && (
+                                                    <div>
+                                                        test
+                                                    </div>
+                                                )}
+                                                {false && JSON.stringify(tokensArray[aToken])}
+                                            </div>
                                         </div>
-                                        {aToken == selectedToken && isK &&
+                                        {/* tokensArray */}
+                                        {false && aToken == selectedToken && isK &&
                                             <div className="">
                                                 <div className="flex-center opaci-75 ddg">
                                                     <div className="">{klinesStats.min}</div>
@@ -280,6 +311,7 @@ function Dashboard({}: {}) {
                             </div>
                             {tokensArray &&  tokensArray[selectedToken] && tokensArray[selectedToken][0] &&
                                 <div className="flex-wrap w-  ">
+                                    {/* {tokensArray[selectedToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state} */}
                                     <TokenConfigStateButtons 
                                         timeframe={timeframe}
                                         index={DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)}
@@ -308,7 +340,7 @@ function Dashboard({}: {}) {
                                 </div>
                             </div>
                             <div className="flex-wrap w-250px ">
-                                {["-340","250","630"].map((aWavelength,index)=>{
+                                {["-300","250","630"].map((aWavelength,index)=>{
                                     return (
                                     <button className="fle-col ma-1 pb-3 px-2 py-2  opaci-chov--50 bg-w-opaci-20  tx-lg bord-r-8 tx-white"
                                         style={{
@@ -400,6 +432,9 @@ function Dashboard({}: {}) {
                         <div className=" left-0 top-0">{klinesStats.dropPercent}%</div>
                     </div>
                 </div>
+                {loadings == "" && <>
+                    {JSON.stringify(tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)])}
+                </>}
                 {loadings != "" && <div className="flex  w-90 bg-w-opaci-10  my-3 bord-r-8 h-400px"></div> }   
                 
                 {loadings == "" &&
@@ -413,8 +448,18 @@ function Dashboard({}: {}) {
                         <div className="pa-1 pos-abs right-0 top-50p">{klinesStats.minMaxAvg}</div>
                         <div className="pa-1 pos-abs right-0 top-25p opaci-50">{(klinesStats.max+klinesStats.minMaxAvg)/2}</div>
                         <div className="pa-1 pos-abs right-0 top-0">{klinesStats.max}</div>
-                        <ChartHigherLine klinesArray={p__klinesArray} klinesStats={klinesStats} />
-                        <ChartLowerLine klinesArray={p__klinesArray} klinesStats={klinesStats} />
+                        <ChartHigherLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                            tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                        />
+                        <ChartLowerLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                            tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                        />
+                        <ChartHigherLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                            tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                        />
+                        <ChartLowerLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                            tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                        />
 
                         <ChartMiddleLine klinesArray={klinesArray} />
                         <ChartTopBottomLine klinesArray={klinesArray} />
@@ -448,10 +493,17 @@ function Dashboard({}: {}) {
     </div>
     )
 }
-export default () => {
+export default ({query}) => {
+    const router = useRouter()
+    // const { token } = router.query
+
+    let __token = router.query.token || ""
+    // console.log("query", router.query)
+    // console.log("query", __token, DEFAULT_TOKENS_ARRAY.includes(__token.toLowerCase()), query)
+    if (!router.query.token) return
     return (
     <div className="">
-        <Dashboard  />
+        <Dashboard  query={{token:router.query.token}} />
     </div>
     )
 }
