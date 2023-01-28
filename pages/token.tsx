@@ -9,7 +9,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { useRouter } from "next/router";
 
 const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","matic","link"]
-export const Dashboard = ({query}) {
+function Dashboard({query}) {
     /********** CREATE **********/
     useEffect(()=>{
         s__tokensArray(JSON.parse(LS_tokensArray))
@@ -237,7 +237,7 @@ export const Dashboard = ({query}) {
                                             
                                             {<div className="tx-lgx  w-100 flex flex-align-start  " >
                                                 {/* <a onClick={()=>{setToken(aToken)}}  className="bord-r-5 px-2 py-1 bg-w-50 opaci-chov--50 tx-white tx-lg">↑</a> */}
-                                                <a className="opaci-chov--50 tx-white" href={"/token?token="+aToken}>
+                                                <a className="opaci-chov--50 tx-white" href={"/dashboard?token="+aToken}>
                                                     <span className="px-1">{aToken.toUpperCase()}:</span>
                                                     <span className="tx-ls-2">{isK && parseDecimals(queryUSDT.data[index].price)}</span>
                                                 </a>
@@ -523,6 +523,20 @@ export const Dashboard = ({query}) {
             </div>
         </div>
         <div className=" pt-200"></div>
+    </div>
+    )
+}
+export default ({query}) => {
+    const router = useRouter()
+    // const { token } = router.query
+
+    let __token = router.query.token || "btc"
+    // console.log("query", router.query)
+    // console.log("query", __token, DEFAULT_TOKENS_ARRAY.includes(__token.toLowerCase()), query)
+    // if (!router.query.token) return
+    return (
+    <div className="">
+        <Dashboard  query={{token:__token}} />
     </div>
     )
 }
