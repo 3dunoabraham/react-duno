@@ -8,7 +8,7 @@ import { TokenConfigStateButtons } from "../components/chart/tokenConfig";
 import { useLocalStorage } from "usehooks-ts";
 import { useRouter } from "next/router";
 
-const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","matic","link"]
+const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","link","matic","sol",]
 function Dashboard({query}) {
     /********** CREATE **********/
     useEffect(()=>{

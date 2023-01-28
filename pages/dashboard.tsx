@@ -9,9 +9,9 @@ import { useLocalStorage } from "usehooks-ts";
 import { useRouter } from "next/router";
 
 
-const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","matic","link"]
+const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","link","matic","sol",]
 function Dashboard({query}) {
-    const queryParams = new URLSearchParams("?term=pizza&location=Bangalore")
+    const [queryParams, s__queryParams] = useState<{origin:any}>()
     /********** CREATE **********/
     useEffect(()=>{
         console.log("queryParams", queryParams)
@@ -19,6 +19,7 @@ function Dashboard({query}) {
         s__uid(LS_uid)
         s__clientIP(LS_uid.split(":")[0])
         getKlineArray()
+        s__queryParams(window.location)
     },[])
 
 
@@ -211,6 +212,10 @@ function Dashboard({query}) {
                 </button>
             </div>
         )}
+        <div className="tx-white">
+            |{!!queryParams && !!queryParams.origin && queryParams.origin}|
+
+        </div>
         <div
             className={
                 "bg-glass-6   bord-r-10 tx-white mt-8 py-8 z-999 fade-in w-95 noverflow flex flex-between"
@@ -234,6 +239,7 @@ function Dashboard({query}) {
                                     let isK = isQ
                                     if (!tokensArray[aToken] || (tokensArray[aToken] && !tokensArray[aToken][0])) { isQ = false }
                                     let theToken = isQ ? tokensArray[aToken][0] : null
+                                    let aTokenCristayl = isQ ? tokensArray[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)] : {}
                                     return (
                                     <div key={index}
                                         className={
@@ -249,6 +255,7 @@ function Dashboard({query}) {
                                                     <span className="tx-ls-2">{isK && parseDecimals(queryUSDT.data[index].price)}</span>
                                                 </a>
                                             </div>}
+
                                             <div className="w-100">
                                                 <div className="flex  opaci-75 ">
                                                     {!!tokensArray[aToken] && (
@@ -257,6 +264,26 @@ function Dashboard({query}) {
                                                                 ? <div className="opaci-25">Inactive</div>
                                                                 : <div className="opaci-75">Active</div>
                                                             }
+                                                            
+                                                            {!isQ || !tokensArray[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state && !aTokenCristayl 
+                                                                ? (<div className="opaci-25">
+                                                                        Inactive
+                                                                    </div>
+                                                                )
+                                                                : (<div className="opaci-75">
+                                                                        {JSON.stringify(aTokenCristayl)}
+                                                                        ---
+                                                                        {JSON.stringify(getStrategyResult(aTokenCristayl,queryUSDT.data[index].price,aTokenCristayl))
+                                                                            ? "y"
+                                                                            : "n"
+                                                                        }
+                                                                        *
+                                                                        {aTokenCristayl.buy}
+                                                                        {/* {JSON.stringify(aTokenCristayl)} */}
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            
                                                             {tokensArray[aToken][0].state == 1 && <>
                                                                 <div className=" tx-sm">
                                                                     open

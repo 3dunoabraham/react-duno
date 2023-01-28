@@ -247,8 +247,6 @@ export const getStaticProps = async () => {
     );
     let links = (await supabaseAdmin.from("links").select("*").order("id")).data || []
     let services = (await supabaseAdmin.from("services").select("*").order("id")).data || []
-    // console.log("links, services")
-    // console.log(links, services)
     return {
         props: {
             links: links,
