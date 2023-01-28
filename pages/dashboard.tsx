@@ -8,10 +8,13 @@ import { TokenConfigStateButtons } from "../components/chart/tokenConfig";
 import { useLocalStorage } from "usehooks-ts";
 import { useRouter } from "next/router";
 
+
 const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","matic","link"]
 function Dashboard({query}) {
+    const queryParams = new URLSearchParams("?term=pizza&location=Bangalore")
     /********** CREATE **********/
     useEffect(()=>{
+        console.log("queryParams", queryParams)
         s__tokensArray(JSON.parse(LS_tokensArray))
         s__uid(LS_uid)
         s__clientIP(LS_uid.split(":")[0])
@@ -232,7 +235,11 @@ function Dashboard({query}) {
                                     if (!tokensArray[aToken] || (tokensArray[aToken] && !tokensArray[aToken][0])) { isQ = false }
                                     let theToken = isQ ? tokensArray[aToken][0] : null
                                     return (
-                                    <div className={`flex pa-2 w-min-350px bord-r-8 mt-2 w-100  ${aToken == selectedToken ? "bg-w-20 " : "bg-b-10 "} `} key={index}>
+                                    <div key={index}
+                                        className={
+                                            `flex pa-2 w-min-350px bord-r-8 mt-2 w-100  ${aToken == selectedToken ? "bg-w-20 " : "bg-b-10 "} `
+                                        }
+                                    >
                                         <div className="      flex-col w-100 " >
                                             
                                             {<div className="tx-lgx  w-100 flex flex-align-start  " >

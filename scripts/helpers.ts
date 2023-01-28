@@ -7,7 +7,7 @@ export const getStrategyResult = (tokenConfig:any, livePrice:number,stats:any) =
     let ceilPrice = parseFloat(ceil)
     let isInRange = state == 1
     let hasntBought = buy == 0
-    console.log(livePrice,stats.minMaxAvg)
+    // console.log(livePrice,stats.minMaxAvg)
     if (isInRange)
     {
       if (hasntBought)
@@ -57,7 +57,7 @@ export const parseDecimals = (x:number) => {
     }
     if (x < 0.00001)
     {
-      console.log("*number* TOO LOW", x)
+      // console.log("*number* TOO LOW", x)
       return x.toFixed(8)
     }
     if (x < 0.0001)

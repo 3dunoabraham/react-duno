@@ -33,7 +33,7 @@ export const TokenConfigStateButtons = ({
         let stats = {
             minMaxAvg,minMedian,maxMedian
         }
-        console.log(stats)
+        // console.log(stats)
         return (
         queryUSDT.data && queryUSDT.data[index] &&
             (aToken in tokensArray)

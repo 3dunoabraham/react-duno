@@ -91,7 +91,7 @@ export const ChartLowerLastLine = ({
     <div>
         {klinesArray.map((_aKline:any,index:any) => {
         let aKline = klinesArray[499]
-        if (aKline[3] > klinesStats.max) return <></>
+        if (aKline[3] > klinesStats.max) return <div key={index}></div>
         return (
             <div key={index}
                 className=" block pos-abs "
@@ -125,7 +125,7 @@ export const ChartLowerLine = ({
     return (
     <div>
         {klinesArray.map((aKline:any,index:any) => {
-        if (aKline[3] > klinesStats.max) return <></>
+        if (aKline[3] > klinesStats.max) return <div key={index}></div>
         return (
             <div key={index}
                 className=" block pos-abs "
@@ -158,9 +158,9 @@ export const ChartHigherLastLine = ({
     return (
     <div>
         {klinesArray.map((_aKline:any,index:any) => {
-        // if (parseFloat(aKline[2]) > tokenConfig.ceil) return <></>
+        // if (parseFloat(aKline[2]) > tokenConfig.ceil) return <div key={index}></div>
         let aKline = klinesArray[499]
-        if (aKline[2] < klinesStats.min) return <></>
+        if (aKline[2] < klinesStats.min) return <div key={index}></div>
         return (
             <div key={index}
                 className="  block pos-abs"
@@ -193,8 +193,8 @@ export const ChartHigherLine = ({
     return (
     <div>
         {klinesArray.map((aKline:any,index:any) => {
-        // if (parseFloat(aKline[2]) > tokenConfig.ceil) return <></>
-        if (aKline[2] < klinesStats.min) return <></>
+        // if (parseFloat(aKline[2]) > tokenConfig.ceil) return <div key={index}></div>
+        if (aKline[2] < klinesStats.min) return <div key={index}></div>
         return (
             <div key={index}
                 className="  block pos-abs"
