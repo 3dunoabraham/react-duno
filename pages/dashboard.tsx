@@ -67,7 +67,7 @@ function DashboardPage({query}) {
             console.log("fetching now")
             return online ? (await fetchMultipleJsonArray(tokensReqObj)) : DEFAULT_TOKEN
         },        
-        refetchInterval: 10000,
+        refetchInterval: 3000,
     })
     const online = true
     const DEFAULT_TOKEN = {}

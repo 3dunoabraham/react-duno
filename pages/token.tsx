@@ -113,9 +113,14 @@ function TokenPage({query}) {
 
         return slicedArray.slice(slicedArray.length-500,slicedArray.length)
     },[klinesArray,chopAmount])
+    
     const queryUSDT:any = useQuery({
         queryKey: ['usdt'],
-        queryFn: async () => online ? await fetchMultipleJsonArray(tokensReqObj) : DEFAULT_TOKEN,        
+        queryFn: async () => {
+            console.log("fetching now")
+            return online ? (await fetchMultipleJsonArray(tokensReqObj)) : DEFAULT_TOKEN
+        },        
+        refetchInterval: 3000,
     })
     const online = true
     const DEFAULT_TOKEN = {}
@@ -548,7 +553,7 @@ function TokenPage({query}) {
                     </div>
                     {loadings != "" && <div className="flex  w-90 bg-w-10  my-3 bord-r-8 h-400px"></div> }   
                 
-                    {loadings == "" &&  tokensArray[cryptoToken] && 
+                    {loadings == "" &&  tokensArray[cryptoToken] && queryUSDT.data && 
                         <div
                             className="flex pos-rel w-90 box-shadow-5 bg-w-10 hov-bord-1-w autoverflow  my-3 bord-r-8"
                             style={{ resize:"both", height:"400px", }}
@@ -574,6 +579,8 @@ function TokenPage({query}) {
                                 tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
                             />
                             <ChartLiveLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                                livePrice={queryUSDT.data[DEFAULT_TOKENS_ARRAY.indexOf(cryptoToken)].price}
+
                                 tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
                             />
 

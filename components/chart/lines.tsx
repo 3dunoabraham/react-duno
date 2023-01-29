@@ -189,26 +189,26 @@ export const ChartHigherLastLine = ({
 }
 export const ChartLiveLastLine = ({
     klinesArray,klinesStats,
-    tokenConfig
-}:{tokenConfig:any,klinesArray:any[],klinesStats:any})=>{
+    tokenConfig, livePrice,
+}:{tokenConfig:any,klinesArray:any[],klinesStats:any,livePrice:any})=>{
     return (
     <div>
         {klinesArray.map((_aKline:any,index:any) => {
         // if (parseFloat(aKline[2]) > tokenConfig.ceil) return <div key={index}></div>
         let aKline = klinesArray[499]
-        if (aKline[4] < klinesStats.min || aKline[4] > klinesStats.max) return <div key={index}></div>
+        if (livePrice < klinesStats.min || livePrice > klinesStats.max) return <div key={index}></div>
         return (
             <div key={index}
                 className="  block pos-abs"
                 style={{
                     width: "20px",
-                    height: aKline[4] > klinesStats.max ? "3px" : "2px",
+                    height: livePrice > klinesStats.max ? "3px" : "2px",
                     left: `${6+(Math.floor(index/100)*22) }%`,
                     background:`#ffffff`,
                     bottom:`
                     ${parseInt(`
-                        ${aKline[4] > klinesStats.max ? 99 : ((
-                            (parseFloat(aKline[4])-(klinesStats.min))
+                        ${livePrice > klinesStats.max ? 99 : ((
+                            (parseFloat(livePrice)-(klinesStats.min))
                             /
                             (klinesStats.max-(klinesStats.min))
                         )*100)}
