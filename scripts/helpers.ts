@@ -20,65 +20,27 @@ export const getComputedLevels = (config)=> {
 export const getStrategyResult = (tokenConfig:any, livePrice:number) => {
     let {floor, ceil, state, buy, minMaxAvg, minMedian, maxMedian, sell, min, max} = tokenConfig
     if (!state) return 0
-    let soldAll = sell == 2
-    let hasntSoldEverything = sell < 2
-    let onlySoldOnce = sell == 1
-    let hasntSoldAnything = sell == 0
-    let soldSomething = sell > 0
 
-    let hasntBoughtEverything = buy < 2
-    let hasntBoughtAnything = buy == 0
-    let boughtOnce = buy == 1
-    let boughtAll = buy == 2
-    let boughtSomething = buy > 0
-    // console.log(livePrice,minMaxAvg)
-
-    // if (livePrice > max) {
-    //   if (hasntSoldEverything) return -2
-    // }
+    let isEmpty = buy == 0
+    let isWith = buy > 0
+    let isHalf = buy == 1
+    let isfull = buy == 2
     if (livePrice > maxMedian) {
-      if (boughtSomething && hasntSoldEverything) return -2
+      if (isWith) return -2
     }
     if (livePrice > minMaxAvg) {
-      if (boughtSomething && hasntSoldAnything) return -1
+      if (isWith) return -1
     }
-    if (livePrice < minMaxAvg) { 
-      if (hasntBoughtAnything) return 1
-    }
+    // console.log(livePrice , minMedian)
     if (livePrice < minMedian) {
-      if (hasntBoughtEverything) return 2
+      if (isEmpty) return 1
     }
-    
+    if (livePrice < min) {
+      if (isEmpty) return 1
+      if (isHalf) return 2
+    }
+
     return 0
-    // let returnAmount = 0
-    // console.log(livePrice , tokenConfig.max)
-    // return livePrice > tokenConfig.max ? -2 : 0
-    
-    if (livePrice < tokenConfig.minMedian)
-    {
-      if (hasntBoughtAnything) return 2
-      if (boughtOnce) return 1
-    }
-    
-    if (livePrice > tokenConfig.minMedian && livePrice < tokenConfig.minMaxAvg)
-    {
-    }
-
-    if (livePrice > tokenConfig.minMaxAvg && livePrice < tokenConfig.maxMedian)
-    {
-      if (boughtSomething) return -1
-    }
-
-    if (livePrice > tokenConfig.maxMedian)
-    {
-      if (onlySoldOnce) return -1
-    }
-    if (livePrice > tokenConfig.max)
-    {
-      if (boughtAll && hasntSold) return -2
-    }
-
-    // return returnAmount
 }  
 export async function fetchJsonArray(theUrl:any, propName = "") {
   try {

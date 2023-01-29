@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useQuery } from '@tanstack/react-query'
 import { fetchJsonArray, fetchMultipleJsonArray, getComputedLevels, getStrategyResult, parseDecimals, parseUTCDateString, parseUTCString, timeDifference } from "../scripts/helpers";
 import { BsFillGearFill } from "react-icons/bs"
-import { ChartSinLine, ChartHigherLine, ChartLowerLine, ChartMiddleLine, ChartTopBottomLine, ChartLowerLastLine, ChartHigherLastLine } from "../components/chart/lines";
+import { ChartSinLine, ChartHigherLine, ChartLowerLine, ChartMiddleLine, ChartTopBottomLine, ChartLowerLastLine, ChartHigherLastLine, ChartLiveLastLine } from "../components/chart/lines";
 import { DEFAULT_TIMEFRAME_ARRAY } from "../scripts/constants";
 import { TokenConfigStateButtons } from "../components/chart/tokenConfig";
 import { useLocalStorage } from "usehooks-ts";
@@ -326,20 +326,16 @@ function TokenPage({query}) {
                                                                 )
                                                                 : (
                                                                     <div className="opaci-75 ">
+                                                                        
                                                                         {crystal == 2 && <><div>buy all</div></>}
                                                                         {crystal == 1 && <><div>buy min</div></>}
                                                                         {crystal == -1 && <><div>sell min</div></>}
                                                                         {crystal == -2 && <><div>sell all</div></>}
                                                                         {crystal == 0 && <>
                                                                             <div>
-                                                                                {aTokenCristayl.buy == 2 && <><div>wait to sell</div></>}
-                                                                                {aTokenCristayl.sell == 2 && <><div>wait to buy</div></>}
-                                                                                {(aTokenCristayl.sell == 1 || aTokenCristayl.buy == 1) && <>
-                                                                                    <div>wait to buy/sell</div>
-                                                                                </>}
-                                                                                {(aTokenCristayl.sell == 0 || aTokenCristayl.buy == 0) && <>
-                                                                                    <div>wait...</div>
-                                                                                </>}
+                                                                                {aTokenCristayl.buy == 0 && <div>wait to buy</div>}
+                                                                                {aTokenCristayl.buy == 1 && <div>wait to sell</div>}
+                                                                                {/* {aTokenCristayl.buy == 0 && <><div>wait to buy</div></>} */}
                                                                             </div>
                                                                         </>}
                                                                     </div>
@@ -578,6 +574,9 @@ function TokenPage({query}) {
                                 tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
                             />
                             <ChartLowerLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                                tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                            />
+                            <ChartLiveLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
                                 tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
                             />
 

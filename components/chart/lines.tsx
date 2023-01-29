@@ -187,6 +187,41 @@ export const ChartHigherLastLine = ({
     </div>
     )
 }
+export const ChartLiveLastLine = ({
+    klinesArray,klinesStats,
+    tokenConfig
+}:{tokenConfig:any,klinesArray:any[],klinesStats:any})=>{
+    return (
+    <div>
+        {klinesArray.map((_aKline:any,index:any) => {
+        // if (parseFloat(aKline[2]) > tokenConfig.ceil) return <div key={index}></div>
+        let aKline = klinesArray[499]
+        if (aKline[4] < klinesStats.min || aKline[4] > klinesStats.max) return <div key={index}></div>
+        return (
+            <div key={index}
+                className="  block pos-abs"
+                style={{
+                    width: "20px",
+                    height: aKline[4] > klinesStats.max ? "3px" : "2px",
+                    left: `${6+(Math.floor(index/100)*22) }%`,
+                    background:`#ffffff`,
+                    bottom:`
+                    ${parseInt(`
+                        ${aKline[4] > klinesStats.max ? 99 : ((
+                            (parseFloat(aKline[4])-(klinesStats.min))
+                            /
+                            (klinesStats.max-(klinesStats.min))
+                        )*100)}
+                        `)}%
+                    `,
+                }}
+            >
+            </div>
+            )
+        })}
+    </div>
+    )
+}
 export const ChartHigherLine = ({
     klinesArray,klinesStats,
     tokenConfig
