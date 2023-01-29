@@ -1,22 +1,41 @@
 
 export const getStrategyResult = (tokenConfig:any, livePrice:number) => {
-    let {floor, ceil, state, buy, minMaxAvg, minMedian, maxMedian, sell} = tokenConfig
+    let {floor, ceil, state, buy, minMaxAvg, minMedian, maxMedian, sell, min, max} = tokenConfig
     if (!state) return 0
     let hasntSold = sell == 0
     let hasntBought = buy == 0
-    let onlyBoughtOnce = buy == 1
+    let boughtOnce = buy == 1
     let boughtAll = buy == 2
     let boughtSomething = buy > 0
     let soldAll = sell == 2
     let onlySoldOnce = sell == 1
     // console.log(livePrice,stats.minMaxAvg)
 
+    if (livePrice > max) {
+
+      return -2
+    }
+    if (livePrice < min) {
+
+      return 2
+    }
+    if (livePrice > minMaxAvg) {
+      if (boughtSomething) return -1
+    }
+    if (livePrice < minMaxAvg) {
+
+      return 1
+    }
+    
+    return 0
     // let returnAmount = 0
+    // console.log(livePrice , tokenConfig.max)
+    // return livePrice > tokenConfig.max ? -2 : 0
     
     if (livePrice < tokenConfig.minMedian)
     {
       if (hasntBought) return 2
-      if (onlyBoughtOnce) return 1
+      if (boughtOnce) return 1
     }
     
     if (livePrice > tokenConfig.minMedian && livePrice < tokenConfig.minMaxAvg)
@@ -25,12 +44,16 @@ export const getStrategyResult = (tokenConfig:any, livePrice:number) => {
 
     if (livePrice > tokenConfig.minMaxAvg && livePrice < tokenConfig.maxMedian)
     {
+      if (boughtSomething) return -1
     }
 
     if (livePrice > tokenConfig.maxMedian)
     {
-      if (boughtAll && hasntSold) return -2
       if (onlySoldOnce) return -1
+    }
+    if (livePrice > tokenConfig.max)
+    {
+      if (boughtAll && hasntSold) return -2
     }
 
     // return returnAmount

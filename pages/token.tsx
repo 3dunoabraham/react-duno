@@ -16,6 +16,8 @@ function TokenPage({query}) {
     const [counter, s__counter] = useState(0);
     const [loadings, s__loadings] = useState('all');
     const getKlineArray = async(t,token) => {
+        console.log("fetching getKlineArray",t,token)
+
         s__loadings("klinesArray")
         let urlBase = `https://api.binance.com/api/v3/klines?interval=${t}&symbol=`
         const theArray = await fetchJsonArray(urlBase+token.toUpperCase()+"USDT")
@@ -41,10 +43,9 @@ function TokenPage({query}) {
         // if (counter == 0 ) return
         if (cryptoToken != selectedToken) {
             // console.log(`selectedToken:${selectedToken} changed to `,cryptoToken)
-            console.log("fetch")
             getKlineArray(timeframe,query.token)
         } else {
-            console.log(selectedToken,cryptoToken,counter)
+            // console.log(selectedToken,cryptoToken,counter)
             if (counter == 1)
             {
                 // console.log("fetch")
@@ -61,10 +62,10 @@ function TokenPage({query}) {
         s__tokensArray(JSON.parse(LS_tokensArray))
         s__uid(LS_uid)
         s__clientIP(LS_uid.split(":")[0])
-        console.log("attempt ",counter, cryptoToken)
+        // console.log("attempt ",counter, cryptoToken)
         if (counter > 0)
         {
-            console.log("fetching ",cryptoToken)
+            // console.log("fetching ",cryptoToken)
             getKlineArray(timeframe,cryptoToken)
         }
         // console.log(query)
@@ -232,7 +233,7 @@ function TokenPage({query}) {
             </div>
         </div>
     )
-    
+
     return (
     <div className="body pos-rel flex-col flex-justify-start noverflow">
         {!uid && <div className="h-100px w-100px z-999 "></div>}
@@ -255,6 +256,11 @@ function TokenPage({query}) {
             }}
         >
             <div className={` flex-col${isUIReversed ? "-r" : ""} w-100 `}>
+                {klinesArray.length == 0  && <>
+                    <div className="w-100  pos-rel flex-col flex-justify-start noverflow">
+                        <div className="h-600px block flex-center tx-white tx-xl">. . .</div>
+                    </div>
+                </>}
                 {loadings != "" && <div className="flex  w-90 bg-w-10 bord-r-8 my-6 h-min-300px"></div> }   
                 {loadings == "" &&
                     <div className="flex-wrap flex-align-start w-90  my-4">
@@ -271,13 +277,14 @@ function TokenPage({query}) {
                                     let aTokenCristayl = isQ ? tokensArray[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)] : {}
                                     let crystal = (
                                         queryUSDT.data
-                                        ? getStrategyResult(aTokenCristayl,queryUSDT.data[index].price)
+                                        ? getStrategyResult(aTokenCristayl,parseFloat(queryUSDT.data[index].price))
                                         : 0
                                     )
                                     return (
                                     <div className={`flex pa-2 w-min-350px bord-r-8 mt-2 w-100  ${aToken == cryptoToken ? "bg-w-20 " : "bg-b-10 "} `}
                                         key={index}
                                     >
+                                        
                                         <div className="      flex-col w-100 " >
                                             
                                             {<div className="tx-lgx  w-100 flex flex-align-start  " >
@@ -287,13 +294,21 @@ function TokenPage({query}) {
                                                     <span className="tx-ls-2">{isK && parseDecimals(queryUSDT.data[index].price)}</span>
                                                 </a>
                                             </div>}
+                                            
                                             <div className="w-100">
                                                 <div className="flex  opaci-75 ">
                                                     {!!tokensArray[aToken] && (
                                                         <div className="flex-center  flex-justify-between w-100">
                                                             {!tokensArray[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state
                                                                 ? <div className="opaci-25">Inactive</div>
-                                                                : <div className="opaci-75">Active</div>
+                                                                : <div className="opaci-75 flex-center">
+                                                                    <div className="">
+                                                                        Active
+                                                                    </div >
+                                                                    <div className="tx-bold-8 px-2 py-1 bg-w-50 bord-r-8 ma-1">
+                                                                        {crystal}
+                                                                    </div >
+                                                                </div>
                                                             }
                                                             
                                                             {!isQ || !tokensArray[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state
@@ -330,6 +345,25 @@ function TokenPage({query}) {
                                                     {false && JSON.stringify(tokensArray[aToken])}
                                                 </div>
                                             </div>
+                                            
+                                            {aToken == cryptoToken &&
+                                                <div className="flex-center ">
+                                                    
+                                                    <div className="flex mt-1">
+                                                        <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"mode")}}
+                                                            className="opaci-chov--50 bg-w-90  tx-black px-3 py-1 bord-r-15 mx-1 ma-1"
+                                                        >
+                                                            Mode: {theToken && theToken.mode}
+                                                        </div>
+                                                        <div className="flex-center px-4">
+                                                            <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-50 opaci-chov--50 bord-r-8 ">
+                                                                Refresh
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            
                                             {/* tokensArray */}
                                             {false && aToken == cryptoToken && isK &&
                                                 <div className="">
@@ -344,22 +378,6 @@ function TokenPage({query}) {
                                                 </div>
                                             }
                                         </div>
-                                        {aToken == cryptoToken &&
-                                            <div className="">
-                                                <div className="flex-col">
-                                                    <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"mode")}}
-                                                        className="opaci-chov--50 bg-w-90  tx-black px-3 py-1 bord-r-15 mx-1 ma-1"
-                                                    >
-                                                        Mode: {theToken && theToken.mode}
-                                                    </div>
-                                                    <div className="flex-center px-4">
-                                                        <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-50 opaci-chov--50 bord-r-8 ">
-                                                            Refresh
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        }
                                     </div>
                                     )
                                 })}
@@ -530,10 +548,8 @@ function TokenPage({query}) {
                             
                             <div className="pa-1 pos-abs right-0 bottom-0">{klinesStats.min}</div>
                             <div className="pa-1 pos-abs right-0 top-75p">{klinesStats.minMedian}</div>
-                            {/* <div className="pa-1 pos-abs right-0 top-75p opaci-50">{parseDecimals((klinesStats.min+klinesStats.minMaxAvg)/2)}</div> */}
-                            <div className="pa-1 pos-abs right-0 top-25p">{klinesStats.maxMedian}</div>
                             <div className="pa-1 pos-abs right-0 top-50p">{klinesStats.minMaxAvg}</div>
-                            {/* <div className="pa-1 pos-abs right-0 top-25p opaci-50">{parseDecimals((klinesStats.max+klinesStats.minMaxAvg)/2)}</div> */}
+                            <div className="pa-1 pos-abs right-0 top-25p">{klinesStats.maxMedian}</div>
                             <div className="pa-1 pos-abs right-0 top-0">{klinesStats.max}</div>
                             <ChartHigherLine klinesArray={p__klinesArray} klinesStats={klinesStats}
                                 tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
