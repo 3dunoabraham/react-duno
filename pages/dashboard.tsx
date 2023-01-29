@@ -1,30 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from '@tanstack/react-query'
-import { fetchJsonArray, fetchMultipleJsonArray, getStrategyResult, parseDecimals, parseUTCDateString, parseUTCString, timeDifference } from "../scripts/helpers";
+import { fetchJsonArray, fetchMultipleJsonArray, getComputedLevels, getStrategyResult, parseDecimals, parseUTCDateString, parseUTCString, timeDifference } from "../scripts/helpers";
 import { BsFillGearFill } from "react-icons/bs"
 import { ChartSinLine, ChartHigherLine, ChartLowerLine, ChartMiddleLine, ChartTopBottomLine, ChartLowerLastLine, ChartHigherLastLine } from "../components/chart/lines";
 import { DEFAULT_TIMEFRAME_ARRAY } from "../scripts/constants";
 import { TokenConfigStateButtons } from "../components/chart/tokenConfig";
 import { useLocalStorage } from "usehooks-ts";
 import { useRouter } from "next/router";
-
-
-const getComputedLevels = (config)=> {
-        
-    let minMaxAvg = (parseFloat(config.ceil)+parseFloat(config.floor))/2
-    let minMedian = (parseFloat(config.floor)+parseFloat(`${minMaxAvg}`))/2
-    let maxMedian = (parseFloat(config.ceil)+parseFloat(`${minMaxAvg}`))/2
-
-    let theLevels = {
-        min: parseFloat(`${parseDecimals(config.floor)}`),
-        minMedian: parseFloat(`${parseDecimals(minMedian)}`),
-        minMaxAvg: parseFloat(`${parseDecimals(minMaxAvg)}`),
-        maxMedian: parseFloat(`${parseDecimals(maxMedian)}`),
-        max: parseFloat(`${parseDecimals(config.ceil)}`),
-    }
-
-    return theLevels
-}
 
 const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","link","matic","sol",]
 function Dashboard({query}) {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from '@tanstack/react-query'
-import { fetchJsonArray, fetchMultipleJsonArray, getStrategyResult, parseDecimals, parseUTCDateString, parseUTCString, timeDifference } from "../scripts/helpers";
+import { fetchJsonArray, fetchMultipleJsonArray, getComputedLevels, getStrategyResult, parseDecimals, parseUTCDateString, parseUTCString, timeDifference } from "../scripts/helpers";
 import { BsFillGearFill } from "react-icons/bs"
 import { ChartSinLine, ChartHigherLine, ChartLowerLine, ChartMiddleLine, ChartTopBottomLine, ChartLowerLastLine, ChartHigherLastLine } from "../components/chart/lines";
 import { DEFAULT_TIMEFRAME_ARRAY } from "../scripts/constants";
@@ -91,7 +91,10 @@ function TokenPage({query}) {
     const [klinesArray,s__klinesArray] = useState<any[]>([])
     const [clientIP, s__clientIP] = useState('');
     // const isAnyLoading = useMemo([...(loadings.values())],[loadings]);
-    const DEFAULT_TOKEN_OBJ = { mode:0,state:0,buy:0,sell:0, floor:0,ceil:0}
+    const DEFAULT_TOKEN_OBJ = {
+        mode:0,state:0,buy:0,sell:0, floor:0,ceil:0,
+        min:0,max:0,minMaxAvg:0,minMedian:0,maxMedian:0,
+    }
     // const DEFAULT_TIMEFRAME_ARRAY = ["15m","12h","1d","1w"]  
     const parsedKlines = useMemo(()=>{
         let parsedKlinesArray:any = []
@@ -198,7 +201,10 @@ function TokenPage({query}) {
         let old_tokensArray = tokensArray[token][timeframeIndex]
 
         let old_tokensArrayArray = [...tokensArray[token]]
-        old_tokensArrayArray[timeframeIndex] = {...old_tokensArray,...{[substate]:value}}
+        let newCrystal = {...{
+            [substate]:value
+        },...getComputedLevels(old_tokensArrayArray[timeframeIndex])}
+        old_tokensArrayArray[timeframeIndex] = {...old_tokensArray,...newCrystal}
         let newTimeframedConfig = old_tokensArrayArray[timeframeIndex]
         // console.log("old", old_tokensArray)
         // console.log("new", newTimeframedConfig)
@@ -320,11 +326,22 @@ function TokenPage({query}) {
                                                                 )
                                                                 : (
                                                                     <div className="opaci-75 ">
-                                                                        {crystal == 2 && <><div>buy more</div></>}
+                                                                        {crystal == 2 && <><div>buy all</div></>}
                                                                         {crystal == 1 && <><div>buy min</div></>}
-                                                                        {crystal == 0 && <><div>wait</div></>}
                                                                         {crystal == -1 && <><div>sell min</div></>}
                                                                         {crystal == -2 && <><div>sell all</div></>}
+                                                                        {crystal == 0 && <>
+                                                                            <div>
+                                                                                {aTokenCristayl.buy == 2 && <><div>wait to sell</div></>}
+                                                                                {aTokenCristayl.sell == 2 && <><div>wait to buy</div></>}
+                                                                                {(aTokenCristayl.sell == 1 || aTokenCristayl.buy == 1) && <>
+                                                                                    <div>wait to buy/sell</div>
+                                                                                </>}
+                                                                                {(aTokenCristayl.sell == 0 || aTokenCristayl.buy == 0) && <>
+                                                                                    <div>wait...</div>
+                                                                                </>}
+                                                                            </div>
+                                                                        </>}
                                                                     </div>
                                                                 )
                                                             }
@@ -540,7 +557,7 @@ function TokenPage({query}) {
                     </div>
                     {loadings != "" && <div className="flex  w-90 bg-w-10  my-3 bord-r-8 h-400px"></div> }   
                 
-                    {loadings == "" &&  
+                    {loadings == "" &&  tokensArray[cryptoToken] && 
                         <div
                             className="flex pos-rel w-90 box-shadow-5 bg-w-10 hov-bord-1-w autoverflow  my-3 bord-r-8"
                             style={{ resize:"both", height:"400px", }}

@@ -1,30 +1,52 @@
 
+
+export const getComputedLevels = (config)=> {
+        
+  let minMaxAvg = (parseFloat(config.ceil)+parseFloat(config.floor))/2
+  let minMedian = (parseFloat(config.floor)+parseFloat(`${minMaxAvg}`))/2
+  let maxMedian = (parseFloat(config.ceil)+parseFloat(`${minMaxAvg}`))/2
+
+  let theLevels = {
+      min: parseFloat(`${parseDecimals(config.floor)}`),
+      minMedian: parseFloat(`${parseDecimals(minMedian)}`),
+      minMaxAvg: parseFloat(`${parseDecimals(minMaxAvg)}`),
+      maxMedian: parseFloat(`${parseDecimals(maxMedian)}`),
+      max: parseFloat(`${parseDecimals(config.ceil)}`),
+  }
+
+  return theLevels
+}
+
 export const getStrategyResult = (tokenConfig:any, livePrice:number) => {
     let {floor, ceil, state, buy, minMaxAvg, minMedian, maxMedian, sell, min, max} = tokenConfig
     if (!state) return 0
-    let hasntSold = sell == 0
-    let hasntBought = buy == 0
+    let soldAll = sell == 2
+    let hasntSoldEverything = sell < 2
+    let onlySoldOnce = sell == 1
+    let hasntSoldAnything = sell == 0
+    let soldSomething = sell > 0
+
+    let hasntBoughtEverything = buy < 2
+    let hasntBoughtAnything = buy == 0
     let boughtOnce = buy == 1
     let boughtAll = buy == 2
     let boughtSomething = buy > 0
-    let soldAll = sell == 2
-    let onlySoldOnce = sell == 1
-    // console.log(livePrice,stats.minMaxAvg)
+    // console.log(livePrice,minMaxAvg)
 
-    if (livePrice > max) {
-
-      return -2
-    }
-    if (livePrice < min) {
-
-      return 2
+    // if (livePrice > max) {
+    //   if (hasntSoldEverything) return -2
+    // }
+    if (livePrice > maxMedian) {
+      if (boughtSomething && hasntSoldEverything) return -2
     }
     if (livePrice > minMaxAvg) {
-      if (boughtSomething) return -1
+      if (boughtSomething && hasntSoldAnything) return -1
     }
-    if (livePrice < minMaxAvg) {
-
-      return 1
+    if (livePrice < minMaxAvg) { 
+      if (hasntBoughtAnything) return 1
+    }
+    if (livePrice < minMedian) {
+      if (hasntBoughtEverything) return 2
     }
     
     return 0
@@ -34,7 +56,7 @@ export const getStrategyResult = (tokenConfig:any, livePrice:number) => {
     
     if (livePrice < tokenConfig.minMedian)
     {
-      if (hasntBought) return 2
+      if (hasntBoughtAnything) return 2
       if (boughtOnce) return 1
     }
     
