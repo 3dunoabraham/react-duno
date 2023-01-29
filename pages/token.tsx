@@ -342,11 +342,6 @@ function TokenPage({query}) {
                                                                 )
                                                             }
                                                             
-                                                            {tokensArray[aToken][0].state == 1 && <>
-                                                                <div className=" tx-sm">
-                                                                    open
-                                                                </div>
-                                                            </>}
                                                             {/* {JSON.stringify(tokensArray[aToken][0])} */}
                                                         </div>
                                                     )}
@@ -560,10 +555,12 @@ function TokenPage({query}) {
                         >
                             
                             <div className="pa-1 pos-abs right-0 bottom-0">{klinesStats.min}</div>
-                            <div className="pa-1 pos-abs right-0 top-75p">{klinesStats.minMedian}</div>
                             <div className="pa-1 pos-abs right-0 top-50p">{klinesStats.minMaxAvg}</div>
-                            <div className="pa-1 pos-abs right-0 top-25p">{klinesStats.maxMedian}</div>
                             <div className="pa-1 pos-abs right-0 top-0">{klinesStats.max}</div>
+                            
+                            <div className="pa-1 pos-abs right-0 top-75p">{parseDecimals(klinesStats.minMedian)}</div>
+                            <div className="pa-1 pos-abs right-0 top-25p">{parseDecimals(klinesStats.maxMedian)}</div>
+
                             <ChartHigherLine klinesArray={p__klinesArray} klinesStats={klinesStats}
                                 tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
                             />

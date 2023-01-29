@@ -8,10 +8,10 @@ export const getComputedLevels = (config)=> {
 
   let theLevels = {
       min: parseFloat(`${parseDecimals(config.floor)}`),
-      minMedian: parseFloat(`${parseDecimals(minMedian)}`),
-      minMaxAvg: parseFloat(`${parseDecimals(minMaxAvg)}`),
-      maxMedian: parseFloat(`${parseDecimals(maxMedian)}`),
       max: parseFloat(`${parseDecimals(config.ceil)}`),
+      minMedian: parseFloat(`${parseDecimals(minMedian)}`),
+      maxMedian: parseFloat(`${parseDecimals(maxMedian)}`),
+      minMaxAvg: parseFloat(`${parseDecimals(minMaxAvg)}`),
   }
 
   return theLevels
