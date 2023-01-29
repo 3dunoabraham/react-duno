@@ -9,6 +9,23 @@ import { useLocalStorage } from "usehooks-ts";
 import { useRouter } from "next/router";
 
 
+const getComputedLevels = (config)=> {
+        
+    let minMaxAvg = (parseFloat(config.ceil)+parseFloat(config.floor))/2
+    let minMedian = (parseFloat(config.floor)+parseFloat(`${minMaxAvg}`))/2
+    let maxMedian = (parseFloat(config.ceil)+parseFloat(`${minMaxAvg}`))/2
+
+    let theLevels = {
+        min: parseFloat(`${parseDecimals(config.floor)}`),
+        minMedian: parseFloat(`${parseDecimals(minMedian)}`),
+        minMaxAvg: parseFloat(`${parseDecimals(minMaxAvg)}`),
+        maxMedian: parseFloat(`${parseDecimals(maxMedian)}`),
+        max: parseFloat(`${parseDecimals(config.ceil)}`),
+    }
+
+    return theLevels
+}
+
 const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","link","matic","sol",]
 function Dashboard({query}) {
     const [queryParams, s__queryParams] = useState<{origin:any}>()
@@ -29,9 +46,10 @@ function Dashboard({query}) {
     const baseToken = "usdt"
     const cryptoToken = DEFAULT_TOKENS_ARRAY.includes(query.token.toLowerCase()) ? query.token.toLowerCase() : "btc"
     const tokensReqObj:any = (
-    DEFAULT_TOKENS_ARRAY.reduce((acc, aToken) => (
-        { ...acc, [aToken]: [`${API_PRICE_BASEURL}${(aToken+baseToken).toUpperCase()}`] }
-    ), {}))
+        DEFAULT_TOKENS_ARRAY.reduce((acc, aToken) => (
+            { ...acc, [aToken]: [`${API_PRICE_BASEURL}${(aToken+baseToken).toUpperCase()}`] }
+        ), {})
+    )
     const [LS_tokensArray, s__LS_tokensArray] = useLocalStorage('localTokensArray', "{}")
     const [LS_uid, s__LS_uid] = useLocalStorage('uid', "")
     const [uid, s__uid] = useState("")
@@ -46,7 +64,10 @@ function Dashboard({query}) {
     const [clientIP, s__clientIP] = useState('');
     const [loadings, s__loadings] = useState('all');
     // const isAnyLoading = useMemo([...(loadings.values())],[loadings]);
-    const DEFAULT_TOKEN_OBJ = { mode:0,state:0,buy:0,sell:0, floor:0,ceil:0}
+    const DEFAULT_TOKEN_OBJ = {
+        mode:0,state:0,buy:0,sell:0, floor:0,ceil:0,
+        min:0,max:0,minMaxAvg:0,minMedian:0,maxMedian:0,
+    }
     // const DEFAULT_TIMEFRAME_ARRAY = ["15m","12h","1d","1w"]  
     const parsedKlines = useMemo(()=>{
         let parsedKlinesArray:any = []
@@ -74,6 +95,7 @@ function Dashboard({query}) {
     const klinesStats = useMemo(()=>{
         if (!tokensArray[cryptoToken]) return {}
         let tokenConfirg = tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]
+        let {min, max, minMedian, maxMedian, minMaxAvg} = getComputedLevels(tokenConfirg)
 
         let maxPrice = 0
         let minPrice = p__klinesArray.length ? p__klinesArray[0][3] : 99999999999
@@ -82,28 +104,26 @@ function Dashboard({query}) {
             maxPrice = parseFloat(kline[2]) > maxPrice ? parseFloat(kline[2]) : maxPrice
             minPrice = parseFloat(kline[3]) < minPrice ? parseFloat(kline[3]) : minPrice
         }
-        let min = parseFloat(`${parseDecimals(minPrice)}`)
-        let max = parseFloat(`${parseDecimals(maxPrice)}`)
         let startDate = parseUTCDateString(new Date(p__klinesArray.length ? p__klinesArray[0][0] : 0))
         let midDate = parseUTCDateString(new Date(p__klinesArray.length ? p__klinesArray[250][0] : 0))
         let endDate = parseUTCDateString(new Date(p__klinesArray.length ? p__klinesArray[499][0] : 0))
         let range = parseFloat(`${parseDecimals(tokenConfirg.ceil-tokenConfirg.floor)}`)
-        
-        let dropPercent = parseFloat(100-parseInt(`${p__klinesArray.length ? min/max*100 : 0}`)+"")
-        // !!p__klinesArray.length && console.log("asdasdas", p__klinesArray[0])
         let timeDiff = p__klinesArray.length ? timeDifference(p__klinesArray[499][0], p__klinesArray[0][0]) : ""
-        let minMaxAvg = parseDecimals((parseFloat(tokenConfirg.ceil)+parseFloat(tokenConfirg.floor))/2)
-        let minMedian = (parseFloat(tokenConfirg.floor)+parseFloat(`${minMaxAvg}`))/2
-        let maxMedian = (parseFloat(tokenConfirg.ceil)+parseFloat(`${minMaxAvg}`))/2
+        
+        // let min = parseFloat(`${parseDecimals(minPrice)}`)
+        // let max = parseFloat(`${parseDecimals(maxPrice)}`)
+        // !!p__klinesArray.length && console.log("asdasdas", p__klinesArray[0])
+        // let minMaxAvg = parseDecimals((parseFloat(tokenConfirg.ceil)+parseFloat(tokenConfirg.floor))/2)
+        // let minMedian = (parseFloat(tokenConfirg.floor)+parseFloat(`${minMaxAvg}`))/2
+        // let maxMedian = (parseFloat(tokenConfirg.ceil)+parseFloat(`${minMaxAvg}`))/2
+
+        let dropPercent = parseFloat(100-parseInt(`${p__klinesArray.length ? min/max*100 : 0}`)+"")
         return {
-            minMaxAvg,
-            minMedian,
-            maxMedian,
+            min,max,minMaxAvg,minMedian,maxMedian,
+
             range,
             minPrice: min,
             maxPrice: max,
-            min: parseFloat(tokenConfirg.floor),
-            max: parseFloat(tokenConfirg.ceil),
             endDate,
             midDate,
             startDate,
@@ -111,8 +131,10 @@ function Dashboard({query}) {
             timeDiff,
         }
     },[p__klinesArray, tokensArray])
+    
 
     
+
     /********** UPDATE **********/
     const getData = async (randomThousand:any) => {
         const res:any = await fetch('https://geolocation-db.com/json/')
@@ -158,7 +180,10 @@ function Dashboard({query}) {
         let old_tokensArray = tokensArray[token][timeframeIndex]
 
         let old_tokensArrayArray = [...tokensArray[token]]
-        old_tokensArrayArray[timeframeIndex] = {...old_tokensArray,...{[substate]:value}}
+        let newCrystal = {...{
+            [substate]:value
+        },...getComputedLevels(old_tokensArrayArray[timeframeIndex])}
+        old_tokensArrayArray[timeframeIndex] = {...old_tokensArray,...newCrystal}
         let newTimeframedConfig = old_tokensArrayArray[timeframeIndex]
         // console.log("old", old_tokensArray)
         // console.log("new", newTimeframedConfig)
@@ -240,10 +265,15 @@ function Dashboard({query}) {
                                     if (!tokensArray[aToken] || (tokensArray[aToken] && !tokensArray[aToken][0])) { isQ = false }
                                     let theToken = isQ ? tokensArray[aToken][0] : null
                                     let aTokenCristayl = isQ ? tokensArray[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)] : {}
+                                    let crystal = (
+                                        queryUSDT.data
+                                        ? getStrategyResult(aTokenCristayl,queryUSDT.data[index].price)
+                                        : 0
+                                    )
                                     return (
                                     <div key={index}
                                         className={
-                                            `flex pa-2 w-min-350px bord-r-8 mt-2 w-100  ${aToken == selectedToken ? "bg-w-20 " : "bg-b-10 "} `
+                                            `flex pa-2 w-min-350px bord-r-8 mt-2 w-100  ${aToken == cryptoToken ? "bg-w-20 " : "bg-b-10 "} `
                                         }
                                     >
                                         <div className="      flex-col w-100 " >
@@ -265,21 +295,20 @@ function Dashboard({query}) {
                                                                 : <div className="opaci-75">Active</div>
                                                             }
                                                             
-                                                            {!isQ || !tokensArray[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state && !aTokenCristayl 
-                                                                ? (<div className="opaci-25">
-                                                                        Inactive
+                                                            {!isQ || !tokensArray[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state
+                                                                ? (<div className="opaci-25 tx-xs ">
+                                                                    {/* qwe | {JSON.stringify(crystal)} |  */}
+                                                                    {/* zxc | {JSON.stringify(aTokenCristayl)} |  */}
+                                                                        offline
                                                                     </div>
                                                                 )
-                                                                : (<div className="opaci-75">
-                                                                        {JSON.stringify(aTokenCristayl)}
-                                                                        ---
-                                                                        {JSON.stringify(getStrategyResult(aTokenCristayl,queryUSDT.data[index].price,aTokenCristayl))
-                                                                            ? "y"
-                                                                            : "n"
-                                                                        }
-                                                                        *
-                                                                        {aTokenCristayl.buy}
-                                                                        {/* {JSON.stringify(aTokenCristayl)} */}
+                                                                : (
+                                                                    <div className="opaci-75 ">
+                                                                        {crystal == 2 && <><div>buy more</div></>}
+                                                                        {crystal == 1 && <><div>buy min</div></>}
+                                                                        {crystal == 0 && <><div>wait</div></>}
+                                                                        {crystal == -1 && <><div>sell min</div></>}
+                                                                        {crystal == -2 && <><div>sell all</div></>}
                                                                     </div>
                                                                 )
                                                             }
@@ -292,9 +321,9 @@ function Dashboard({query}) {
                                                             {/* {JSON.stringify(tokensArray[aToken][0])} */}
                                                         </div>
                                                     )}
-                                                    {false && !tokensArray[aToken] && (
+                                                    {!tokensArray[aToken] && (
                                                         <div>
-                                                            test
+                                                            OFF
                                                         </div>
                                                     )}
                                                     {false && JSON.stringify(tokensArray[aToken])}
@@ -314,7 +343,7 @@ function Dashboard({query}) {
                                                 </div>
                                             }
                                         </div>
-                                        {aToken == selectedToken &&
+                                        {aToken == cryptoToken &&
                                             <div className="">
                                                 <div className="flex-col">
                                                     <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"mode")}}
@@ -356,16 +385,18 @@ function Dashboard({query}) {
                                         )
                                     })}
                                 </div>
-                                {tokensArray &&  tokensArray[selectedToken] && tokensArray[selectedToken][0] &&
+                                {/* {selectedToken} */}
+                                {/* {cryptoToken} */}
+                                {tokensArray &&  tokensArray[cryptoToken] && tokensArray[cryptoToken][0] &&
                                     <div className="flex-wrap w-  ">
-                                        {/* {tokensArray[selectedToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state} */}
+                                        {/* {tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)].state} */}
                                         <TokenConfigStateButtons 
                                             timeframe={timeframe}
-                                            index={DEFAULT_TOKENS_ARRAY.indexOf(selectedToken)}
+                                            index={DEFAULT_TOKENS_ARRAY.indexOf(cryptoToken)}
                                             tokensArray={tokensArray}
                                             queryUSDT={queryUSDT}
-                                            aToken={selectedToken}
-                                            theToken={tokensArray[selectedToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                            aToken={cryptoToken}
+                                            theToken={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
                                             updateTokenOrder={updateTokenOrder}
                                         />
                                     </div>
@@ -446,21 +477,21 @@ function Dashboard({query}) {
                                 }
 
                                 <div className="flex-center w-min-200px">
-                                    {(selectedToken in tokensArray) && 
+                                    {(cryptoToken in tokensArray) && 
                                         <div className="tx-bold flex-center  mt-2 " >
                                             <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-3 bord-r-50 tx-lg"
-                                                onClick={()=>{removeToken(selectedToken)}}
+                                                onClick={()=>{removeToken(cryptoToken)}}
                                                 style={{boxShadow:"0px 0px 25px #CF589433"}}
                                             >
                                                 LEAVE
                                             </button>
                                         </div>
                                     }
-                                    {!(selectedToken in tokensArray) && 
+                                    {!(cryptoToken in tokensArray) && 
                                         <div className={`tx-bold flex-center  invert ${!uid && "opaci-50"}`}
                                         >
                                             <button className="clickble tx-ls-5 mt-2 opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
-                                                onClick={()=>{!!uid && joinToken(selectedToken)}} 
+                                                onClick={()=>{!!uid && joinToken(cryptoToken)}} 
                                                 style={{boxShadow:"0px 0px 25px #CF589433"}}
                                             >
                                                 JOIN
@@ -500,6 +531,7 @@ export default ({query}) => {
     // console.log("query", router.query)
     // console.log("query", __token, DEFAULT_TOKENS_ARRAY.includes(__token.toLowerCase()), query)
     // if (!router.query.token) return
+    console.log("dashboard page",router.query)
     return (
     <div className="">
         <Dashboard  query={{token:__token}} />

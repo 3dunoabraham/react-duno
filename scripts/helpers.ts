@@ -1,30 +1,39 @@
 
-export const getStrategyResult = (tokenConfig:any, livePrice:number,stats:any) => {
-    let {floor, ceil, state, buy, minMaxAvg, sell} = tokenConfig
+export const getStrategyResult = (tokenConfig:any, livePrice:number) => {
+    let {floor, ceil, state, buy, minMaxAvg, minMedian, maxMedian, sell} = tokenConfig
     if (!state) return 0
-    if (!stats) return 0
-    let floorPrice = parseFloat(floor)
-    let ceilPrice = parseFloat(ceil)
-    let isInRange = state == 1
+    let hasntSold = sell == 0
     let hasntBought = buy == 0
+    let onlyBoughtOnce = buy == 1
+    let boughtAll = buy == 2
+    let boughtSomething = buy > 0
+    let soldAll = sell == 2
+    let onlySoldOnce = sell == 1
     // console.log(livePrice,stats.minMaxAvg)
-    if (isInRange)
+
+    // let returnAmount = 0
+    
+    if (livePrice < tokenConfig.minMedian)
     {
-      if (hasntBought)
-      {
-        if (livePrice < stats.minMaxAvg)
-        {
-          return 1
-        }
-      }
+      if (hasntBought) return 2
+      if (onlyBoughtOnce) return 1
     }
-    // let isAtLimit = state == 2
-    // if (isInRange && livePrice < floorPrice) 
-    // {
-    //     return buy == 1 ? 2 : 1
-    // }
-    // if (isInRange && livePrice < ceilPrice) { }
-    return 0
+    
+    if (livePrice > tokenConfig.minMedian && livePrice < tokenConfig.minMaxAvg)
+    {
+    }
+
+    if (livePrice > tokenConfig.minMaxAvg && livePrice < tokenConfig.maxMedian)
+    {
+    }
+
+    if (livePrice > tokenConfig.maxMedian)
+    {
+      if (boughtAll && hasntSold) return -2
+      if (onlySoldOnce) return -1
+    }
+
+    // return returnAmount
 }  
 export async function fetchJsonArray(theUrl:any, propName = "") {
   try {

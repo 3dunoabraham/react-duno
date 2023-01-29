@@ -37,7 +37,7 @@ export const TokenConfigStateButtons = ({
         return (
         queryUSDT.data && queryUSDT.data[index] &&
             (aToken in tokensArray)
-                ? (getStrategyResult(theToken,parseFloat(queryUSDT.data[index].price),stats))
+                ? (getStrategyResult(theToken,parseFloat(queryUSDT.data[index].price)))
                 : 0
     )},[queryUSDT,])
 
@@ -64,14 +64,14 @@ export const TokenConfigStateButtons = ({
             <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"floor")}}
                 className="opaci-chov--50 bg-w-20  px-3 py-1 bord-r-15 mx-1 mt-1 tx-center"
             >
-                Min
+                Floor
                 <br/>
                 {theToken && theToken.floor}
             </div>
             <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"ceil")}}
                 className="opaci-chov--50 bg-w-20  px-3 py-1 bord-r-15 mx-1 mt-1 tx-center"
             >
-                Max
+                Ceil
                 <br/>
                 {theToken && theToken.ceil}
             </div>

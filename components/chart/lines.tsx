@@ -96,9 +96,10 @@ export const ChartLowerLastLine = ({
             <div key={index}
                 className=" block pos-abs "
                 style={{
-                    width: "2px",
+                    width: "10px",
                     height: aKline[3] < klinesStats.min ? "4px" : "2px",
-                    left: `${(index/500*100) }%`,
+                    left: `${(Math.floor(index/45)*9) }%`,
+                    // background: `rgba(${index/2},99,99,0.3)`,
                     background: `#33000077`,
                     bottom:`
                     ${parseInt(`
@@ -165,10 +166,10 @@ export const ChartHigherLastLine = ({
             <div key={index}
                 className="  block pos-abs"
                 style={{
-                    width: "2px",
+                    width: "10px",
                     height: aKline[2] > klinesStats.max ? "3px" : "2px",
-                    left: `${index/500*100}%`,
-                    background:`#00330077`,
+                    left: `${3+(Math.floor(index/26)*5) }%`,
+                    background:`#00880077`,
                     bottom:`
                     ${parseInt(`
                         ${aKline[2] > klinesStats.max ? 99 : ((
