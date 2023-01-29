@@ -153,6 +153,17 @@ function TokenPage({query}) {
             getData(randomThousand)
         }
     }
+    const clickImportConfig = () => {
+        let backup = prompt("Backup:")
+        importConfig(backup)
+    }
+    const importConfig = (strTokensArray) => {
+        s__LS_tokensArray(strTokensArray)
+        window.location.reload()
+    }
+    const exportConfig = () => {
+        console.log(JSON.stringify(tokensArray))
+    }
     const joinToken = (token:string) => {
         addToken(token)
     }
@@ -580,6 +591,12 @@ function TokenPage({query}) {
                     </a>
                     <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
                         Refresh
+                    </div>
+                    <div onClick={()=>{exportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                        export
+                    </div>
+                    <div onClick={()=>{clickImportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                        import
                     </div>
                 </div>
 
