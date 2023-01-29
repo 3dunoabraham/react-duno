@@ -211,7 +211,7 @@ function TokenPage({query}) {
         s__LS_tokensArray((prevValue) => JSON.stringify(bigTokensObj))
     }
     const setNewTimeframe = async(aTimeframe:string) => {
-        if (!confirm("change timeframe and request new klines: "+aTimeframe)) return
+        // if (!confirm("change timeframe and request new klines: "+aTimeframe)) return
         s__timeframe(aTimeframe)
         getKlineArray(aTimeframe,cryptoToken)
     }
