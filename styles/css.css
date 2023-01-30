@@ -237,7 +237,7 @@
 .tx-bold-6 {font-weight: 600}.tx-bold-7 {font-weight: 700}.tx-bold-8 {font-weight: 800}
 .tx-bold-9 {font-weight: 900}.tx-bold {font-weight: bold; }
 .tx-white {color: white; }.tx-black {color: black; }
-.tx-red {color: red; }.tx-green {color: green; }.tx-blue {color: blue; }
+.tx-red {color: red; }.tx-green {color: green; }.tx-blue {color: blue; }.tx-orange {color: orange}
 .tx-red-50 {color: #ff000077; }.tx-green-50 {color: #00ff0077; }.tx-blue-50 {color: #0000ff77; }
 .tx-red-25 {color: #ff000044; }.tx-green-25 {color: #00ff0044; }.tx-blue-25 {color: #0000ff44; }
 .tx-red-75 {color: #ff0000aa; }.tx-green-75 {color: #00ff00aa; }.tx-blue-75 {color: #0000ffaa; }

@@ -528,76 +528,78 @@ function TokenPage({query}) {
                         </div>
                     </div>
                 }
-                {klinesArray.length > 0  && <>
-                    <div className=" flex  flex-justify-between w-90">
-                        <div className="flex-1 px-2 opaci-10"><hr/></div>
-                        <div className="opaci-50"><div className=" left-0 top-0">{klinesStats.timeDiff}</div></div>
-                        <div className=" opaci-10 px-2 "><hr className="px-2"/></div>
-                        <div className="opaci-50"><div className=" left-0 top-0">{klinesStats.dropPercent}%</div></div>
-                    </div>
-                    {loadings != "" && <div className="flex  w-90 bg-w-10  my-3 bord-r-8 h-400px"></div> }   
-                
-                    {loadings == "" &&  tokensArray[cryptoToken] && queryUSDT.data && 
-                        <div
-                            className="flex pos-rel w-90 box-shadow-5 bg-w-10 hov-bord-1-w autoverflow  my-3 bord-r-8"
-                            style={{ resize:"both", height:"400px", }}
+                <div className="w-100 flex-row mq_xs_lg_flex-col flex-align-stretch">
+                    <div className="flex-center ma-4 flex-col mq_xs_lg_flex-row">
+                        <a  className="px-2 py-1 bg-w-50 ma-1  opaci-chov--50 bord-r-8 tx-white" target={"_blank"}
+                            href={`https://www.tradingview.com/chart/?symbol=BINANCE%3A${cryptoToken.toUpperCase()}${baseToken.toUpperCase()}`}
                         >
-                            
-                            <div className="pa-1 pos-abs right-0 bottom-0">{klinesStats.min}</div>
-                            <div className="pa-1 pos-abs right-0 top-50p">{klinesStats.minMaxAvg}</div>
-                            <div className="pa-1 pos-abs right-0 top-0">{klinesStats.max}</div>
-                            
-                            <div className="pa-1 pos-abs right-0 top-75p">{parseDecimals(klinesStats.minMedian)}</div>
-                            <div className="pa-1 pos-abs right-0 top-25p">{parseDecimals(klinesStats.maxMedian)}</div>
-
-                            <ChartHigherLine klinesArray={p__klinesArray} klinesStats={klinesStats}
-                                tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
-                            />
-                            <ChartLowerLine klinesArray={p__klinesArray} klinesStats={klinesStats}
-                                tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
-                            />
-                            <ChartHigherLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
-                                tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
-                            />
-                            <ChartLowerLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
-                                tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
-                            />
-                            <ChartLiveLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
-                                livePrice={queryUSDT.data[DEFAULT_TOKENS_ARRAY.indexOf(cryptoToken)].price}
-
-                                tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
-                            />
-
-                            <ChartMiddleLine klinesArray={klinesArray} />
-                            <ChartTopBottomLine klinesArray={klinesArray} />
-                            {/* <ChartSinLine chopAmount={chopAmount} klinesArray={klinesArray} wavelength={wavelength} /> */}
-                                    
+                            {cryptoToken.toUpperCase()}{baseToken.toUpperCase()} @{timeframe}
+                        </a>
+                        <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                            Refresh
                         </div>
-                    }
-                    <div className=" flex  flex-justify-between w-90">
-                        <div className="">{klinesStats.startDate}</div>
-                        <div className="flex-1 px-2 opaci-10"><hr/></div>
-                        <div className="">{klinesStats.midDate}</div>
-                        <div className="flex-1 px-2 opaci-10"><hr/></div>
-                        <div className="">{klinesStats.endDate}</div>
+                        <div onClick={()=>{exportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                            export
+                        </div>
+                        <div onClick={()=>{clickImportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                            import
+                        </div>
                     </div>
-                </>}
+                    {klinesArray.length > 0  && <div className="flex-1 w-100 flex-col">
+                        <div className=" flex  flex-justify-between w-90">
+                            <div className="flex-1 px-2 opaci-10"><hr/></div>
+                            <div className="opaci-50"><div className=" left-0 top-0">{klinesStats.timeDiff}</div></div>
+                            <div className=" opaci-10 px-2 "><hr className="px-2"/></div>
+                            <div className="opaci-50"><div className=" left-0 top-0">{klinesStats.dropPercent}%</div></div>
+                        </div>
+                        {loadings != "" && <div className="flex  w-90 bg-w-10  my-3 bord-r-8 h-400px"></div> }   
+                    
+                        {loadings == "" &&  tokensArray[cryptoToken] && queryUSDT.data && 
+                            <div
+                                className="flex pos-rel w-90 box-shadow-5 bg-w-10 hov-bord-1-w autoverflow  my-3 bord-r-8"
+                                style={{ resize:"both", height:"400px", }}
+                            >
+                                
+                                <div className="pa-1 pos-abs right-0 tx-green bottom-0">{klinesStats.min}</div>
+                                <div className="pa-1 pos-abs right-0 tx-orange top-50p">{klinesStats.minMaxAvg}</div>
+                                <div className="pa-1 pos-abs right-0 opaci-50 top-0">{klinesStats.max}</div>
+                                
+                                <div className="pa-1 pos-abs right-0 tx-green-25 top-75p">{parseDecimals(klinesStats.minMedian)}</div>
+                                <div className="pa-1 pos-abs right-0 tx-red top-25p">{parseDecimals(klinesStats.maxMedian)}</div>
 
-                <div className="flex-center ma-4">
-                    <a  className="px-2 py-1 bg-w-50 ma-1  opaci-chov--50 bord-r-8 tx-white" target={"_blank"}
-                        href={`https://www.tradingview.com/chart/?symbol=BINANCE%3A${cryptoToken.toUpperCase()}${baseToken.toUpperCase()}`}
-                    >
-                        {cryptoToken.toUpperCase()}{baseToken.toUpperCase()} @{timeframe}
-                    </a>
-                    <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
-                        Refresh
-                    </div>
-                    <div onClick={()=>{exportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
-                        export
-                    </div>
-                    <div onClick={()=>{clickImportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
-                        import
-                    </div>
+                                <ChartHigherLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                                    tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                />
+                                <ChartLowerLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                                    tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                />
+                                <ChartHigherLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                                    tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                />
+                                <ChartLowerLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                                    tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                />
+                                <ChartLiveLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                                    livePrice={queryUSDT.data[DEFAULT_TOKENS_ARRAY.indexOf(cryptoToken)].price}
+
+                                    tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                />
+
+                                <ChartMiddleLine klinesArray={klinesArray} />
+                                <ChartTopBottomLine klinesArray={klinesArray} />
+                                {/* <ChartSinLine chopAmount={chopAmount} klinesArray={klinesArray} wavelength={wavelength} /> */}
+                                        
+                            </div>
+                        }
+                        <div className=" flex  flex-justify-between w-90">
+                            <div className="">{klinesStats.startDate}</div>
+                            <div className="flex-1 px-2 opaci-10"><hr/></div>
+                            <div className="">{klinesStats.midDate}</div>
+                            <div className="flex-1 px-2 opaci-10"><hr/></div>
+                            <div className="">{klinesStats.endDate}</div>
+                        </div>
+                    </div>}
+
                 </div>
 
 
