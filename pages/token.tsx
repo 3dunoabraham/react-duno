@@ -13,7 +13,7 @@ import { TokenConfigStateButtons } from "../components/chart/tokenConfig";
 import { StrategyState } from "../components/dashboard/StrategyState";
 function TokenPage({query}) {
     /********** CREATE **********/
-    const DEFAULT_TIMEFRAME = "3m"
+    const DEFAULT_TIMEFRAME = "4h"
     const [timeframe,s__timeframe] = useState<any>(DEFAULT_TIMEFRAME)
     const [counter, s__counter] = useState(0);
     const [loadings, s__loadings] = useState('all');

@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","link","matic","sol",]
 function DashboardPage({query}) {
     /********** CREATE **********/
-    const DEFAULT_TIMEFRAME = "3m"
+    const DEFAULT_TIMEFRAME = "4h"
     const [timeframe,s__timeframe] = useState<any>(DEFAULT_TIMEFRAME)
     const [counter, s__counter] = useState(0);
     const [loadings, s__loadings] = useState('all');

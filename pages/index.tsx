@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { IService, ILink } from "../scripts/types";
 import { DEFAULT_PLAN_COLUMNS_ARRAY, DEFAULT_PLAN_KEYS_ARRAY } from "../scripts/constants";
+import { getStrategyResult } from "../scripts/helpers";
 // const TELEGRAM_WRAPPER = require('./telegram.js');
 // let telegramWraper = new TELEGRAM_WRAPPER({ddcabotParent: dcaBot})
 
@@ -53,17 +54,17 @@ function Gallery({
             }}
         >
             <h1 className="tx-xl flex-col flex-align-start mr-8 " >
-                <span className="tx-bold-3">Market Reserve</span>
-                <span className="tx-bold-3 mb-4">Hedge Fund</span>
+                <span className="tx-bold-3">react-duno</span>
+                {/* <span className="tx-bold-3 mb-4">DCA</span> */}
                 <span className="tx-md tx-bold-7 opaci-chov--50 opaci-75 tx-ls-1">
                     Dynamic Dollar Cost Average Grid
                 </span>
             </h1>
             <a className="duno-btn tx-white py-4 px-8 bord-r-50 tx-lg"
-                href="/dashboard"
+                href="/token?token=btc"
                 style={{boxShadow:"0px 0px 25px #CF589433"}}
             >
-                Dashboard
+                BTCUSDT
             </a>
         </div>
 
@@ -90,8 +91,8 @@ function Gallery({
 
             <div className="mt-200"></div>
             <h1 className="mt-200 pt-200 tx-xxxl opaci-5 tx-ls-8 flex-col" onClick={() => { test(); }}>
-                <span>INVESTMENT</span>
-                <span>STRATEGIES</span>
+                <span>CONTROL</span>
+                <span className="pl-200 ml-100">PANEL</span>
             </h1>
             <div className="w-100 ">
                 <div className=" w-700px pos-abs  opaci-25 " style={{ transform:"translate(30%,-30%)",filter: "blur(50px) brightness(180%)" }}>
@@ -106,13 +107,16 @@ function Gallery({
                     <div className="flex-col w-150px  bg-w-opaci-10  bord-r-10">
                         {DEFAULT_PLAN_KEYS_ARRAY.map((aColumnName,index)=>{
                             if (aColumnName == "id") return
+                            if (aColumnName == "token") return <div className="px-3 py-6 mt-1 w-150px" key={index}></div>
                             return(
                                 <div key={index}
-                                    className="hov-bord-1-w flex-1 px-3 py-4  mt-1 bord-r-5 box-shadow-hov-5 w-150px tx-sm opaci-chov--50 tx-start">
-                                    {aColumnName}:
+                                    className="hov-bord-1-w flex-1 px-3 py-4 bg-w-10 mt-1 bord-r-5 box-shadow-hov-5 w-150px tx-sm opaci-chov--50 tx-start"
+                                >
+                                    {aColumnName}
                                 </div>
                             )
                         })}
+                        <div className="px-3 py-6 mt-3 w-150px" ></div>
                     </div>
                     <div className="pos-rel flex-row bg-w-opaci-10 bord-r-10 ma-2 px-4 mt-0 py-4">
                         {services.map((service) => (
@@ -121,23 +125,31 @@ function Gallery({
                             </div>
                         ))}
                     </div>
-                    <div className="flex-col w-150px    bord-r-10 invisible">
-                        {DEFAULT_PLAN_KEYS_ARRAY.map((aColumnName,index)=>{
-                            return(
-                                <div key={index} className="px-3 py-4  w-150px "> </div>
-                            )
-                        })}
-                    </div>
                 </div>
             </div>
         </div>
 
         <div className="mt-200 pt-200"></div>
 
-        <div className="flex-column mt-4 pb-200 ">
+        <div className="flex-col gap-3 mt-4 pb-200 ">
             <div className="tx-xl tx-white tx-ls-2 opaci-chov--10 ">
-                <Link href="/dashboard" target="_blank">
-                    <a>DASHBOARD</a>
+                <Link href="/dashboard?token=btc" target="_blank">
+                    <a className="tx-white">DASHBOARD</a>
+                </Link>
+            </div>
+            <div className="tx-xl tx-ls-5 tx-white tx-ls-2 opaci-chov--10 mt-3">
+                <Link href="/faq" target="_blank">
+                    <a className="tx-white nodeco">FAQ</a>
+                </Link>
+            </div>
+            <div className="tx-lgx tx-white tx-ls-2 opaci-chov--10 ">
+                <Link href="/contact" target="_blank">
+                    <a className="tx-white nodeco">Contact</a>
+                </Link>
+            </div>
+            <div className="tx-lgx tx-white tx-ls-2 opaci-chov--10 ">
+                <Link href="/contact" target="_blank">
+                    <a className="tx-white nodeco">Blog</a>
                 </Link>
             </div>
             {links.map((link) => (
@@ -160,59 +172,34 @@ function Service({ service }: { service: IService }) {
     const theArray = []
     return (
         <div className="text-bold-4 tx-lg  bord-r-10 noverflow block flex-col mx-1">
-
-         
-            <div className="flex-1 mt-1 px-8 hov-bord-1-w box-shadow-hov-5 mr-1 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
+            <div className="flex-1 mt-1 px-8 hov-bord-1-w box-shadow-hov-5 mr-1 bg-w-10 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
                 {/*<div>domain:</div>*/}
-                <div>{DEFAULT_PLAN_COLUMNS_ARRAY.domain[service.domain]}</div>
+                <div>{service.token}</div>
             </div>
             <div className="flex-1 mt-1 px-8  box-shadow-hov-5 mr-1 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
-                {/*<div>hosting:</div>*/}
-                <div>{service.hosting}</div>
+                <div>{service.timeframe}</div>
             </div>
             <div className="flex-1 mt-1 px-8  box-shadow-hov-5 mr-1 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
-                {/*<div>ssl:</div>*/}
-                <div>{service.ssl}</div>
+                <div>{service.min}</div>
             </div>
             <div className="flex-1 mt-1 px-8  box-shadow-hov-5 mr-1 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
-                {/*<div>ownership:</div>*/}
-                <div>{service.ownership}</div>
+                <div>{service.max}</div>
             </div>
             <div className="flex-1 mt-1 px-8  box-shadow-hov-5 mr-1 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
-                {/*<div>languages:</div>*/}
-                <div>{service.languages}</div>
+                <div>{service.minMedian}</div>
             </div>
             <div className="flex-1 mt-1 px-8  box-shadow-hov-5 mr-1 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
-                {/*<div>seo:</div>*/}
-                <div>{service.seo}</div>
+                <div>{service.maxMedian}</div>
             </div>
             <div className="flex-1 mt-1 px-8  box-shadow-hov-5 mr-1 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
-                {/*<div>pages:</div>*/}
-                <div>{service.pages}</div>
+                <div>{service.ceil}</div>
             </div>
             <div className="flex-1 mt-1 px-8  box-shadow-hov-5 mr-1 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
-                {/*<div>searchbar:</div>*/}
-                <div>{service.searchbar}</div>
+                <div>{service.floor}</div>
             </div>
-            <div className="flex-1 mt-1 px-8  box-shadow-hov-5 mr-1 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
-                {/*<div>socialmedia:</div>*/}
-                <div>{service.socialmedia}</div>
-            </div>
-            <div className="flex-1 mt-1 px-8  box-shadow-hov-5 mr-1 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
-                {/*<div>products:</div>*/}
-                <div>{service.products}</div>
-            </div>
-            <div className="flex-1 mt-1 px-8  box-shadow-hov-5 mr-1 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
-                {/*<div>posts:</div>*/}
-                <div>{service.posts}</div>
-            </div>
-            <div className="flex-1 mt-1 px-8  box-shadow-hov-5 mr-1 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
-                {/*<div>website:</div>*/}
-                <div>{service.website}</div>
-            </div>
-            <div className="flex-1 mt-1 px-8  box-shadow-hov-5 mr-1 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
-                {/*<div>app:</div>*/}
-                <div>{service.app}</div>
+            <div className="flex-1 mt-1 px-8 hov-bord-1-w box-shadow-hov-5 mr-1 bg-w-10 bg-w-opaci-10 opaci-chov--50 pb-2 pt-4 bord-r-8">
+                {/*<div>domain:</div>*/}
+                <div>{getStrategyResult(service, 0)}</div>
             </div>
         </div>
     )
@@ -246,7 +233,7 @@ export const getStaticProps = async () => {
         process.env.SUPABASE_SERVICE_ROLE_KEY || ""
     );
     let links = (await supabaseAdmin.from("links").select("*").order("id")).data || []
-    let services = (await supabaseAdmin.from("services").select("*").order("id")).data || []
+    let services = (await supabaseAdmin.from("strats").select("*").order("id")).data || []
     return {
         props: {
             links: links,

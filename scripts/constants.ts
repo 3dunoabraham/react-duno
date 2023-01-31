@@ -2,47 +2,68 @@ export const DEFAULT_TIMEFRAME_ARRAY = ["3m","15m","4h","1d","1w"]
 export const DEFAULT_TOKENS_ARRAY = ["btc","eth","ftm","link","matic","sol",]
     
 export const DEFAULT_PLAN_COLUMNS_ARRAY = {
-    "id": [
+    "token": [
         "","","","","","","",
     ],
-    "domain": [
-        "asd","qwe","zxc","","","","",
-    ],
-    "hosting": [
+    "timeframe": [
         "","","","","","","",
     ],
-    "ssl": [
+    "state": [
         "","","","","","","",
     ],
-    "ownership": [
+    "min": [
         "","","","","","","",
     ],
-    "languages": [
+    "max": [
         "","","","","","","",
     ],
-    "seo": [
+    "minMedian": [
         "","","","","","","",
     ],
-    "pages": [
+    "maxMedian": [
         "","","","","","","",
     ],
-    "searchbar": [
+    "minMaxAvg": [
         "","","","","","","",
     ],
-    "socialmedia": [
-        "","","","","","","",
-    ],
-    "products": [
-        "","","","","","","",
-    ],
-    "posts": [
-        "","","","","","","",
-    ],
-    "website": [
-        "","","","","","","",
-    ],
-    "app": [
-        "","","","","","","",
-    ],
+    // "domain": [
+    //     "asd","qwe","zxc","","","","",
+    // ],
+    // "hosting": [
+    //     "","","","","","","",
+    // ],
+    // "ssl": [
+    //     "","","","","","","",
+    // ],
+    // "ownership": [
+    //     "","","","","","","",
+    // ],
+    // "languages": [
+    //     "","","","","","","",
+    // ],
+    // "seo": [
+    //     "","","","","","","",
+    // ],
+    // "pages": [
+    //     "","","","","","","",
+    // ],
+    // "searchbar": [
+    //     "","","","","","","",
+    // ],
+    // "socialmedia": [
+    //     "","","","","","","",
+    // ],
+    // "products": [
+    //     "","","","","","","",
+    // ],
+    // "posts": [
+    //     "","","","","","","",
+    // ],
+    // "website": [
+    //     "","","","","","","",
+    // ],
+    // "app": [
+    //     "","","","","","","",
+    // ],
 }
 export const DEFAULT_PLAN_KEYS_ARRAY = Object.keys(DEFAULT_PLAN_COLUMNS_ARRAY)
