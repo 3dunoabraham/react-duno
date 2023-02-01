@@ -2,19 +2,21 @@
 
 export const getComputedLevels = (config)=> {
         
-  let minMaxAvg = (parseFloat(config.ceil)+parseFloat(config.floor))/2
-  let minMedian = (parseFloat(config.floor)+parseFloat(`${minMaxAvg}`))/2
-  let maxMedian = (parseFloat(config.ceil)+parseFloat(`${minMaxAvg}`))/2
+    let minMaxAvg = (parseFloat(config.ceil)+parseFloat(config.floor))/2
+    let minMedian = (parseFloat(config.floor)+parseFloat(`${minMaxAvg}`))/2
+    let maxMedian = (parseFloat(config.ceil)+parseFloat(`${minMaxAvg}`))/2
 
-  let theLevels = {
-      min: parseFloat(`${parseDecimals(config.floor)}`),
-      max: parseFloat(`${parseDecimals(config.ceil)}`),
-      minMedian: parseFloat(`${parseDecimals(minMedian)}`),
-      maxMedian: parseFloat(`${parseDecimals(maxMedian)}`),
-      minMaxAvg: parseFloat(`${parseDecimals(minMaxAvg)}`),
-  }
+    let theLevels = {
+        floor: parseFloat(`${parseDecimals(config.floor)}`),
+        ceil: parseFloat(`${parseDecimals(config.ceil)}`),
+        min: parseFloat(`${parseDecimals(config.floor)}`),
+        max: parseFloat(`${parseDecimals(config.ceil)}`),
+        minMedian: parseFloat(`${parseDecimals(minMedian)}`),
+        maxMedian: parseFloat(`${parseDecimals(maxMedian)}`),
+        minMaxAvg: parseFloat(`${parseDecimals(minMaxAvg)}`),
+    }
 
-  return theLevels
+    return theLevels
 }
 
 export const getStrategyResult = (tokenConfig:any, livePrice:number) => {
@@ -26,18 +28,18 @@ export const getStrategyResult = (tokenConfig:any, livePrice:number) => {
     let isHalf = buy == 1
     let isfull = buy == 2
     if (livePrice > maxMedian) {
-      if (isWith) return -2
+        if (isWith) return -2
     }
     if (livePrice > minMaxAvg) {
-      if (isWith) return -1
+        if (isWith) return -1
     }
     // console.log(livePrice , minMedian)
     if (livePrice < minMedian) {
-      if (isEmpty) return 1
+        if (isEmpty) return 1
     }
     if (livePrice < min) {
-      if (isEmpty) return 1
-      if (isHalf) return 2
+        if (isEmpty) return 1
+        if (isHalf) return 2
     }
 
     return 0

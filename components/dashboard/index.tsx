@@ -5,16 +5,16 @@ import { useQuery } from '@tanstack/react-query'
 import { BsFillGearFill } from "react-icons/bs"
 
 import { fetchJsonArray, fetchMultipleJsonArray, getComputedLevels, getStrategyResult, parseDecimals, parseUTCDateString, timeDifference
-} from "../scripts/helpers";
+} from "../../scripts/helpers";
 import { ChartHigherLine, ChartLowerLine, ChartMiddleLine, ChartTopBottomLine, ChartLowerLastLine, ChartHigherLastLine, ChartLiveLastLine, ChartSinLine
-} from "../components/chart/lines";
-import { DEFAULT_TIMEFRAME_ARRAY, DEFAULT_TOKENS_ARRAY } from "../scripts/constants";
-import { TokenConfigStateButtons } from "../components/chart/tokenConfig";
-import { StrategyState } from "../components/dashboard/StrategyState";
-function TokenPage({query}) {
+} from "../../components/chart/lines";
+import { DEFAULT_TIMEFRAME_ARRAY, DEFAULT_TOKENS_ARRAY } from "../../scripts/constants";
+import { TokenConfigStateButtons } from "../../components/chart/tokenConfig";
+import { StrategyState } from "@/components/dashboard/StrategyState";
+export function ChartDashboard({query}) {
     /********** CREATE **********/
-    const DEFAULT_TIMEFRAME = "4h"
-    const [timeframe,s__timeframe] = useState<any>(DEFAULT_TIMEFRAME)
+    // const DEFAULT_TIMEFRAME = _timeframe // "4h"
+    const [timeframe,s__timeframe] = useState<any>(query.timeframe)
     const [counter, s__counter] = useState(0);
     const [loadings, s__loadings] = useState('all');
     const getKlineArray = async(t,token) => {
@@ -35,7 +35,7 @@ function TokenPage({query}) {
     }
     const cryptoToken = useMemo(()=>{
 
-        return DEFAULT_TOKENS_ARRAY.includes(query.token.toLowerCase()) ? query.token.toLowerCase() : ""
+        return query.token && DEFAULT_TOKENS_ARRAY.includes(query.token.toLowerCase()) ? query.token.toLowerCase() : ""
     },[query]) 
     const [selectedToken,s__selectedToken] = useState<any>(cryptoToken)
     useEffect(()=>{
@@ -52,7 +52,7 @@ function TokenPage({query}) {
         s__tokensArrayObj(JSON.parse(LS_tokensArrayObj))
         s__uid(LS_uid)
         s__clientIP(LS_uid.split(":")[0])
-        if (counter > 0)
+        // if (counter > 0)
         {
             getKlineArray(timeframe,cryptoToken)
         }
@@ -108,6 +108,8 @@ function TokenPage({query}) {
     const DEFAULT_TOKEN = {}
     const klinesStats = useMemo(()=>{
         if (!tokensArrayObj[cryptoToken]) return {}
+        console.log("tokensArrayObj,cryptoToken,DEFAULT_TIMEFRAME_ARRAY,timeframe")
+        console.log(tokensArrayObj,cryptoToken,DEFAULT_TIMEFRAME_ARRAY,timeframe)
         let tokenConfirg = tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]
 
         let maxPrice = 0
@@ -181,8 +183,6 @@ function TokenPage({query}) {
             {
                 [`${token}`]: DEFAULT_TIMEFRAME_ARRAY.map((aTimeframe, index)=> (
                     {...DEFAULT_TOKEN_OBJ,...{
-                        floor: price*0.8,
-                        ceil: price*1.2,
                         ...getComputedLevels({floor:price*0.8,ceil:price*1.2})
                     }}
                 ) )
@@ -316,7 +316,7 @@ function TokenPage({query}) {
                                         <div className="      flex-col w-100 " >
                                             
                                             {<div className="tx-lgx  w-100 flex flex-align-start  " >
-                                                <a className="opaci-chov--50 tx-white" href={"/token?token="+aToken}>
+                                                <a className="opaci-chov--50 tx-white" href={`/chart/${timeframe}?token=${aToken}`}>
                                                     <span className="px-1">{aToken.toUpperCase()}:</span>
                                                     <span className="tx-ls-2">{isK && parseDecimals(queryUSDT.data[index].price)}</span>
                                                 </a>
@@ -628,12 +628,12 @@ function TokenPage({query}) {
     </div>
     )
 }
-export default ({query}) => {
-    const router = useRouter()
-    let __token = router.query.token || ""
-    return (
-    <div className="">
-        <TokenPage  query={{token:__token}} />
-    </div>
-    )
-}
+// export default ({query}) => {
+//     const router = useRouter()
+//     let __token = router.query.token || ""
+//     return (
+//     <div className="">
+//         <TokenPage  query={{token:__token}} />
+//     </div>
+//     )
+// }
