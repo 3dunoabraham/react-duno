@@ -203,6 +203,7 @@ export function ChartDashboard({query}) {
 
         let old_tokensArrayObjArray = [...tokensArrayObj[token]]
         let newCrystal = {
+            ...{[substate]:value},
             ...getComputedLevels({
                 ...old_tokensArrayObjArray[timeframeIndex],
                 ...{[substate]:value}
