@@ -49,7 +49,7 @@ function TokenPage({query}) {
     },[counter,selectedToken,cryptoToken])
     useEffect(()=>{
         s__counter(counter+1)
-        s__tokensArray(JSON.parse(LS_tokensArray))
+        s__tokensArrayObj(JSON.parse(LS_tokensArrayObj))
         s__uid(LS_uid)
         s__clientIP(LS_uid.split(":")[0])
         if (counter > 0)
@@ -67,13 +67,13 @@ function TokenPage({query}) {
     DEFAULT_TOKENS_ARRAY.reduce((acc, aToken) => (
         { ...acc, [aToken]: [`${API_PRICE_BASEURL}${(aToken+baseToken).toUpperCase()}`] }
     ), {}))
-    const [LS_tokensArray, s__LS_tokensArray] = useLocalStorage('localTokensArray', "{}")
+    const [LS_tokensArrayObj, s__LS_tokensArrayObj] = useLocalStorage('localTokensArrayObj', "{}")
     const [LS_uid, s__LS_uid] = useLocalStorage('uid', "")
     const [uid, s__uid] = useState("")
     const [isUIReversed,s__isUIReversed] = useState<any>(true)
     const [chopAmount,s__chopAmount] = useState<any>(0)
     const [wavelength,s__wavelength] = useState<any>(-300)
-    const [tokensArray,s__tokensArray] = useState<any>({})
+    const [tokensArrayObj,s__tokensArrayObj] = useState<any>({})
     const [klinesArray,s__klinesArray] = useState<any[]>([])
     const [clientIP, s__clientIP] = useState('');
     const DEFAULT_TOKEN_OBJ = {
@@ -107,8 +107,8 @@ function TokenPage({query}) {
     const online = true
     const DEFAULT_TOKEN = {}
     const klinesStats = useMemo(()=>{
-        if (!tokensArray[cryptoToken]) return {}
-        let tokenConfirg = tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]
+        if (!tokensArrayObj[cryptoToken]) return {}
+        let tokenConfirg = tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]
 
         let maxPrice = 0
         let minPrice = p__klinesArray.length ? p__klinesArray[0][3] : 99999999999
@@ -135,7 +135,7 @@ function TokenPage({query}) {
             max: parseFloat(tokenConfirg.ceil),
             endDate,midDate,startDate,dropPercent,timeDiff,
         }
-    },[p__klinesArray, tokensArray])
+    },[p__klinesArray, tokensArrayObj])
 
     
     /********** UPDATE **********/
@@ -157,58 +157,72 @@ function TokenPage({query}) {
         let backup = prompt("Backup:")
         importConfig(backup)
     }
-    const importConfig = (strTokensArray) => {
-        s__LS_tokensArray(strTokensArray)
+    const importConfig = (strTokensArrayObj) => {
+        s__LS_tokensArrayObj(strTokensArrayObj)
         window.location.reload()
     }
     const exportConfig = () => {
-        console.log(JSON.stringify(tokensArray))
+        console.log(JSON.stringify(tokensArrayObj))
     }
     const joinToken = (token:string) => {
-        addToken(token)
+        // console.log("queryUSDT.data",queryUSDT.data,DEFAULT_TOKENS_ARRAY)
+        // console.log("queryUSDT.data",queryUSDT.data[DEFAULT_TOKENS_ARRAY.indexOf(`${token}`)])
+        let thePrice = parseFloat(queryUSDT.data[DEFAULT_TOKENS_ARRAY.indexOf(`${token}`)].price)
+        addToken(token,thePrice)
     }
-    const addToken = (token:string) => {
+    const addToken = (token:string,price:number) => {
         if (!token) return
-        let new_tokensArray = {
-            ...tokensArray, ...
+        console.log(getComputedLevels({floor:price*0.8,ceil:price*1.2}))
+        console.log({...DEFAULT_TOKEN_OBJ,...{
+            ...getComputedLevels({floor:price*0.8,ceil:price*1.2})
+        }})
+        let new_tokensArrayObj = {
+            ...tokensArrayObj, ...
             {
-                [`${token}`]: DEFAULT_TIMEFRAME_ARRAY.map((aTimeframe, index)=> DEFAULT_TOKEN_OBJ )
+                [`${token}`]: DEFAULT_TIMEFRAME_ARRAY.map((aTimeframe, index)=> (
+                    {...DEFAULT_TOKEN_OBJ,...{
+                        floor: price*0.8,
+                        ceil: price*1.2,
+                        ...getComputedLevels({floor:price*0.8,ceil:price*1.2})
+                    }}
+                ) )
             }
         }
-        s__tokensArray(new_tokensArray)
-        s__LS_tokensArray((prevValue) => JSON.stringify(new_tokensArray))
+        console.log("new_tokensArrayObj", tokensArrayObj, new_tokensArrayObj)
+        s__tokensArrayObj(new_tokensArrayObj)
+        s__LS_tokensArrayObj((prevValue) => JSON.stringify(new_tokensArrayObj))
     }
     const updateTokenOrder = (token:string, timeframe:any, substate:string) => {
         if (!token) return
         let promptVal = prompt("Enter Value")
         let value = !promptVal ? 0 : parseFloat(promptVal)
         let timeframeIndex = timeframe
-        let old_tokensArray = tokensArray[token][timeframeIndex]
+        let old_tokensArrayObj = tokensArrayObj[token][timeframeIndex]
 
-        let old_tokensArrayArray = [...tokensArray[token]]
+        let old_tokensArrayObjArray = [...tokensArrayObj[token]]
         let newCrystal = {...{
             [substate]:value
-        },...getComputedLevels(old_tokensArrayArray[timeframeIndex])}
-        old_tokensArrayArray[timeframeIndex] = {...old_tokensArray,...newCrystal}
-        let bigTokensObj = {...tokensArray, ...{[token]:old_tokensArrayArray}}
-        s__tokensArray(bigTokensObj)
-        s__LS_tokensArray((prevValue) => JSON.stringify(bigTokensObj))
+        },...getComputedLevels(old_tokensArrayObjArray[timeframeIndex])}
+        old_tokensArrayObjArray[timeframeIndex] = {...old_tokensArrayObj,...newCrystal}
+        let bigTokensObj = {...tokensArrayObj, ...{[token]:old_tokensArrayObjArray}}
+        s__tokensArrayObj(bigTokensObj)
+        s__LS_tokensArrayObj((prevValue) => JSON.stringify(bigTokensObj))
     }
     const updateTokenState = (token:string, timeframe:any, substate:string, value:number) => {
         if (!token) return
         // let promptVal = prompt("Enter Value")
         // let value = !promptVal ? 0 : parseFloat(promptVal)
         let timeframeIndex = timeframe
-        let old_tokensArray = tokensArray[token][timeframeIndex]
+        let old_tokensArrayObj = tokensArrayObj[token][timeframeIndex]
 
-        let old_tokensArrayArray = [...tokensArray[token]]
+        let old_tokensArrayObjArray = [...tokensArrayObj[token]]
         let newCrystal = {...{
             [substate]:value
-        },...getComputedLevels(old_tokensArrayArray[timeframeIndex])}
-        old_tokensArrayArray[timeframeIndex] = {...old_tokensArray,...newCrystal}
-        let bigTokensObj = {...tokensArray, ...{[token]:old_tokensArrayArray}}
-        s__tokensArray(bigTokensObj)
-        s__LS_tokensArray((prevValue) => JSON.stringify(bigTokensObj))
+        },...getComputedLevels(old_tokensArrayObjArray[timeframeIndex])}
+        old_tokensArrayObjArray[timeframeIndex] = {...old_tokensArrayObj,...newCrystal}
+        let bigTokensObj = {...tokensArrayObj, ...{[token]:old_tokensArrayObjArray}}
+        s__tokensArrayObj(bigTokensObj)
+        s__LS_tokensArrayObj((prevValue) => JSON.stringify(bigTokensObj))
     }
     const setNewTimeframe = async(aTimeframe:string) => {
         // if (!confirm("change timeframe and request new klines: "+aTimeframe)) return
@@ -218,10 +232,10 @@ function TokenPage({query}) {
     const removeToken = (token:string) => {
         if (!confirm("Confirm exit?")) return
         if (!token) return
-        let new_tokensArray:any = {...tokensArray}
-        delete new_tokensArray[token]
-        s__tokensArray(new_tokensArray)
-        s__LS_tokensArray((prevValue) => JSON.stringify(new_tokensArray))
+        let new_tokensArrayObj:any = {...tokensArrayObj}
+        delete new_tokensArrayObj[token]
+        s__tokensArrayObj(new_tokensArrayObj)
+        s__LS_tokensArrayObj((prevValue) => JSON.stringify(new_tokensArrayObj))
     }
     const buy_all = () => {
     }
@@ -275,7 +289,7 @@ function TokenPage({query}) {
                     </div>
                 </>}
                 {loadings != "" && <div className="flex  w-90 bg-w-10 bord-r-8 my-6 h-min-300px"></div> }   
-                {loadings == "" &&
+                {
                     <div className="flex-wrap flex-align-start w-90  my-4">
 
                         {/* <div className="flex mq_xs_md_flex-col flex-1"> */}
@@ -285,9 +299,9 @@ function TokenPage({query}) {
                                     if (queryUSDT.isLoading) { isQ = false }
                                     if (queryUSDT.error) { isQ = false }
                                     let isK = isQ
-                                    if (!tokensArray[aToken] || (tokensArray[aToken] && !tokensArray[aToken][0])) { isQ = false }
-                                    let theToken = isQ ? tokensArray[aToken][0] : null
-                                    let aTokenCristayl = isQ ? tokensArray[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)] : {}
+                                    if (!tokensArrayObj[aToken] || (tokensArrayObj[aToken] && !tokensArrayObj[aToken][0])) { isQ = false }
+                                    let theToken = isQ ? tokensArrayObj[aToken][0] : null
+                                    let aTokenCristayl = isQ ? tokensArrayObj[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)] : {}
                                     let crystal = (
                                         queryUSDT.data
                                         ? getStrategyResult(aTokenCristayl,parseFloat(queryUSDT.data[index].price))
@@ -312,7 +326,7 @@ function TokenPage({query}) {
                                             
                                             <div className="w-100">
                                                 <div className="flex  opaci-75 ">
-                                                    {!!tokensArray[aToken] && (
+                                                    {!!tokensArrayObj[aToken] && (
                                                         <div className="flex-center  flex-justify-between w-100">
                                                             {!aTokenCristayl.state
                                                                 ? <div className="opaci-25">Inactive</div>
@@ -409,6 +423,49 @@ function TokenPage({query}) {
                         <div className="mt-2 show-xs_md opaci-10 w-100"><hr className="w-100"/></div>
                         <div className="flex mq_xs_flex-col ">
                             <div className="flex-col pa-2 ddr">
+                                <div className="mt-2 show-xs_md opaci-10 w-100"><hr className="w-100"/></div>
+                                <div className="flex-1 w-100 my-8 flex-col flex-justify-between   ">
+                                    {!!uid && 
+                                        <details className="tx-white w-100 flex-center ">
+                                            <summary className="flex flex-justify-end">
+                                                <div className="tx-lg opaci-chov--50 py-2 mt-2 bord-r-8 px-2 bg-w-hov-20">
+                                                    <BsFillGearFill />
+                                                </div>
+                                            </summary>
+                                                
+                                            <div className="w-90 flex-col flex-justify-end">
+                                                <div className="bg-w-50  bord-r-50 px-2 py-1 tx-sm ">
+                                                    {uid}
+                                                </div>
+                                            </div>
+                                        </details>
+                                    }
+
+                                    <div className="flex-center w-min-200px">
+                                        {(cryptoToken in tokensArrayObj) && 
+                                            <div className="tx-bold flex-center  mt-2 " >
+                                                <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-3 bord-r-50 tx-lg"
+                                                    onClick={()=>{removeToken(cryptoToken)}}
+                                                    style={{boxShadow:"0px 0px 25px #CF589433"}}
+                                                >
+                                                    LEAVE
+                                                </button>
+                                            </div>
+                                        }
+                                        {!(cryptoToken in tokensArrayObj) && 
+                                            <div className={`tx-bold flex-center  invert ${!uid && "opaci-50"}`}
+                                            >
+                                                <button className="clickble tx-ls-5 mt-2 opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
+                                                    onClick={()=>{!!uid && joinToken(cryptoToken)}} 
+                                                    style={{boxShadow:"0px 0px 25px #CF589433"}}
+                                                >
+                                                    JOIN
+                                                </button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                
                                 <div className="w-100 flex-center flex-align-end">
                                     <div className="tx-sm pr-1 opaci-50">Timeframe:</div>
                                     <div className="tx-lgx tx-bold-6">{timeframe}</div>
@@ -424,21 +481,22 @@ function TokenPage({query}) {
                                         )
                                     })}
                                 </div>
-                                {tokensArray &&  tokensArray[cryptoToken] && tokensArray[cryptoToken][0] &&
+                                {tokensArrayObj &&  tokensArrayObj[cryptoToken] && tokensArrayObj[cryptoToken][0] &&
                                     <div className="flex-wrap w-  ">
                                         <TokenConfigStateButtons 
                                             timeframe={timeframe}
                                             index={DEFAULT_TOKENS_ARRAY.indexOf(cryptoToken)}
-                                            tokensArray={tokensArray}
+                                            tokensArrayObj={tokensArrayObj}
                                             queryUSDT={queryUSDT}
                                             aToken={cryptoToken}
-                                            theToken={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                            theToken={tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
                                             updateTokenOrder={updateTokenOrder}
                                         />
                                     </div>
                                 }
+                                
                             </div>
-                            <div className="flex-col pa-2 ddb">
+                            {/* <div className="flex-col pa-2 ddb">
                                 <div className="w-90 flex flex-align-end">
                                     <div className="tx-sm pr-1 opaci-50">Wavelength:</div>
                                     <div className="tx-lgx tx-bold-6">{wavelength}</div>
@@ -481,126 +539,87 @@ function TokenPage({query}) {
                                         onChange={(e)=>{s__chopAmount(-e.target.value)}}
                                     />
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                         
-                        <div className="mt-2 show-xs_md opaci-10 w-100"><hr className="w-100"/></div>
-                        <div className="flex-1 flex-col flex-justify-between   ">
-                            {!!uid && 
-                                <details className="tx-white w-100 flex-center ">
-                                    <summary className="flex flex-justify-end">
-                                        <div className="tx-lg opaci-chov--50 py-2 mt-2 bord-r-8 px-2 bg-w-hov-20">
-                                            <BsFillGearFill />
-                                        </div>
-                                    </summary>
-                                        
-                                    <div className="w-90 flex-col flex-justify-end">
-                                        <div className="bg-w-50  bord-r-50 px-2 py-1 tx-sm ">
-                                            {uid}
-                                        </div>
-                                    </div>
-                                </details>
-                            }
-
-                            <div className="flex-center w-min-200px">
-                                {(cryptoToken in tokensArray) && 
-                                    <div className="tx-bold flex-center  mt-2 " >
-                                        <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-3 bord-r-50 tx-lg"
-                                            onClick={()=>{removeToken(cryptoToken)}}
-                                            style={{boxShadow:"0px 0px 25px #CF589433"}}
-                                        >
-                                            LEAVE
-                                        </button>
-                                    </div>
-                                }
-                                {!(cryptoToken in tokensArray) && 
-                                    <div className={`tx-bold flex-center  invert ${!uid && "opaci-50"}`}
-                                    >
-                                        <button className="clickble tx-ls-5 mt-2 opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
-                                            onClick={()=>{!!uid && joinToken(cryptoToken)}} 
-                                            style={{boxShadow:"0px 0px 25px #CF589433"}}
-                                        >
-                                            JOIN
-                                        </button>
-                                    </div>
-                                }
-                            </div>
-                        </div>
+                        
                     </div>
                 }
-                <div className="w-100 flex-row mq_xs_lg_flex-col flex-align-stretch">
-                    <div className="flex-center ma-4 flex-col mq_xs_lg_flex-row">
-                        <a  className="px-2 py-1 bg-w-50 ma-1  opaci-chov--50 bord-r-8 tx-white" target={"_blank"}
-                            href={`https://www.tradingview.com/chart/?symbol=BINANCE%3A${cryptoToken.toUpperCase()}${baseToken.toUpperCase()}`}
-                        >
-                            {cryptoToken.toUpperCase()}{baseToken.toUpperCase()} @{timeframe}
-                        </a>
-                        <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
-                            Refresh
-                        </div>
-                        <div onClick={()=>{exportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
-                            export
-                        </div>
-                        <div onClick={()=>{clickImportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
-                            import
-                        </div>
-                    </div>
-                    {klinesArray.length > 0  && <div className="flex-1 w-100 flex-col">
-                        <div className=" flex  flex-justify-between w-90">
-                            <div className="flex-1 px-2 opaci-10"><hr/></div>
-                            <div className="opaci-50"><div className=" left-0 top-0">{klinesStats.timeDiff}</div></div>
-                            <div className=" opaci-10 px-2 "><hr className="px-2"/></div>
-                            <div className="opaci-50"><div className=" left-0 top-0">{klinesStats.dropPercent}%</div></div>
-                        </div>
-                        {loadings != "" && <div className="flex  w-90 bg-w-10  my-3 bord-r-8 h-400px"></div> }   
-                    
-                        {loadings == "" &&  tokensArray[cryptoToken] && queryUSDT.data && 
-                            <div
-                                className="flex pos-rel w-90 box-shadow-5 bg-w-10 hov-bord-1-w autoverflow  my-3 bord-r-8"
-                                style={{ resize:"both", height:"400px", }}
+                {cryptoToken in tokensArrayObj &&
+                    <div className="w-100 flex-row mq_xs_lg_flex-col flex-align-stretch">
+                        <div className="flex-center ma-4 flex-col mq_xs_lg_flex-row">
+                            <a  className="px-2 py-1 bg-w-50 ma-1  opaci-chov--50 bord-r-8 tx-white" target={"_blank"}
+                                href={`https://www.tradingview.com/chart/?symbol=BINANCE%3A${cryptoToken.toUpperCase()}${baseToken.toUpperCase()}`}
                             >
-                                
-                                <div className="pa-1 pos-abs right-0 tx-green bottom-0">{klinesStats.min}</div>
-                                <div className="pa-1 pos-abs right-0 tx-orange top-50p">{klinesStats.minMaxAvg}</div>
-                                <div className="pa-1 pos-abs right-0 opaci-50 top-0">{klinesStats.max}</div>
-                                
-                                <div className="pa-1 pos-abs right-0 tx-green-25 top-75p">{parseDecimals(klinesStats.minMedian)}</div>
-                                <div className="pa-1 pos-abs right-0 tx-red top-25p">{parseDecimals(klinesStats.maxMedian)}</div>
-
-                                <ChartHigherLine klinesArray={p__klinesArray} klinesStats={klinesStats}
-                                    tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
-                                />
-                                <ChartLowerLine klinesArray={p__klinesArray} klinesStats={klinesStats}
-                                    tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
-                                />
-                                <ChartHigherLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
-                                    tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
-                                />
-                                <ChartLowerLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
-                                    tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
-                                />
-                                <ChartLiveLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
-                                    livePrice={queryUSDT.data[DEFAULT_TOKENS_ARRAY.indexOf(cryptoToken)].price}
-
-                                    tokenConfig={tokensArray[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
-                                />
-
-                                <ChartMiddleLine klinesArray={klinesArray} />
-                                <ChartTopBottomLine klinesArray={klinesArray} />
-                                {/* <ChartSinLine chopAmount={chopAmount} klinesArray={klinesArray} wavelength={wavelength} /> */}
-                                        
+                                {cryptoToken.toUpperCase()}{baseToken.toUpperCase()} @{timeframe}
+                            </a>
+                            <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                                Refresh
                             </div>
-                        }
-                        <div className=" flex  flex-justify-between w-90">
-                            <div className="">{klinesStats.startDate}</div>
-                            <div className="flex-1 px-2 opaci-10"><hr/></div>
-                            <div className="">{klinesStats.midDate}</div>
-                            <div className="flex-1 px-2 opaci-10"><hr/></div>
-                            <div className="">{klinesStats.endDate}</div>
+                            <div onClick={()=>{exportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                                export
+                            </div>
+                            <div onClick={()=>{clickImportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                                import
+                            </div>
                         </div>
-                    </div>}
+                        {klinesArray.length > 0  && <div className="flex-1 w-100 flex-col">
+                            <div className=" flex  flex-justify-between w-90">
+                                <div className="flex-1 px-2 opaci-10"><hr/></div>
+                                <div className="opaci-50"><div className=" left-0 top-0">{klinesStats.timeDiff}</div></div>
+                                <div className=" opaci-10 px-2 "><hr className="px-2"/></div>
+                                <div className="opaci-50"><div className=" left-0 top-0">{klinesStats.dropPercent}%</div></div>
+                            </div>
+                            {loadings != "" && <div className="flex  w-90 bg-w-10  my-3 bord-r-8 h-400px"></div> }   
+                        
+                            {loadings == "" &&  tokensArrayObj[cryptoToken] && queryUSDT.data && 
+                                <div
+                                    className="flex pos-rel w-90 box-shadow-5 bg-w-10 hov-bord-1-w autoverflow  my-3 bord-r-8"
+                                    style={{ resize:"both", height:"400px", }}
+                                >
+                                    
+                                    <div className="pa-1 pos-abs right-0 tx-green bottom-0">{klinesStats.min}</div>
+                                    <div className="pa-1 pos-abs right-0 tx-orange top-50p">{klinesStats.minMaxAvg}</div>
+                                    <div className="pa-1 pos-abs right-0 opaci-50 top-0">{klinesStats.max}</div>
+                                    
+                                    <div className="pa-1 pos-abs right-0 tx-green-25 top-75p">{parseDecimals(klinesStats.minMedian)}</div>
+                                    <div className="pa-1 pos-abs right-0 tx-red top-25p">{parseDecimals(klinesStats.maxMedian)}</div>
 
-                </div>
+                                    <ChartHigherLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                                        tokenConfig={tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                    />
+                                    <ChartLowerLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                                        tokenConfig={tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                    />
+                                    <ChartHigherLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                                        tokenConfig={tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                    />
+                                    <ChartLowerLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                                        tokenConfig={tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                    />
+                                    <ChartLiveLastLine klinesArray={p__klinesArray} klinesStats={klinesStats}
+                                        livePrice={queryUSDT.data[DEFAULT_TOKENS_ARRAY.indexOf(cryptoToken)].price}
+
+                                        tokenConfig={tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                    />
+
+                                    <ChartMiddleLine klinesArray={klinesArray} />
+                                    <ChartTopBottomLine klinesArray={klinesArray} />
+                                    {/* <ChartSinLine chopAmount={chopAmount} klinesArray={klinesArray} wavelength={wavelength} /> */}
+                                            
+                                </div>
+                            }
+                            <div className=" flex  flex-justify-between w-90">
+                                <div className="">{klinesStats.startDate}</div>
+                                <div className="flex-1 px-2 opaci-10"><hr/></div>
+                                <div className="">{klinesStats.midDate}</div>
+                                <div className="flex-1 px-2 opaci-10"><hr/></div>
+                                <div className="">{klinesStats.endDate}</div>
+                            </div>
+                        </div>}
+
+                    </div>
+                }   
 
 
             </div>

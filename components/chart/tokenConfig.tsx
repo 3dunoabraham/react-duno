@@ -5,7 +5,7 @@ import { getStrategyResult, parseDecimals } from "../../scripts/helpers"
 export const TokenConfigStateButtons = ({
     timeframe,
     index,
-    tokensArray,
+    tokensArrayObj,
     queryUSDT,
     aToken,
     theToken,
@@ -13,7 +13,7 @@ export const TokenConfigStateButtons = ({
 }:{
     timeframe:any,
     index:any,
-    tokensArray:any,
+    tokensArrayObj:any,
     queryUSDT:any,
     aToken:any,
     theToken:any,
@@ -36,7 +36,7 @@ export const TokenConfigStateButtons = ({
         // console.log(stats)
         return (
         queryUSDT.data && queryUSDT.data[index] &&
-            (aToken in tokensArray)
+            (aToken in tokensArrayObj)
                 ? (getStrategyResult(theToken,parseFloat(queryUSDT.data[index].price)))
                 : 0
     )},[queryUSDT,])
