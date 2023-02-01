@@ -18,7 +18,7 @@ export function ChartDashboard({query}) {
     const [counter, s__counter] = useState(0);
     const [loadings, s__loadings] = useState('all');
     const getKlineArray = async(t,token) => {
-        console.log("fetching getKlineArray",t,token)
+        // console.log("fetching getKlineArray",t,token)
 
         s__loadings("klinesArray")
         let urlBase = `https://api.binance.com/api/v3/klines?interval=${t}&symbol=`
@@ -108,8 +108,8 @@ export function ChartDashboard({query}) {
     const DEFAULT_TOKEN = {}
     const klinesStats = useMemo(()=>{
         if (!tokensArrayObj[cryptoToken]) return {}
-        console.log("tokensArrayObj,cryptoToken,DEFAULT_TIMEFRAME_ARRAY,timeframe")
-        console.log(tokensArrayObj,cryptoToken,DEFAULT_TIMEFRAME_ARRAY,timeframe)
+        // console.log("tokensArrayObj,cryptoToken,DEFAULT_TIMEFRAME_ARRAY,timeframe")
+        // console.log(tokensArrayObj,cryptoToken,DEFAULT_TIMEFRAME_ARRAY,timeframe)
         let tokenConfirg = tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]
 
         let maxPrice = 0
@@ -174,10 +174,10 @@ export function ChartDashboard({query}) {
     }
     const addToken = (token:string,price:number) => {
         if (!token) return
-        console.log(getComputedLevels({floor:price*0.8,ceil:price*1.2}))
-        console.log({...DEFAULT_TOKEN_OBJ,...{
-            ...getComputedLevels({floor:price*0.8,ceil:price*1.2})
-        }})
+        // console.log(getComputedLevels({floor:price*0.8,ceil:price*1.2}))
+        // console.log({...DEFAULT_TOKEN_OBJ,...{
+            // ...getComputedLevels({floor:price*0.8,ceil:price*1.2})
+        // }})
         let new_tokensArrayObj = {
             ...tokensArrayObj, ...
             {
@@ -188,7 +188,7 @@ export function ChartDashboard({query}) {
                 ) )
             }
         }
-        console.log("new_tokensArrayObj", tokensArrayObj, new_tokensArrayObj)
+        // console.log("new_tokensArrayObj", tokensArrayObj, new_tokensArrayObj)
         s__tokensArrayObj(new_tokensArrayObj)
         s__LS_tokensArrayObj((prevValue) => JSON.stringify(new_tokensArrayObj))
     }
@@ -197,16 +197,23 @@ export function ChartDashboard({query}) {
         let promptVal = prompt("Enter Value")
         let value = !promptVal ? 0 : parseFloat(promptVal)
         let timeframeIndex = timeframe
+        console.log("timeframe,", timeframeIndex, value, token)
         let old_tokensArrayObj = tokensArrayObj[token][timeframeIndex]
+        console.log("egfrh", old_tokensArrayObj, tokensArrayObj)
 
         let old_tokensArrayObjArray = [...tokensArrayObj[token]]
-        let newCrystal = {...{
-            [substate]:value
-        },...getComputedLevels(old_tokensArrayObjArray[timeframeIndex])}
+        let newCrystal = {
+            ...getComputedLevels({
+                ...old_tokensArrayObjArray[timeframeIndex],
+                ...{[substate]:value}
+            }),
+        }
         old_tokensArrayObjArray[timeframeIndex] = {...old_tokensArrayObj,...newCrystal}
+        console.log("zzzzzz",newCrystal, value)
         let bigTokensObj = {...tokensArrayObj, ...{[token]:old_tokensArrayObjArray}}
         s__tokensArrayObj(bigTokensObj)
         s__LS_tokensArrayObj((prevValue) => JSON.stringify(bigTokensObj))
+        console.log("rgwrgwg",bigTokensObj)
     }
     const updateTokenState = (token:string, timeframe:any, substate:string, value:number) => {
         if (!token) return
