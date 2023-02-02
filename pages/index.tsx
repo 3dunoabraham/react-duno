@@ -61,7 +61,7 @@ function Gallery({
                 </span>
             </h1>
             <a className="duno-btn tx-white py-4 px-8 bord-r-50 tx-lg"
-                href="/chart/12h?token=btc"
+                href="/chart/1d?token=btc"
                 style={{boxShadow:"0px 0px 25px #CF589433"}}
             >
                 CHART
