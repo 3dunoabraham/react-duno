@@ -71,6 +71,7 @@ export function ChartDashboard({query}) {
     const [LS_uid, s__LS_uid] = useLocalStorage('uid', "")
     const [uid, s__uid] = useState("")
     const [isUIReversed,s__isUIReversed] = useState<any>(true)
+    const [showAllTokens,s__showAllTokens] = useState<any>(true)
     const [chopAmount,s__chopAmount] = useState<any>(0)
     const [wavelength,s__wavelength] = useState<any>(-300)
     const [tokensArrayObj,s__tokensArrayObj] = useState<any>({})
@@ -192,9 +193,9 @@ export function ChartDashboard({query}) {
         s__tokensArrayObj(new_tokensArrayObj)
         s__LS_tokensArrayObj((prevValue) => JSON.stringify(new_tokensArrayObj))
     }
-    const updateTokenOrder = (token:string, timeframe:any, substate:string) => {
+    const updateTokenOrder = (token:string, timeframe:any, substate:string,val:any="") => {
         if (!token) return
-        let promptVal = prompt("Enter Value")
+        let promptVal = !val ? prompt("Enter Value") : val
         let value = !promptVal ? 0 : parseFloat(promptVal)
         let timeframeIndex = timeframe
         console.log("timeframe,", timeframeIndex, value, token)
@@ -270,12 +271,12 @@ export function ChartDashboard({query}) {
     )
 
     return (
-    <div className="body pos-rel flex-col flex-justify-start noverflow">
-        {!uid && <div className="h-100px w-100px z-999 "></div>}
+    <div className="body h-min-100  pos-rel flex-col flex-justify-start noverflow">
+        {/* {!uid && <div className="h-100px w-100px z-999 "></div>} */}
         {!uid && (
-            <div className="tx-bold flex-center px-8 " onClick={()=>{register()}}>
-                <button className="clickble tx-ls-5  tx-white opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
-                    style={{boxShadow:"0px 0px 25px #CF589433"}}
+            <div className="flex-center  my-2 "  onClick={()=>{register()}}>
+                <button className="tx-lg tx-white opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50"
+                    style={{boxShadow:"0px 0px 25px #CF589466"}}
                 >
                 Register
                 </button>
@@ -283,14 +284,14 @@ export function ChartDashboard({query}) {
         )}
         <div
             className={
-                "bg-glass-6   bord-r-10 tx-white mt-8 py-8 z-999 fade-in w-95 noverflow flex flex-between"
+                "bg-glass-6   bord-r-10 tx-white mt-4 py-2 z-999 fade-in w-95 noverflow flex flex-between"
             }
             style={{
                 border:"1px solid #777",
                 boxShadow:"0 10px 50px -20px #00000077"
             }}
         >
-            <div className={` flex-col${isUIReversed ? "-r" : ""} w-100 `}>
+            <div className={` flex-col w-100 `}>
                 {klinesArray.length == 0  && <>
                     <div className="w-100  pos-rel flex-col flex-justify-start noverflow">
                         <div className="h-600px block flex-center tx-white tx-xl">. . .</div>
@@ -298,10 +299,26 @@ export function ChartDashboard({query}) {
                 </>}
                 {loadings != "" && <div className="flex  w-90 bg-w-10 bord-r-8 my-6 h-min-300px"></div> }   
                 {
-                    <div className="flex-wrap flex-align-start w-90  my-4">
+                    <div className="flex-wrap flex-align-start w-90  my-">
 
                         {/* <div className="flex mq_xs_md_flex-col flex-1"> */}
                             <div className="flex-col flex-1">
+                                {!!uid && <>
+                                    {!showAllTokens &&
+                                        <div className={`flex pa-2 opaci-75 bord-r-8 mt-2 w-100 bg-b-50 opaci-chov--50   `}
+                                            onClick={()=>{s__showAllTokens(true)}}
+                                        >
+                                            Show All Tokens
+                                        </div>
+                                    }
+                                    {showAllTokens &&
+                                        <div className={`flex pa-2 opaci-75 bord-r-8 mt-2 w-100 bg-b-50 opaci-chov--50   `}
+                                            onClick={()=>{s__showAllTokens(false)}}
+                                        >
+                                            Hide Tokens
+                                        </div>
+                                    }
+                                </>}
                                 {/*uid &&*/ DEFAULT_TOKENS_ARRAY.map((aToken,index)=>{
                                     let isQ = true
                                     if (queryUSDT.isLoading) { isQ = false }
@@ -309,6 +326,7 @@ export function ChartDashboard({query}) {
                                     let isK = isQ
                                     if (!tokensArrayObj[aToken] || (tokensArrayObj[aToken] && !tokensArrayObj[aToken][0])) { isQ = false }
                                     let theToken = isQ ? tokensArrayObj[aToken][0] : null
+                                    if (!showAllTokens && aToken != cryptoToken) return
                                     let aTokenCristayl = isQ ? tokensArrayObj[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)] : {}
                                     let crystal = (
                                         queryUSDT.data
@@ -324,7 +342,7 @@ export function ChartDashboard({query}) {
                                         <div className="      flex-col w-100 " >
                                             
                                             {<div className="tx-lgx  w-100 flex flex-align-start  " >
-                                                <a className="opaci-chov--50 tx-white" href={`/chart/${timeframe}?token=${aToken}`}>
+                                                <a className={`opaci-chov--50 tx-white ${aToken == cryptoToken?"":"nodeco"} `} href={`/chart/${timeframe}?token=${aToken}`}>
                                                     <span className="px-1">{aToken.toUpperCase()}:</span>
                                                     <span className="tx-ls-2">{isK && parseDecimals(queryUSDT.data[index].price)}</span>
                                                 </a>
@@ -407,17 +425,47 @@ export function ChartDashboard({query}) {
                                             </div>
                                             
                                             {aToken == cryptoToken &&
-                                                <div className="flex-center ">
-                                                    <div className="flex mt-1">
-                                                        <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"mode")}}
+                                                <div className="flex-center w-100">
+                                                    
+                                                    {!(cryptoToken in tokensArrayObj) && !!uid &&
+                                                        <div className="flex-1 w-100  ">
+
+                                                        </div>
+                                                    }
+                                                    <div className="flex-center mt-1">
+                                                        {/* <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"mode")}}
                                                             className="opaci-chov--50 bg-w-90  tx-black px-3 py-1 bord-r-15 mx-1 ma-1"
                                                         >
                                                             Mode: {theToken && theToken.mode}
-                                                        </div>
-                                                        <div className="flex-center px-4">
+                                                        </div> */}
+                                                        {/* <div className="flex-center px-4">
                                                             <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-50 opaci-chov--50 bord-r-8 ">
                                                                 Refresh
                                                             </div>
+                                                        </div> */}
+                                                        
+                                                        <div className="flex-center ">
+                                                            {(cryptoToken in tokensArrayObj) && 
+                                                                <div className="tx-bold flex-center  mt-2 " >
+                                                                    <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-3 bord-r-50 tx-lg"
+                                                                        onClick={()=>{removeToken(cryptoToken)}}
+                                                                        style={{boxShadow:"0px 0px 25px #CF589433"}}
+                                                                    >
+                                                                        LEAVE
+                                                                    </button>
+                                                                </div>
+                                                            }
+                                                            {!(cryptoToken in tokensArrayObj) && !!uid &&
+                                                                <div className={`tx-bold flex-center  invert ${!uid && "opaci-50"}`}
+                                                                >
+                                                                    <button className="clickble tx-ls-5 opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-4 bord-r-50 tx-lg"
+                                                                        onClick={()=>{!!uid && joinToken(cryptoToken)}} 
+                                                                        style={{boxShadow:"0px 0px 25px #CF589433"}}
+                                                                    >
+                                                                        JOIN
+                                                                    </button>
+                                                                </div>
+                                                            }
                                                         </div>
                                                     </div>
                                                 </div>
@@ -428,11 +476,12 @@ export function ChartDashboard({query}) {
                                 })}
                             </div>
 
-                        <div className="mt-2 show-xs_md opaci-10 w-100"><hr className="w-100"/></div>
-                        <div className="flex mq_xs_flex-col ">
-                            <div className="flex-col pa-2 ddr">
-                                <div className="mt-2 show-xs_md opaci-10 w-100"><hr className="w-100"/></div>
-                                <div className="flex-1 w-100 my-8 flex-col flex-justify-between   ">
+                        {!!uid && 
+                            <div className="mt-2 show-xs_md opaci-10 w-100"><hr className="w-100"/></div>
+                        }
+                        <div className="flex mq_xs_flex-col  w-100 flex-align-end">
+                            <div className="flex-col  ddr">
+                                <div className="flex-1 w-100 flex-col flex-justify-between   ">
                                     {!!uid && 
                                         <details className="tx-white w-100 flex-center ">
                                             <summary className="flex flex-justify-end">
@@ -441,7 +490,7 @@ export function ChartDashboard({query}) {
                                                 </div>
                                             </summary>
                                                 
-                                            <div className="w-90 flex-col flex-justify-end">
+                                            <div className=" flex-col flex-justify-end mt-2">
                                                 <div className="bg-w-50  bord-r-50 px-2 py-1 tx-sm ">
                                                     {uid}
                                                 </div>
@@ -449,46 +498,8 @@ export function ChartDashboard({query}) {
                                         </details>
                                     }
 
-                                    <div className="flex-center w-min-200px">
-                                        {(cryptoToken in tokensArrayObj) && 
-                                            <div className="tx-bold flex-center  mt-2 " >
-                                                <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-3 bord-r-50 tx-lg"
-                                                    onClick={()=>{removeToken(cryptoToken)}}
-                                                    style={{boxShadow:"0px 0px 25px #CF589433"}}
-                                                >
-                                                    LEAVE
-                                                </button>
-                                            </div>
-                                        }
-                                        {!(cryptoToken in tokensArrayObj) && 
-                                            <div className={`tx-bold flex-center  invert ${!uid && "opaci-50"}`}
-                                            >
-                                                <button className="clickble tx-ls-5 mt-2 opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50 tx-lg"
-                                                    onClick={()=>{!!uid && joinToken(cryptoToken)}} 
-                                                    style={{boxShadow:"0px 0px 25px #CF589433"}}
-                                                >
-                                                    JOIN
-                                                </button>
-                                            </div>
-                                        }
-                                    </div>
                                 </div>
                                 
-                                <div className="w-100 flex-center flex-align-end">
-                                    <div className="tx-sm pr-1 opaci-50">Timeframe:</div>
-                                    <div className="tx-lgx tx-bold-6">{timeframe}</div>
-                                </div>
-                                <div className="flex-wrap w-300px ">
-                                    {DEFAULT_TIMEFRAME_ARRAY.map((aTimeframe,index)=>{
-                                        return (
-                                        <button className="ma-1 pa-2  opaci-chov--50 bg-w-10 bord-r-8 tx-white"
-                                            key={index} onClick={()=>setNewTimeframe(aTimeframe)}
-                                        >
-                                            {aTimeframe}
-                                        </button>
-                                        )
-                                    })}
-                                </div>
                                 {tokensArrayObj &&  tokensArrayObj[cryptoToken] && tokensArrayObj[cryptoToken][0] &&
                                     <div className="flex-wrap w-  ">
                                         <TokenConfigStateButtons 
@@ -569,6 +580,22 @@ export function ChartDashboard({query}) {
                             </div>
                             <div onClick={()=>{clickImportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
                                 import
+                            </div>
+                            
+                            <div className="w-100 flex-center flex-align-end">
+                                <div className="tx-sm pr-1 opaci-50">Timeframe:</div>
+                                <div className="tx-lgx tx-bold-6">{timeframe}</div>
+                            </div>
+                            <div className="flex-wrap w-300px ">
+                                {DEFAULT_TIMEFRAME_ARRAY.map((aTimeframe,index)=>{
+                                    return (
+                                    <button className="ma-1 pa-2  opaci-chov--50 bg-w-10 bord-r-8 tx-white"
+                                        key={index} onClick={()=>setNewTimeframe(aTimeframe)}
+                                    >
+                                        {aTimeframe}
+                                    </button>
+                                    )
+                                })}
                             </div>
                         </div>
                         {klinesArray.length > 0  && <div className="flex-1 w-100 flex-col">
