@@ -444,9 +444,9 @@ export function ChartDashboard({query}) {
                                                             </div>
                                                         </div> */}
                                                         
-                                                        <div className="flex-center ">
+                                                        <div className="flex-row mq_xs_flex-col">
                                                             {(cryptoToken in tokensArrayObj) && 
-                                                                <div className="tx-bold flex-center  mt-2 " >
+                                                                <div className="tx-bold flex-center   " >
                                                                     <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-3 bord-r-50 tx-lg"
                                                                         onClick={()=>{removeToken(cryptoToken)}}
                                                                         style={{boxShadow:"0px 0px 25px #CF589433"}}
@@ -466,7 +466,22 @@ export function ChartDashboard({query}) {
                                                                     </button>
                                                                 </div>
                                                             }
+                                                        
+                                                            {tokensArrayObj &&  tokensArrayObj[cryptoToken] && tokensArrayObj[cryptoToken][0] &&
+                                                                <div className="flex-wrap w- mx-3  ">
+                                                                    <TokenConfigStateButtons 
+                                                                        timeframe={timeframe}
+                                                                        index={DEFAULT_TOKENS_ARRAY.indexOf(cryptoToken)}
+                                                                        tokensArrayObj={tokensArrayObj}
+                                                                        queryUSDT={queryUSDT}
+                                                                        aToken={cryptoToken}
+                                                                        theToken={tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                                                        updateTokenOrder={updateTokenOrder}
+                                                                    />
+                                                                </div>
+                                                            }
                                                         </div>
+
                                                     </div>
                                                 </div>
                                             }
@@ -480,41 +495,6 @@ export function ChartDashboard({query}) {
                             <div className="mt-2 show-xs_md opaci-10 w-100"><hr className="w-100"/></div>
                         }
                         <div className="flex mq_xs_flex-col  w-100 flex-align-end">
-                            <div className="flex-col  ddr">
-                                <div className="flex-1 w-100 flex-col flex-justify-between   ">
-                                    {!!uid && 
-                                        <details className="tx-white w-100 flex-center ">
-                                            <summary className="flex flex-justify-end">
-                                                <div className="tx-lg opaci-chov--50 py-2 mt-2 bord-r-8 px-2 bg-w-hov-20">
-                                                    <BsFillGearFill />
-                                                </div>
-                                            </summary>
-                                                
-                                            <div className=" flex-col flex-justify-end mt-2">
-                                                <div className="bg-w-50  bord-r-50 px-2 py-1 tx-sm ">
-                                                    {uid}
-                                                </div>
-                                            </div>
-                                        </details>
-                                    }
-
-                                </div>
-                                
-                                {tokensArrayObj &&  tokensArrayObj[cryptoToken] && tokensArrayObj[cryptoToken][0] &&
-                                    <div className="flex-wrap w-  ">
-                                        <TokenConfigStateButtons 
-                                            timeframe={timeframe}
-                                            index={DEFAULT_TOKENS_ARRAY.indexOf(cryptoToken)}
-                                            tokensArrayObj={tokensArrayObj}
-                                            queryUSDT={queryUSDT}
-                                            aToken={cryptoToken}
-                                            theToken={tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
-                                            updateTokenOrder={updateTokenOrder}
-                                        />
-                                    </div>
-                                }
-                                
-                            </div>
                             {/* <div className="flex-col pa-2 ddb">
                                 <div className="w-90 flex flex-align-end">
                                     <div className="tx-sm pr-1 opaci-50">Wavelength:</div>
@@ -566,22 +546,7 @@ export function ChartDashboard({query}) {
                 }
                 {cryptoToken in tokensArrayObj &&
                     <div className="w-100 flex-row mq_xs_lg_flex-col flex-align-stretch">
-                        <div className="flex-center ma-4 flex-col mq_xs_lg_flex-row">
-                            <a  className="px-2 py-1 bg-w-50 ma-1  opaci-chov--50 bord-r-8 tx-white" target={"_blank"}
-                                href={`https://www.tradingview.com/chart/?symbol=BINANCE%3A${cryptoToken.toUpperCase()}${baseToken.toUpperCase()}`}
-                            >
-                                {cryptoToken.toUpperCase()}{baseToken.toUpperCase()} @{timeframe}
-                            </a>
-                            <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
-                                Refresh
-                            </div>
-                            <div onClick={()=>{exportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
-                                export
-                            </div>
-                            <div onClick={()=>{clickImportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
-                                import
-                            </div>
-                            
+                        <div className="flex-col mt-8">
                             <div className="w-100 flex-center flex-align-end">
                                 <div className="tx-sm pr-1 opaci-50">Timeframe:</div>
                                 <div className="tx-lgx tx-bold-6">{timeframe}</div>
@@ -598,7 +563,28 @@ export function ChartDashboard({query}) {
                                 })}
                             </div>
                         </div>
-                        {klinesArray.length > 0  && <div className="flex-1 w-100 flex-col">
+                        <div className="flex-center ma- flex-col mq_xs_lg_flex-row ">
+                            <a  className="px-2 tx-sm py-1 bg-w-50 ma-1  opaci-chov--50 bord-r-8 tx-white" target={"_blank"}
+                                href={`https://www.tradingview.com/chart/?symbol=BINANCE%3A${cryptoToken.toUpperCase()}${baseToken.toUpperCase()}`}
+                            >
+                                <div className="nowrap">
+                                    Tradigview
+                                </div>
+                                <div className="nowrap">
+                                    {cryptoToken.toUpperCase()}{baseToken.toUpperCase()} @{timeframe}
+                                </div>
+                            </a>
+                            <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                                Refresh
+                            </div>
+                            <div onClick={()=>{exportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                                export
+                            </div>
+                            <div onClick={()=>{clickImportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                                import
+                            </div>
+                        </div>
+                        {klinesArray.length > 0  && <div className="flex-1 w-100 flex-col mt-4">
                             <div className=" flex  flex-justify-between w-90">
                                 <div className="flex-1 px-2 opaci-10"><hr/></div>
                                 <div className="opaci-50"><div className=" left-0 top-0">{klinesStats.timeDiff}</div></div>
@@ -656,6 +642,25 @@ export function ChartDashboard({query}) {
                     </div>
                 }   
 
+                <div className="flex-1 px-2 w-100 mt-3 opaci-10"><hr/></div>
+                <div className="flex-1 w-100    ">
+                    {!!uid && 
+                        <details className="tx-white flex flex-align-end ">
+                            <summary className="flex    flex-justify-end">
+                                <div className="tx-lg opaci-chov--50  py-2 mx-2 bord-r-8 px-2 bg-w-hov-20">
+                                    <BsFillGearFill />
+                                </div>
+                            </summary>
+                                
+                            <div className="  flex flex-justify-end ma-2">
+                                <div className="bg-w-50  bord-r-50 px-2 py-1 tx-sm ">
+                                    {uid}
+                                </div>
+                            </div>
+                        </details>
+                    }
+
+                </div>
 
             </div>
         </div>

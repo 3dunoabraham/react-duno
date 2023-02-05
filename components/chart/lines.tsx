@@ -10,7 +10,7 @@ export const ChartMiddleLine = ({klinesArray}:{klinesArray:any[]})=>{
                 style={{
                     width: "2px",
                     height: "2px",
-                    left: `${index/500*100}%`,
+                    left: `${-2+(index/500*100)}%`,
                     background: `rgba(${index/2},99,99,0.3)`,
                     top:`
                     ${50}%
@@ -35,7 +35,7 @@ export const ChartSinLine = ({
             style={{
                 width: "2px",
                 height: "2px",
-                left: `${index/500*100}%`,
+                left: `${-2+(index/500*100)}%`,
                 background: `rgba(${(-200+index)},127,${(100-index)},0.8)`,
                 top:(
                 `
@@ -63,7 +63,7 @@ export const ChartSinLine2 = ({
             style={{
                 width: "2px",
                 height: "2px",
-                left: `${index/500*100}%`,
+                left: `${-2+(index/500*100)}%`,
                 background: `rgba(${(-200+index)},127,${(100-index)},0.8)`,
                 top:(
                 wavelength < 400 ? 
@@ -98,7 +98,7 @@ export const ChartLowerLastLine = ({
                 style={{
                     width: "10px",
                     height: aKline[3] < klinesStats.min ? "4px" : "2px",
-                    left: `${(Math.floor(index/45)*9) }%`,
+                    left: `${-2+(Math.floor(index/45)*9) }%`,
                     // background: `rgba(${index/2},99,99,0.3)`,
                     background: `#33000077`,
                     bottom:`
@@ -133,7 +133,7 @@ export const ChartLowerLine = ({
                 style={{
                     width: "2px",
                     height: aKline[3] < klinesStats.min ? "4px" : "2px",
-                    left: `${(index/500*100) }%`,
+                    left: `${-2+(index/500*100) }%`,
                     background: aKline[3] < klinesStats.min ? `#ffaa00` : `#ff000099`,
                     bottom:`
                     ${parseInt(`
@@ -168,7 +168,7 @@ export const ChartHigherLastLine = ({
                 style={{
                     width: "10px",
                     height: aKline[2] > klinesStats.max ? "3px" : "2px",
-                    left: `${3+(Math.floor(index/26)*5) }%`,
+                    left: `${-2+(3+(Math.floor(index/26)*5)) }%`,
                     background:`#00880077`,
                     bottom:`
                     ${parseInt(`
@@ -203,7 +203,7 @@ export const ChartLiveLastLine = ({
                 style={{
                     width: "20px",
                     height: livePrice > klinesStats.max ? "3px" : "2px",
-                    left: `${6+(Math.floor(index/100)*22) }%`,
+                    left: `${-2+(6+(Math.floor(index/100)*22)) }%`,
                     background:`#ffffff`,
                     bottom:`
                     ${parseInt(`
@@ -237,7 +237,7 @@ export const ChartHigherLine = ({
                 style={{
                     width: "2px",
                     height: aKline[2] > klinesStats.max ? "3px" : "2px",
-                    left: `${index/500*100}%`,
+                    left: `${-2+(index/500*100)}%`,
                     background:aKline[2] > klinesStats.max ? `#77ff00` : `#77ff0066`,
                     bottom:`
                     ${parseInt(`
@@ -267,7 +267,7 @@ export const ChartTopBottomLine = ({klinesArray}:{klinesArray:any[]})=>{
             style={{
                     width: "2px",
                     height: "2px",
-                    left: `${index/500*100}%`,
+                    left: `${-2+(index/500*100)}%`,
                     background: `rgba(${index/2},99,99,0.3)`,
                     top:`
                     ${Math.sin(index) > 0 ? 25 : 75}%
