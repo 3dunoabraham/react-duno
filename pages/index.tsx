@@ -38,8 +38,8 @@ const getBotUpdates = () =>
 
 
 function Gallery({
-    links, services,
-}: { links: ILink[], services: IService[] }) {
+    links, services, example,
+}: { links: ILink[], services: IService[], example:any }) {
 // new TELEGRAM_WRAPPER({});
     useEffect(()=>{
         console.log(services)
@@ -90,6 +90,7 @@ function Gallery({
 
 
             <div className="mt-200"></div>
+            |{JSON.stringify(example)}|
             <h1 className="mt-200 pt-200 tx-xxxl opaci-5 tx-ls-8 flex-col" onClick={() => { test(); }}>
                 <span>CONTROL</span>
                 <span className="pl-200 ml-100">PANEL</span>
@@ -228,16 +229,21 @@ function ContactLink({ link }: { link: ILink }) {
 export default Gallery;
 
 export const getStaticProps = async () => {
+    // const example = await import('./api/example.json');
     const supabaseAdmin = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL || "",
         process.env.SUPABASE_SERVICE_ROLE_KEY || ""
     );
     let links = (await supabaseAdmin.from("links").select("*").order("id")).data || []
     let services = (await supabaseAdmin.from("strats").select("*").order("id")).data || []
+
+    
+
     return {
         props: {
             links: links,
             services: services,
+            example: {},
         },
     };
 };
