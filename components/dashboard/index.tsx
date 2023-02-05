@@ -291,261 +291,254 @@ export function ChartDashboard({query}) {
                 boxShadow:"0 10px 50px -20px #00000077"
             }}
         >
-            <div className={` flex-col w-100 `}>
-                {klinesArray.length == 0  && <>
-                    <div className="w-100  pos-rel flex-col flex-justify-start noverflow">
-                        <div className="h-600px block flex-center tx-white tx-xl">. . .</div>
-                    </div>
-                </>}
-                {loadings != "" && <div className="flex  w-90 bg-w-10 bord-r-8 my-6 h-min-300px"></div> }   
-                {
-                    <div className="flex-wrap flex-align-start w-90  my-">
+            <div className={` flex-row mq_xs_lg_flex-col w-100  `}>
+                <div className="flex-wrap flex-align-start w-90  my-">
 
-                        {/* <div className="flex mq_xs_md_flex-col flex-1"> */}
-                            <div className="flex-col flex-1">
-                                {!!uid && <>
-                                    {!showAllTokens &&
-                                        <div className={`flex pa-2 opaci-75 bord-r-8 mt-2 w-100 bg-b-50 opaci-chov--50   `}
-                                            onClick={()=>{s__showAllTokens(true)}}
-                                        >
-                                            Show All Tokens
-                                        </div>
-                                    }
-                                    {showAllTokens &&
-                                        <div className={`flex pa-2 opaci-75 bord-r-8 mt-2 w-100 bg-b-50 opaci-chov--50   `}
-                                            onClick={()=>{s__showAllTokens(false)}}
-                                        >
-                                            Hide Tokens
-                                        </div>
-                                    }
-                                </>}
-                                {/*uid &&*/ DEFAULT_TOKENS_ARRAY.map((aToken,index)=>{
-                                    let isQ = true
-                                    if (queryUSDT.isLoading) { isQ = false }
-                                    if (queryUSDT.error) { isQ = false }
-                                    let isK = isQ
-                                    if (!tokensArrayObj[aToken] || (tokensArrayObj[aToken] && !tokensArrayObj[aToken][0])) { isQ = false }
-                                    let theToken = isQ ? tokensArrayObj[aToken][0] : null
-                                    if (!showAllTokens && aToken != cryptoToken) return
-                                    let aTokenCristayl = isQ ? tokensArrayObj[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)] : {}
-                                    let crystal = (
-                                        queryUSDT.data
-                                        ? getStrategyResult(aTokenCristayl,parseFloat(queryUSDT.data[index].price))
-                                        : 0
-                                    )
-
-                                    return (
-                                    <div className={`flex pa-2 w-min-350px bord-r-8 mt-2 w-100  ${aToken == cryptoToken ? "bg-w-20 " : "bg-b-10 "} `}
-                                        key={index}
+                    {/* <div className="flex mq_xs_md_flex-col flex-1"> */}
+                        <div className="flex-col flex-1 pa-4 ">
+                            {!!uid && <>
+                                {!showAllTokens &&
+                                    <div className={`flex pa-2 opaci-75 bord-r-8 mt-2 w-100 bg-b-50 opaci-chov--50   `}
+                                        onClick={()=>{s__showAllTokens(true)}}
                                     >
+                                        Show All Tokens
+                                    </div>
+                                }
+                                {showAllTokens &&
+                                    <div className={`flex pa-2 opaci-75 bord-r-8 mt-2 w-100 bg-b-50 opaci-chov--50   `}
+                                        onClick={()=>{s__showAllTokens(false)}}
+                                    >
+                                        Hide Tokens
+                                    </div>
+                                }
+                            </>}
+                            {/*uid &&*/ DEFAULT_TOKENS_ARRAY.map((aToken,index)=>{
+                                let isQ = true
+                                if (queryUSDT.isLoading) { isQ = false }
+                                if (queryUSDT.error) { isQ = false }
+                                let isK = isQ
+                                if (!tokensArrayObj[aToken] || (tokensArrayObj[aToken] && !tokensArrayObj[aToken][0])) { isQ = false }
+                                let theToken = isQ ? tokensArrayObj[aToken][0] : null
+                                if (!showAllTokens && aToken != cryptoToken) return
+                                let aTokenCristayl = isQ ? tokensArrayObj[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)] : {}
+                                let crystal = (
+                                    queryUSDT.data
+                                    ? getStrategyResult(aTokenCristayl,parseFloat(queryUSDT.data[index].price))
+                                    : 0
+                                )
+
+                                return (
+                                <div className={`flex pa-2 w-min-350px bord-r-8 mt-2 w-100  ${aToken == cryptoToken ? "bg-w-20 " : "bg-b-10 "} `}
+                                    key={index}
+                                >
+                                    
+                                    <div className="      flex-col w-100 " >
                                         
-                                        <div className="      flex-col w-100 " >
-                                            
-                                            {<div className="tx-lgx  w-100 flex flex-align-start  " >
-                                                <a className={`opaci-chov--50 tx-white ${aToken == cryptoToken?"":"nodeco"} `} href={`/chart/${timeframe}?token=${aToken}`}>
-                                                    <span className="px-1">{aToken.toUpperCase()}:</span>
-                                                    <span className="tx-ls-2">{isK && parseDecimals(queryUSDT.data[index].price)}</span>
-                                                </a>
-                                            </div>}
+                                        {<div className="tx-lgx  w-100 flex flex-align-start  " >
+                                            <a className={`opaci-chov--50 tx-white ${aToken == cryptoToken?"":"nodeco"} `} href={`/chart/${timeframe}?token=${aToken}`}>
+                                                <span className="px-1">{aToken.toUpperCase()}:</span>
+                                                <span className="tx-ls-2">{isK && parseDecimals(queryUSDT.data[index].price)}</span>
+                                            </a>
+                                        </div>}
 
-                                            {/* <StrategyState /> */}
-                                            
-                                            <div className="w-100">
-                                                <div className="flex  opaci-75 ">
-                                                    {!!tokensArrayObj[aToken] && (
-                                                        <div className="flex-center  flex-justify-between w-100">
-                                                            {!aTokenCristayl.state
-                                                                ? <div className="opaci-25">Inactive</div>
-                                                                : <div className="opaci-75 flex-center">
-                                                                    <div className="">
-                                                                        Active
-                                                                    </div >
-                                                                    <div className="tx-bold-8 px-2 py-1 bg-w-50 bord-r-8 ma-1">
-                                                                        {crystal}
-                                                                    </div >
-                                                                </div>
-                                                            }
-                                                            
-                                                            {!isQ || !aTokenCristayl.state
-                                                                ? (<div className="opaci-25 tx-xs ">
-                                                                        offline
-                                                                    </div>
-                                                                )
-                                                                : (
-                                                                    <div className="opaci-75 ">
-                                                                        
-                                                                        {crystal == 2 && <>
-                                                                            <div className="bg-w-50 opaci-chov--50 tx-black bord-r-8 pa-1"
-                                                                                onClick={()=>{
-                                                                                    buy_all()                                                                                        
-                                                                                }}
-                                                                            >
-                                                                                buy all
-                                                                            </div>
-                                                                        </>}
-                                                                        {crystal == 1 && <>
-                                                                            <div className="bg-w-50 opaci-chov--50 tx-black bord-r-8 pa-1"
-                                                                                onClick={()=>{
-                                                                                    buy_min()                                                                                        
-                                                                                }}
-                                                                            >
-                                                                                buy min
-                                                                            </div>
-                                                                        </>}
-                                                                        {crystal == -1 && <>
-                                                                            <div className="bg-w-50 opaci-chov--50 tx-black bord-r-8 pa-1"
-                                                                                onClick={()=>{
-                                                                                    sell_min()                                                                                        
-                                                                                }}
-                                                                            >
-                                                                                sell min
-                                                                            </div>
-                                                                        </>}
-                                                                        {crystal == -2 && <>
-                                                                            <div className="bg-w-50 opaci-chov--50 tx-black bord-r-8 pa-1"
-                                                                                onClick={()=>{
-                                                                                    sell_all()                                                                                        
-                                                                                }}
-                                                                            >
-                                                                                sell all
-                                                                            </div>
-                                                                        </>}
-                                                                        {crystal == 0 && <>
-                                                                            <div>
-                                                                                {aTokenCristayl.buy == 0 && <div>wait to buy</div>}
-                                                                                {aTokenCristayl.buy == 1 && <div>wait to sell</div>}
-                                                                            </div>
-                                                                        </>}
-                                                                    </div>
-                                                                )
-                                                            }
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            
-                                            {aToken == cryptoToken &&
-                                                <div className="flex-center w-100">
-                                                    
-                                                    {!(cryptoToken in tokensArrayObj) && !!uid &&
-                                                        <div className="flex-1 w-100  ">
-
-                                                        </div>
-                                                    }
-                                                    <div className="flex-center mt-1">
-                                                        {/* <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"mode")}}
-                                                            className="opaci-chov--50 bg-w-90  tx-black px-3 py-1 bord-r-15 mx-1 ma-1"
-                                                        >
-                                                            Mode: {theToken && theToken.mode}
-                                                        </div> */}
-                                                        {/* <div className="flex-center px-4">
-                                                            <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-50 opaci-chov--50 bord-r-8 ">
-                                                                Refresh
+                                        {/* <StrategyState /> */}
+                                        
+                                        <div className="w-100">
+                                            <div className="flex  opaci-75 ">
+                                                {!!tokensArrayObj[aToken] && (
+                                                    <div className="flex-center  flex-justify-between w-100">
+                                                        {!aTokenCristayl.state
+                                                            ? <div className="opaci-25">Inactive</div>
+                                                            : <div className="opaci-75 flex-center">
+                                                                <div className="">
+                                                                    Active
+                                                                </div >
+                                                                <div className="tx-bold-8 px-2 py-1 bg-w-50 bord-r-8 ma-1">
+                                                                    {crystal}
+                                                                </div >
                                                             </div>
-                                                        </div> */}
+                                                        }
                                                         
-                                                        <div className="flex-row mq_xs_flex-col">
-                                                            {(cryptoToken in tokensArrayObj) && 
-                                                                <div className="tx-bold flex-center   " >
-                                                                    <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-3 bord-r-50 tx-lg"
-                                                                        onClick={()=>{removeToken(cryptoToken)}}
-                                                                        style={{boxShadow:"0px 0px 25px #CF589433"}}
-                                                                    >
-                                                                        LEAVE
-                                                                    </button>
+                                                        {!isQ || !aTokenCristayl.state
+                                                            ? (<div className="opaci-25 tx-xs ">
+                                                                    offline
                                                                 </div>
-                                                            }
-                                                            {!(cryptoToken in tokensArrayObj) && !!uid &&
-                                                                <div className={`tx-bold flex-center  invert ${!uid && "opaci-50"}`}
-                                                                >
-                                                                    <button className="clickble tx-ls-5 opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-4 bord-r-50 tx-lg"
-                                                                        onClick={()=>{!!uid && joinToken(cryptoToken)}} 
-                                                                        style={{boxShadow:"0px 0px 25px #CF589433"}}
-                                                                    >
-                                                                        JOIN
-                                                                    </button>
+                                                            )
+                                                            : (
+                                                                <div className="opaci-75 ">
+                                                                    
+                                                                    {crystal == 2 && <>
+                                                                        <div className="bg-w-50 opaci-chov--50 tx-black bord-r-8 pa-1"
+                                                                            onClick={()=>{
+                                                                                buy_all()                                                                                        
+                                                                            }}
+                                                                        >
+                                                                            buy all
+                                                                        </div>
+                                                                    </>}
+                                                                    {crystal == 1 && <>
+                                                                        <div className="bg-w-50 opaci-chov--50 tx-black bord-r-8 pa-1"
+                                                                            onClick={()=>{
+                                                                                buy_min()                                                                                        
+                                                                            }}
+                                                                        >
+                                                                            buy min
+                                                                        </div>
+                                                                    </>}
+                                                                    {crystal == -1 && <>
+                                                                        <div className="bg-w-50 opaci-chov--50 tx-black bord-r-8 pa-1"
+                                                                            onClick={()=>{
+                                                                                sell_min()                                                                                        
+                                                                            }}
+                                                                        >
+                                                                            sell min
+                                                                        </div>
+                                                                    </>}
+                                                                    {crystal == -2 && <>
+                                                                        <div className="bg-w-50 opaci-chov--50 tx-black bord-r-8 pa-1"
+                                                                            onClick={()=>{
+                                                                                sell_all()                                                                                        
+                                                                            }}
+                                                                        >
+                                                                            sell all
+                                                                        </div>
+                                                                    </>}
+                                                                    {crystal == 0 && <>
+                                                                        <div>
+                                                                            {aTokenCristayl.buy == 0 && <div>wait to buy</div>}
+                                                                            {aTokenCristayl.buy == 1 && <div>wait to sell</div>}
+                                                                        </div>
+                                                                    </>}
                                                                 </div>
-                                                            }
-                                                        
-                                                            {tokensArrayObj &&  tokensArrayObj[cryptoToken] && tokensArrayObj[cryptoToken][0] &&
-                                                                <div className="flex-wrap w- mx-3  ">
-                                                                    <TokenConfigStateButtons 
-                                                                        timeframe={timeframe}
-                                                                        index={DEFAULT_TOKENS_ARRAY.indexOf(cryptoToken)}
-                                                                        tokensArrayObj={tokensArrayObj}
-                                                                        queryUSDT={queryUSDT}
-                                                                        aToken={cryptoToken}
-                                                                        theToken={tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
-                                                                        updateTokenOrder={updateTokenOrder}
-                                                                    />
-                                                                </div>
-                                                            }
-                                                        </div>
+                                                            )
+                                                        }
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        
+                                        {aToken == cryptoToken &&
+                                            <div className="flex-center w-100">
+                                                
+                                                {!(cryptoToken in tokensArrayObj) && !!uid &&
+                                                    <div className="flex-1 w-100  ">
 
                                                     </div>
+                                                }
+                                                <div className="flex-center mt-1">
+                                                    {/* <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"mode")}}
+                                                        className="opaci-chov--50 bg-w-90  tx-black px-3 py-1 bord-r-15 mx-1 ma-1"
+                                                    >
+                                                        Mode: {theToken && theToken.mode}
+                                                    </div> */}
+                                                    {/* <div className="flex-center px-4">
+                                                        <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-50 opaci-chov--50 bord-r-8 ">
+                                                            Refresh
+                                                        </div>
+                                                    </div> */}
+                                                    
+                                                    <div className="flex-row mq_xs_flex-col">
+                                                        {(cryptoToken in tokensArrayObj) && 
+                                                            <div className="tx-bold flex-center   " >
+                                                                <button className="clickble tx-ls-5  opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-3 bord-r-50 tx-lg"
+                                                                    onClick={()=>{removeToken(cryptoToken)}}
+                                                                    style={{boxShadow:"0px 0px 25px #CF589433"}}
+                                                                >
+                                                                    LEAVE
+                                                                </button>
+                                                            </div>
+                                                        }
+                                                        {!(cryptoToken in tokensArrayObj) && !!uid &&
+                                                            <div className={`tx-bold flex-center  invert ${!uid && "opaci-50"}`}
+                                                            >
+                                                                <button className="clickble tx-ls-5 opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-4 bord-r-50 tx-lg"
+                                                                    onClick={()=>{!!uid && joinToken(cryptoToken)}} 
+                                                                    style={{boxShadow:"0px 0px 25px #CF589433"}}
+                                                                >
+                                                                    JOIN
+                                                                </button>
+                                                            </div>
+                                                        }
+                                                    
+                                                        {tokensArrayObj &&  tokensArrayObj[cryptoToken] && tokensArrayObj[cryptoToken][0] &&
+                                                            <div className="flex-wrap w- mx-3  ">
+                                                                <TokenConfigStateButtons 
+                                                                    timeframe={timeframe}
+                                                                    index={DEFAULT_TOKENS_ARRAY.indexOf(cryptoToken)}
+                                                                    tokensArrayObj={tokensArrayObj}
+                                                                    queryUSDT={queryUSDT}
+                                                                    aToken={cryptoToken}
+                                                                    theToken={tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]}
+                                                                    updateTokenOrder={updateTokenOrder}
+                                                                />
+                                                            </div>
+                                                        }
+                                                    </div>
+
                                                 </div>
-                                            }
-                                        </div>
+                                            </div>
+                                        }
                                     </div>
+                                </div>
+                                )
+                            })}
+                        </div>
+
+                    {!!uid && 
+                        <div className="mt-2 show-xs_md opaci-10 w-100"><hr className="w-100"/></div>
+                    }
+                    <div className="flex mq_xs_flex-col  w-100 flex-align-end">
+                        {/* <div className="flex-col pa-2 ddb">
+                            <div className="w-90 flex flex-align-end">
+                                <div className="tx-sm pr-1 opaci-50">Wavelength:</div>
+                                <div className="tx-lgx tx-bold-6">{wavelength}</div>
+                            </div>
+                            <div className="w-100">
+                                <div className="w-100">
+                                    <input className="w-100" type="range"
+                                        min={-360} max={1200} step="5"
+                                        value={wavelength}
+                                        onChange={(e)=>{s__wavelength(e.target.value)}}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex-wrap w-250px ">
+                                {["-300","250","630"].map((aWavelength,index)=>{
+                                    return (
+                                    <button className="fle-col ma-1 pb-3 px-2 py-2  opaci-chov--50 bg-w-20  tx-lg bord-r-8 tx-white"
+                                        style={{
+                                            border: `2px solid rgb(${(200-parseInt(aWavelength))},99,99)`,
+                                        }}
+                                        key={index} onClick={()=>s__wavelength(aWavelength)}
+                                    >
+                                        {wavelength==aWavelength && <div className="tx-xs">wave:</div>}
+                                        <div className="">{aWavelength}</div>
+                                    </button>
                                     )
                                 })}
                             </div>
-
-                        {!!uid && 
-                            <div className="mt-2 show-xs_md opaci-10 w-100"><hr className="w-100"/></div>
-                        }
-                        <div className="flex mq_xs_flex-col  w-100 flex-align-end">
-                            {/* <div className="flex-col pa-2 ddb">
-                                <div className="w-90 flex flex-align-end">
-                                    <div className="tx-sm pr-1 opaci-50">Wavelength:</div>
-                                    <div className="tx-lgx tx-bold-6">{wavelength}</div>
+                            <hr className="w-100 opaci-10 my-3" />
+                            <div className="w-100 flex flex-align-end">
+                                <div className="tx-sm pr-1 opaci-50">Scope:</div>
+                                <div className="tx-lg tx-bold-6">
+                                    {<div className="px-1 opaci-50">{chopAmount}</div>}
                                 </div>
-                                <div className="w-100">
-                                    <div className="w-100">
-                                        <input className="w-100" type="range"
-                                            min={-360} max={1200} step="5"
-                                            value={wavelength}
-                                            onChange={(e)=>{s__wavelength(e.target.value)}}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex-wrap w-250px ">
-                                    {["-300","250","630"].map((aWavelength,index)=>{
-                                        return (
-                                        <button className="fle-col ma-1 pb-3 px-2 py-2  opaci-chov--50 bg-w-20  tx-lg bord-r-8 tx-white"
-                                            style={{
-                                                border: `2px solid rgb(${(200-parseInt(aWavelength))},99,99)`,
-                                            }}
-                                            key={index} onClick={()=>s__wavelength(aWavelength)}
-                                        >
-                                            {wavelength==aWavelength && <div className="tx-xs">wave:</div>}
-                                            <div className="">{aWavelength}</div>
-                                        </button>
-                                        )
-                                    })}
-                                </div>
-                                <hr className="w-100 opaci-10 my-3" />
-                                <div className="w-100 flex flex-align-end">
-                                    <div className="tx-sm pr-1 opaci-50">Scope:</div>
-                                    <div className="tx-lg tx-bold-6">
-                                        {<div className="px-1 opaci-50">{chopAmount}</div>}
-                                    </div>
-                                </div>
-                                <div className="w-100">
-                                    <input className="w-100" type="range"
-                                        min="-500" max={0} step="1"
-                                        value={-chopAmount}
-                                        onChange={(e)=>{s__chopAmount(-e.target.value)}}
-                                    />
-                                </div>
-                            </div> */}
-                        </div>
-                        
-                        
+                            </div>
+                            <div className="w-100">
+                                <input className="w-100" type="range"
+                                    min="-500" max={0} step="1"
+                                    value={-chopAmount}
+                                    onChange={(e)=>{s__chopAmount(-e.target.value)}}
+                                />
+                            </div>
+                        </div> */}
                     </div>
-                }
+                    
+                    
+                </div>
+                
                 {cryptoToken in tokensArrayObj &&
-                    <div className="w-100 flex-row mq_xs_lg_flex-col flex-align-stretch">
+                    <div className="w-100 flex-col flex-align-stretch">
                         <div className="flex-col mt-8">
                             <div className="w-100 flex-center flex-align-end">
                                 <div className="tx-sm pr-1 opaci-50">Timeframe:</div>
@@ -563,7 +556,7 @@ export function ChartDashboard({query}) {
                                 })}
                             </div>
                         </div>
-                        <div className="flex-center ma- flex-col mq_xs_lg_flex-row ">
+                        <div className="flex-center ma- flex-center ">
                             <a  className="px-2 tx-sm py-1 bg-w-50 ma-1  opaci-chov--50 bord-r-8 tx-white" target={"_blank"}
                                 href={`https://www.tradingview.com/chart/?symbol=BINANCE%3A${cryptoToken.toUpperCase()}${baseToken.toUpperCase()}`}
                             >
@@ -591,7 +584,6 @@ export function ChartDashboard({query}) {
                                 <div className=" opaci-10 px-2 "><hr className="px-2"/></div>
                                 <div className="opaci-50"><div className=" left-0 top-0">{klinesStats.dropPercent}%</div></div>
                             </div>
-                            {loadings != "" && <div className="flex  w-90 bg-w-10  my-3 bord-r-8 h-400px"></div> }   
                         
                             {loadings == "" &&  tokensArrayObj[cryptoToken] && queryUSDT.data && 
                                 <div
