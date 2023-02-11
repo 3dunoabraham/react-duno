@@ -236,8 +236,13 @@ export const getStaticProps = async () => {
     );
     let links = (await supabaseAdmin.from("links").select("*").order("id")).data || []
     let services = (await supabaseAdmin.from("strats").select("*").order("id")).data || []
-
     
+    // let randomHundred = parseInt(`${(Math.random()*90) + 10}`)
+    // console.log("randomHundred", randomHundred)
+    // const {data, error } = await supabaseAdmin
+    //     .from("strats")
+    //     .update({mode: randomHundred})
+    //     .eq("id", "1")
 
     return {
         props: {
