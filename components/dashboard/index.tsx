@@ -2,10 +2,9 @@ import { useState, useEffect, useMemo } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { useQuery } from '@tanstack/react-query'
 import { BsFillGearFill } from "react-icons/bs"
-import { fetchJsonArray, fetchMultipleJsonArray, getComputedLevels, getStrategyResult, parseDecimals, parseUTCDateString, timeDifference
-} from "../../scripts/helpers";
+import { fetchJsonArray, fetchMultipleJsonArray, getComputedLevels, getStrategyResult, parseDecimals,
+parseUTCDateString, timeDifference } from "../../scripts/helpers";
 import { DEFAULT_TIMEFRAME_ARRAY, DEFAULT_TOKENS_ARRAY } from "../../scripts/constants";
-import { TokenConfigStateButtons } from "../../components/chart/tokenConfig";
 import Chart from "../chart";
 import TokenRow from "./TokenRow";
 export function ChartDashboard({query}) {
@@ -28,18 +27,11 @@ export function ChartDashboard({query}) {
         s__loadings("")
     }
     const cryptoToken = useMemo(()=>{
-
         return query.token && DEFAULT_TOKENS_ARRAY.includes(query.token.toLowerCase()) ? query.token.toLowerCase() : ""
     },[query]) 
     const [selectedToken,s__selectedToken] = useState<any>(cryptoToken)
     useEffect(()=>{
-        if (cryptoToken != selectedToken) {
-            getKlineArray(timeframe,query.token)
-        } else {
-            if (counter == 1)
-            {
-            }
-        }
+        if (cryptoToken != selectedToken) { getKlineArray(timeframe,query.token) }
     },[counter,selectedToken,cryptoToken])
     useEffect(()=>{
         s__counter(counter+1)
@@ -56,8 +48,9 @@ export function ChartDashboard({query}) {
     /********** DATA **********/
     const API_PRICE_BASEURL = "https://api.binance.com/api/v3/ticker/price?symbol="
     const baseToken = "usdt"
-    const tokensReqObj:any = (
-    DEFAULT_TOKENS_ARRAY.reduce((acc, aToken) => (
+    const online = true
+    const DEFAULT_TOKEN = {}
+    const tokensReqObj:any = ( DEFAULT_TOKENS_ARRAY.reduce((acc, aToken) => (
         { ...acc, [aToken]: [`${API_PRICE_BASEURL}${(aToken+baseToken).toUpperCase()}`] }
     ), {}))
     const [LS_tokensArrayObj, s__LS_tokensArrayObj] = useLocalStorage('localTokensArrayObj', "{}")
@@ -74,25 +67,13 @@ export function ChartDashboard({query}) {
     }
     const p__klinesArray = useMemo(()=>{
         let slicedArray = [...klinesArray]
-        
-        let lastIndex = slicedArray.length
-        for (let index = 0; index < chopAmount; index++) {
-            slicedArray.push(klinesArray[499])            
-        }
+        for (let index = 0; index < chopAmount; index++) { slicedArray.push(klinesArray[499]) }
 
         return slicedArray.slice(slicedArray.length-500,slicedArray.length)
     },[klinesArray,chopAmount])
-    
-    const queryUSDT:any = useQuery({
-        queryKey: ['usdt'],
-        queryFn: async () => {
-            console.log("fetching now")
-            return online ? (await fetchMultipleJsonArray(tokensReqObj)) : DEFAULT_TOKEN
-        },        
-        refetchInterval: 3000,
+    const queryUSDT:any = useQuery({ queryKey: ['usdt'], refetchInterval: 3000,
+        queryFn: async () => online ? (await fetchMultipleJsonArray(tokensReqObj)) : DEFAULT_TOKEN,
     })
-    const online = true
-    const DEFAULT_TOKEN = {}
     const klinesStats = useMemo(()=>{
         if (!tokensArrayObj[cryptoToken]) return {}
         let tokenConfirg = tokensArrayObj[cryptoToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]
@@ -125,6 +106,7 @@ export function ChartDashboard({query}) {
     },[p__klinesArray, tokensArrayObj])
 
     
+    
     /********** UPDATE **********/
     const getData = async (randomThousand:any) => {
         const res:any = await fetch('https://geolocation-db.com/json/')
@@ -148,9 +130,7 @@ export function ChartDashboard({query}) {
         s__LS_tokensArrayObj(strTokensArrayObj)
         window.location.reload()
     }
-    const exportConfig = () => {
-        console.log(JSON.stringify(tokensArrayObj))
-    }
+    const exportConfig = () => { console.log(JSON.stringify(tokensArrayObj)) }
     const joinToken = (token:string) => {
         let thePrice = parseFloat(queryUSDT.data[DEFAULT_TOKENS_ARRAY.indexOf(`${token}`)].price)
         addToken(token,thePrice)
@@ -235,91 +215,63 @@ export function ChartDashboard({query}) {
 
 
     /********** HTML **********/
-    if (!cryptoToken) return (
-        <div className="">
-            <div className="body h-800px pos-rel flex-col flex-justify-start noverflow">
-                <div className="h-600px block flex-center tx-white tx-xl">. . .</div>
-                <div className="h-600px block flex-center tx-white tx-xl">. . .</div>
-            </div>
-        </div>
-    )
-
+    if (!uid) {
+        return (
+            <button className="ma-2 tx-lg tx-white opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50"
+                onClick={()=>{register()}}
+            >
+                Register
+            </button>
+        )
+    }
+    
     return (
     <div className="body h-min-100  pos-rel flex-col flex-justify-start noverflow">
-        {!uid && (
-            <div className="flex-center  my-2 "  onClick={()=>{register()}}>
-                <button className="tx-lg tx-white opaci-chov-50 duno-btn hov-bord-1-w py-4 px-8 bord-r-50"
-                    style={{boxShadow:"0px 0px 25px #CF589466"}}
-                >
-                Register
-                </button>
-            </div>
-        )}
-        <div
-            className={
-                "bg-glass-6   bord-r-10 tx-white mt-4 py-2 z-999 fade-in w-95 noverflow flex flex-between"
-            }
-            style={{
-                border:"1px solid #777",
-                boxShadow:"0 10px 50px -20px #00000077"
-            }}
+        <div className={"bg-glass-6   bord-r-10 tx-white mt-4 py-2 z-999 fade-in w-95 noverflow flex flex-between"}
+            style={{border:"1px solid #777",boxShadow:"0 10px 50px -20px #00000077"}}
         >
             <div className={` flex-row mq_xs_md_flex-col w-100 flex-align-start `}>
                 <div className="flex-wrap flex-align-start w-100  my-">
+                    <div className="flex-col flex-1 pa-4 ">
+                        {!showAllTokens &&
+                            <div className={`pa-2 bord-r-8 bg-b-50 opaci-chov--50`}onClick={()=>{s__showAllTokens(true)}}>
+                                Show All Tokens
+                            </div>
+                        }
+                        {showAllTokens &&
+                            <div className={`pa-2 bord-r-8 bg-b-50 opaci-chov--50`}onClick={()=>{s__showAllTokens(false)}}>
+                                Hide Tokens
+                            </div>
+                        }
+                        {DEFAULT_TOKENS_ARRAY.map((aToken,index)=>{
+                            let isQ = true
+                            if (queryUSDT.isLoading) { isQ = false }
+                            if (queryUSDT.error) { isQ = false }
+                            let isK = isQ
+                            if (!tokensArrayObj[aToken] || (tokensArrayObj[aToken] && !tokensArrayObj[aToken][0])) { isQ = false }
+                            if (!showAllTokens && aToken != cryptoToken) return
+                            let aTokenCristayl = isQ ? tokensArrayObj[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)] : {}
+                            let crystal = (
+                                queryUSDT.data
+                                ? getStrategyResult(aTokenCristayl,parseFloat(queryUSDT.data[index].price))
+                                : 0
+                            )
 
-                    {/* <div className="flex mq_xs_md_flex-col flex-1"> */}
-                        <div className="flex-col flex-1 pa-4 ">
-                            {!!uid && <>
-                                {!showAllTokens &&
-                                    <div className={`flex pa-2 opaci-75 bord-r-8 mt-2 w-100 bg-b-50 opaci-chov--50   `}
-                                        onClick={()=>{s__showAllTokens(true)}}
-                                    >
-                                        Show All Tokens
-                                    </div>
-                                }
-                                {showAllTokens &&
-                                    <div className={`flex pa-2 opaci-75 bord-r-8 mt-2 w-100 bg-b-50 opaci-chov--50   `}
-                                        onClick={()=>{s__showAllTokens(false)}}
-                                    >
-                                        Hide Tokens
-                                    </div>
-                                }
-                            </>}
-                            {/*uid &&*/ DEFAULT_TOKENS_ARRAY.map((aToken,index)=>{
-                                let isQ = true
-                                if (queryUSDT.isLoading) { isQ = false }
-                                if (queryUSDT.error) { isQ = false }
-                                let isK = isQ
-                                if (!tokensArrayObj[aToken] || (tokensArrayObj[aToken] && !tokensArrayObj[aToken][0])) { isQ = false }
-                                let theToken = isQ ? tokensArrayObj[aToken][0] : null
-                                if (!showAllTokens && aToken != cryptoToken) return
-                                let aTokenCristayl = isQ ? tokensArrayObj[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)] : {}
-                                let crystal = (
-                                    queryUSDT.data
-                                    ? getStrategyResult(aTokenCristayl,parseFloat(queryUSDT.data[index].price))
-                                    : 0
-                                )
-
-                                return (
-                                <div className={`flex pa-2 w-min-350px bord-r-8 mt-2 w-100  ${aToken == cryptoToken ? "bg-w-20 " : "bg-b-10 "} `}
-                                    key={index}
-                                >
-                                    
-                                    <TokenRow {...{
-                                        tokensArrayObj, aToken, cryptoToken, index, queryUSDT, isK, aTokenCristayl, isQ,
-                                        buy_all, buy_min, sell_min, sell_all, crystal, timeframe, uid, updateTokenOrder,
-                                        removeToken, joinToken  
-                                    }}/>
-                                </div>
-                                )
-                            })}
-                        </div>
-
-                    {!!uid && 
-                        <div className="mt-2 show-xs_md opaci-10 w-100"><hr className="w-100"/></div>
-                    }
-                    
-                    
+                            return (
+                            <div key={index}
+                                className={`flex pa-2 w-min-350px bord-r-8 mt-2 w-100
+                                    ${aToken == cryptoToken ? "bg-w-20 " : "bg-b-10 "} 
+                                `}
+                            >
+                                <TokenRow {...{
+                                    tokensArrayObj, aToken, cryptoToken, index, queryUSDT, isK, aTokenCristayl, isQ,
+                                    buy_all, buy_min, sell_min, sell_all, crystal, timeframe, uid, updateTokenOrder,
+                                    removeToken, joinToken  
+                                }}/>
+                            </div>
+                            )
+                        })}
+                    </div>
                 </div>
                 
                 {cryptoToken in tokensArrayObj &&
@@ -343,22 +295,26 @@ export function ChartDashboard({query}) {
                         </div>
                         <div className="flex-center ma- flex-center ">
                             <a  className="px-2 tx-sm py-1 bg-w-50 ma-1  opaci-chov--50 bord-r-8 tx-white" target={"_blank"}
-                                href={`https://www.tradingview.com/chart/?symbol=BINANCE%3A${cryptoToken.toUpperCase()}${baseToken.toUpperCase()}`}
+                                href={`https://www.tradingview.com/chart/?symbol=BINANCE%3A
+                                    ${cryptoToken.toUpperCase()}${baseToken.toUpperCase()}
+                                `}
                             >
-                                <div className="nowrap">
-                                    Tradigview
-                                </div>
-                                <div className="nowrap">
-                                    {cryptoToken.toUpperCase()}{baseToken.toUpperCase()} @{timeframe}
-                                </div>
+                                <div className="nowrap">Tradigview</div>
+                                <div className="nowrap">{cryptoToken.toUpperCase()}{baseToken.toUpperCase()} @{timeframe}</div>
                             </a>
-                            <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                            <div onClick={()=>{getKlineArray(timeframe,cryptoToken)}}
+                                className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 "
+                            >
                                 Refresh
                             </div>
-                            <div onClick={()=>{exportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                            <div onClick={()=>{exportConfig()}}
+                                className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 "
+                            >
                                 export
                             </div>
-                            <div onClick={()=>{clickImportConfig()}} className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 ">
+                            <div onClick={()=>{clickImportConfig()}}
+                                className="px-2 py-1 bg-b-20 ma-1 opaci-50 opaci-chov-50 bord-r-8 "
+                            >
                                 import
                             </div>
                         </div>
@@ -373,7 +329,8 @@ export function ChartDashboard({query}) {
                             {loadings == "" &&  tokensArrayObj[cryptoToken] && queryUSDT.data && 
                                 <Chart
                                     {...{
-                                        klinesStats, klinesArray, p__klinesArray, tokensArrayObj, cryptoToken, timeframe, queryUSDT
+                                        klinesStats, klinesArray, p__klinesArray, tokensArrayObj, cryptoToken,
+                                        timeframe, queryUSDT
                                     }}
                                 />
                             }
