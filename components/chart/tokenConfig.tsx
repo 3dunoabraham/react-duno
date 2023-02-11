@@ -44,6 +44,9 @@ export const TokenConfigStateButtons = ({
     return (
     <div className="flex-col  w-100 ">
         <div className="flex-wrap  w-100">
+            {/* <div className="flex-center  tx-xs">
+                {JSON.stringify(theToken)}
+            </div> */}
             <div className="flex-center  ">
                 {/* <div onClick={()=>{updateTokenOrder(aToken,DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe) ,"state")}}
                     className="opaci-chov--50 bg-w-90  tx-black px-3 py-1 bord-r-15 mx-1 mt-1"

@@ -106,7 +106,7 @@ export function ChartDashboard({query}) {
     },[p__klinesArray, tokensArrayObj])
 
     
-    
+
     /********** UPDATE **********/
     const getData = async (randomThousand:any) => {
         const res:any = await fetch('https://geolocation-db.com/json/')
@@ -200,16 +200,19 @@ export function ChartDashboard({query}) {
         s__tokensArrayObj(new_tokensArrayObj)
         s__LS_tokensArrayObj((prevValue) => JSON.stringify(new_tokensArrayObj))
     }
-    const buy_all = () => {
+    const buy_all = (_token) => {
+        // updateTokenState(_token, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "mode", 1)
+        updateTokenState(_token, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "buy", 2)
     }
-    const buy_min = () => {
-        updateTokenState(cryptoToken, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "buy", 1)
+    const buy_min = (_token, ) => {
+        // updateTokenState(_token, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "mode", 1)
+        updateTokenState(_token, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "buy", 1)
     }
     const sell_min = () => {
 
     }
-    const sell_all = () => {
-        updateTokenState(cryptoToken, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "buy", 0)
+    const sell_all = (_token) => {
+        updateTokenState(_token, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "buy", 0)
     }
 
 
