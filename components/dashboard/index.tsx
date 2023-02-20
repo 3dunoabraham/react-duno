@@ -1,13 +1,108 @@
+/// <reference types="node" />
+
 import { useState, useEffect, useMemo } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { useQuery } from '@tanstack/react-query'
 import { BsFillGearFill } from "react-icons/bs"
 import { fetchJsonArray, fetchMultipleJsonArray, getComputedLevels, getStrategyResult, parseDecimals,
-parseUTCDateString, timeDifference } from "../../scripts/helpers";
+parseUTCDateString, timeDifference, _parseDecimals } from "../../scripts/helpers";
 import { DEFAULT_TIMEFRAME_ARRAY, DEFAULT_TOKENS_ARRAY } from "../../scripts/constants";
 import Chart from "../chart";
 import TokenRow from "./TokenRow";
+import https from 'https';
+import crypto from 'crypto';
+import { createClient } from "@supabase/supabase-js";
+import { updateTodo } from "@/scripts/todoHelper";
+import { Strat } from "@/pages/api/strat";
+// import { parseQuantity } from "@/scripts/utils";
+
+export function parseQuantity(symbol: string, quantity: number): number {
+    const lookupTable: { [key: string]: number } = {
+      'BTC': 5,
+      'ETH': 5,
+      'BNB': 4,
+      'USDT': 4,
+      'ADA': 4,
+      'DOGE': 8,
+      'XRP': 4,
+      'DOT': 4,
+      'UNI': 4,
+      'SOL': 4
+    };
+    const decimalPlaces = lookupTable[symbol] || 2;
+    return Number(quantity.toFixed(decimalPlaces));
+  }
+
+
+type LimitOrderParams = {
+  side: string,
+  symbol: string,
+  quantity: number,
+  price: number,
+  recvWindow?: number,
+  timestamp?: number
+}
+
+function getCryptoPriceDecimals(symbol: string): number {
+  const lookupTable: { [key: string]: number } = {
+    'BTC': 5,
+    'ETH': 5,
+    'BNB': 4,
+    'USDT': 4,
+    'ADA': 4,
+    'DOGE': 8,
+    'XRP': 4,
+    'DOT': 4,
+    'UNI': 4,
+    'SOL': 4
+  };
+  return lookupTable[symbol] || 2;
+}
+
+function makeLimitOrder({ side, symbol, quantity, price, recvWindow = 5000, timestamp = Date.now() }, apiKey: string, apiSecret: string, callback: Function) {
+  const options: https.RequestOptions = {
+    hostname: 'api.binance.com',
+    port: 443,
+    path: '/api/v3/order',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-MBX-APIKEY': apiKey
+    }
+  };
+
+  const params = `symbol=${symbol}&side=${side}&type=LIMIT&timeInForce=GTC&quantity=${quantity}&price=${price.toFixed(getCryptoPriceDecimals(symbol))}&recvWindow=${recvWindow}&timestamp=${timestamp}`;
+  const signature = crypto.createHmac('sha256', apiSecret).update(params).digest('hex');
+  const data = `${params}&signature=${signature}`;
+
+  const req = https.request(options, (res) => {
+    let result = '';
+
+    res.on('data', (data) => {
+      result += data;
+    });
+
+    res.on('end', () => {
+      callback(JSON.parse(result));
+    });
+  });
+
+  req.on('error', (err) => {
+    callback(err);
+  });
+
+  req.write(data);
+  req.end();
+}
+
+// const supabaseAdmin = createClient(
+//     process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+//     process.env.SUPABASE_SERVICE_ROLE_KEY || ""
+// );
+
 export function ChartDashboard({query}) {
+    
+
     /********** CREATE **********/
     const [timeframe,s__timeframe] = useState<any>(query.timeframe)
     const [counter, s__counter] = useState(0);
@@ -150,14 +245,14 @@ export function ChartDashboard({query}) {
         s__tokensArrayObj(new_tokensArrayObj)
         s__LS_tokensArrayObj((prevValue) => JSON.stringify(new_tokensArrayObj))
     }
-    const updateTokenOrder = (token:string, timeframe:any, substate:string,val:any="") => {
+    const updateTokenOrder = async (token:string, timeframe:any, substate:string,val:any="") => {
         if (!token) return
         let promptVal = !val ? prompt("Enter Value") : val
         let value = !promptVal ? 0 : parseFloat(promptVal)
         let timeframeIndex = timeframe
-        console.log("timeframe,", timeframeIndex, value, token)
+        // console.log("timeframe,", timeframeIndex, value, token)
         let old_tokensArrayObj = tokensArrayObj[token][timeframeIndex]
-        console.log("egfrh", old_tokensArrayObj, tokensArrayObj)
+        // console.log("egfrh", old_tokensArrayObj, tokensArrayObj)
 
         let old_tokensArrayObjArray = [...tokensArrayObj[token]]
         let newCrystal = {
@@ -168,13 +263,43 @@ export function ChartDashboard({query}) {
             }),
         }
         old_tokensArrayObjArray[timeframeIndex] = {...old_tokensArrayObj,...newCrystal}
-        console.log("zzzzzz",newCrystal, value)
+        // console.log("zzzzzz",newCrystal, value)
         let bigTokensObj = {...tokensArrayObj, ...{[token]:old_tokensArrayObjArray}}
         s__tokensArrayObj(bigTokensObj)
         s__LS_tokensArrayObj((prevValue) => JSON.stringify(bigTokensObj))
-        console.log("rgwrgwg",bigTokensObj)
+        // console.log("rgwrgwg",bigTokensObj)
+
+        
+        let randomHundred = parseInt(`${(Math.random()*90) + 10}`)
+        let theKey = `${token.toUpperCase()}USDT${DEFAULT_TIMEFRAME_ARRAY[timeframe].toUpperCase()}`
+        console.log("theKey", theKey)
+
+        const response = await updateStrat(theKey, {key:theKey, mode: randomHundred})
+        console.log('Strat updated:', response)
+
     }
-    const updateTokenState = (token:string, timeframe:any, substate:string, value:number) => {
+    
+    async function updateStrat(key: string, updates: Partial<Strat>): Promise<Strat> {
+        console.log("updates put strat", updates)
+        // return
+        const response = await fetch(`/api/strat`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updates),
+        })
+        if (!response.ok) {
+            console.log("response no ok", response)
+        //   throw new Error(`Failed to update strat: ${response.status}`)
+        }
+        // const updatedStrat = await response.json()
+        // return updatedStrat
+        return 
+
+      }
+      
+    const updateTokenState = async (token:string, timeframe:any, substate:string, value:number) => {
         if (!token) return
         let timeframeIndex = timeframe
         let old_tokensArrayObj = tokensArrayObj[token][timeframeIndex]
@@ -183,10 +308,24 @@ export function ChartDashboard({query}) {
         let newCrystal = {...{
             [substate]:value
         },...getComputedLevels(old_tokensArrayObjArray[timeframeIndex])}
+        console.log("newCrystal", newCrystal)
         old_tokensArrayObjArray[timeframeIndex] = {...old_tokensArrayObj,...newCrystal}
         let bigTokensObj = {...tokensArrayObj, ...{[token]:old_tokensArrayObjArray}}
         s__tokensArrayObj(bigTokensObj)
         s__LS_tokensArrayObj((prevValue) => JSON.stringify(bigTokensObj))
+
+        let randomHundred = parseInt(`${(Math.random()*90) + 10}`)
+        let theKey = `${token}USDT${timeframe.toUpperCase()}`
+        console.log("theKey", theKey)
+
+        const response = await updateStrat(theKey, {mode: randomHundred})
+        console.log('Strat updated:', response)
+
+        // const {data, error } = await supabaseAdmin
+        //     .from("strats")
+        //     .update({mode: randomHundred})
+        //     .eq("key", theKey)
+
     }
     const setNewTimeframe = async(aTimeframe:string) => {
         s__timeframe(aTimeframe)
@@ -200,21 +339,148 @@ export function ChartDashboard({query}) {
         s__tokensArrayObj(new_tokensArrayObj)
         s__LS_tokensArrayObj((prevValue) => JSON.stringify(new_tokensArrayObj))
     }
-    const buy_all = (_token) => {
-        // updateTokenState(_token, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "mode", 1)
-        updateTokenState(_token, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "buy", 2)
-    }
-    const buy_min = (_token, ) => {
-        // updateTokenState(_token, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "mode", 1)
+
+    
+function getCryptoPriceDecimals(symbol: string): number {
+    const lookupTable: { [key: string]: number } = {
+      'BTC': 5,
+      'ETH': 5,
+      'BNB': 4,
+      'USDT': 4,
+      'ADA': 4,
+      'DOGE': 8,
+      'XRP': 4,
+      'DOT': 4,
+      'UNI': 4,
+      'SOL': 4
+    };
+    return lookupTable[symbol] || 2;
+  }
+  
+    const cryptoDecimals = {
+        BTC: 2,
+        ETH: 4,
+        BNB: 3,
+        XRP: 5,
+        ADA: 6,
+        DOGE: 8,
+        DOT: 3,
+        UNI: 4,
+        LTC: 5,
+        LINK: 5,
+      };
+      
+      function formatCryptoPrice(cryptoSymbol, priceString) {
+        const decimals = cryptoDecimals[cryptoSymbol.toUpperCase()];
+        const price = parseFloat(priceString.replace(/,/g, ''));
+      
+        if (isNaN(decimals) || isNaN(price)) {
+          throw new Error('Invalid input');
+        }
+      
+        return Number(price.toFixed(decimals));
+      }
+    const dollarAmount = 11
+    async function placeOrder(order: LimitOrderParams): Promise<any> {
+        const response = await fetch('/api/place-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(order)
+        });
+      
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message);
+        }
+      
+        return response.json();
+      }
+
+
+      const buy_min = (_token, ) => {
+        let theCurrentTokenConfig = tokensArrayObj[_token][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]
+        let theLivePrice = _parseDecimals(queryUSDT.data[DEFAULT_TOKENS_ARRAY.indexOf(_token)].price)
+        let tokenAmount = dollarAmount/theLivePrice
+        const orderParams = {
+            symbol: _token.toUpperCase()+'USDT',
+            side: 'BUY',
+            type: 'LIMIT',
+            quantity: parseQuantity(_token.toUpperCase(),tokenAmount),
+            price: theLivePrice,
+        };
+
+        console.log("buy_min placeOrder",orderParams)
+        placeOrder(orderParams)
+        
         updateTokenState(_token, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "buy", 1)
     }
-    const sell_min = () => {
-
-    }
     const sell_all = (_token) => {
+        let thePair = _token.toUpperCase()+'USDT'
+        let theCurrentTokenConfig = tokensArrayObj[_token][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]
+        let theLivePrice = _parseDecimals(queryUSDT.data[DEFAULT_TOKENS_ARRAY.indexOf(_token)].price)*1.02
+        let tokenAmount = (dollarAmount*2)/theLivePrice
+        const orderParams = {
+            symbol: thePair,
+            side: 'SELL',
+            type: 'LIMIT',
+            quantity: parseQuantity(_token.toUpperCase(),tokenAmount),
+            price: theLivePrice,
+        };
+        console.log("sell_all placeOrder",orderParams)
+        // return
+        placeOrder(orderParams)
+        
         updateTokenState(_token, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "buy", 0)
     }
 
+    const buy_all = (_token) => {
+        let thePair = _token.toUpperCase()+'USDT'
+        let theCurrentTokenConfig = tokensArrayObj[_token][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]
+        let theLivePrice = _parseDecimals(queryUSDT.data[DEFAULT_TOKENS_ARRAY.indexOf(_token)].price)*0.98
+        let tokenAmount = (dollarAmount*2)/theLivePrice
+        const orderParams = {
+            symbol: thePair,
+            side: 'BUY',
+            type: 'LIMIT',
+            quantity: parseQuantity(_token.toUpperCase(),tokenAmount),
+            price: theLivePrice,
+        };
+        console.log("sell_all placeOrder",orderParams)
+        // return
+        placeOrder(orderParams)
+        
+        updateTokenState(_token, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "buy", 2)
+    }
+    
+    const sell_min = (_token, ) => {
+        let theCurrentTokenConfig = tokensArrayObj[_token][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]
+        let theLivePrice = _parseDecimals(queryUSDT.data[DEFAULT_TOKENS_ARRAY.indexOf(_token)].price)
+        let tokenAmount = dollarAmount/theLivePrice
+        const orderParams = {
+            symbol: _token.toUpperCase()+'USDT',
+            side: 'SELL',
+            type: 'LIMIT',
+            quantity: parseQuantity(_token.toUpperCase(),tokenAmount),
+            price: theLivePrice,
+        };
+
+        console.log("buy_min placeOrder",orderParams)
+        placeOrder(orderParams)
+        
+        updateTokenState(_token, DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe), "buy", 1)
+    }
+
+    // let links = (await supabaseAdmin.from("links").select("*").order("id")).data || []
+    // let services = (await supabaseAdmin.from("strats").select("*").order("id")).data || []
+    
+    // let randomHundred = parseInt(`${(Math.random()*90) + 10}`)
+    // console.log("randomHundred", randomHundred)
+    // const {data, error } = await supabaseAdmin
+    //     .from("strats")
+    //     .update({mode: randomHundred})
+    //     .eq("id", "1")
 
 
     /********** HTML **********/

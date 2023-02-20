@@ -79,7 +79,7 @@ export default function Component({
                                         {aTokenCristayl.buy > 0 &&
                                             <div className="bg-w-50 opaci-chov--50 tx-black bord-r-8 pa-1 px-2 ml-2"
                                                 onClick={()=>{
-                                                    sell_all(aToken)                                                                                        
+                                                    // sell_all(aToken)                                                                                        
                                                 }}
                                             >
                                                 x

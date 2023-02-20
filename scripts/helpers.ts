@@ -34,12 +34,12 @@ export const getStrategyResult = (tokenConfig:any, livePrice:number) => {
         if (isWith) return -1
     }
     // console.log(livePrice , minMedian)
+    if (livePrice < min) {
+        if (isEmpty) return 2
+        if (isHalf) return 1
+    }
     if (livePrice < minMedian) {
         if (isEmpty) return 1
-    }
-    if (livePrice < min) {
-        if (isEmpty) return 1
-        if (isHalf) return 2
     }
 
     return 0
@@ -109,7 +109,28 @@ export const parseDecimals = (x:number) => {
     return parseInt(`${x}`)
   };
 
-
+  export const _parseDecimals = (x:number) => {
+    x = parseFloat(`${x}`)
+    if (x == 0) return 0
+  
+    const thresholds = [    [0.000001, 8],
+      [0.00001, 7],
+      [0.001, 6],
+      [0.01, 5],
+      [0.1, 4],
+      [1, 3],
+      [50, 2],
+      [100, 1]
+    ]
+  
+    for (const [threshold, decimals] of thresholds) {
+      if (x < threshold) {
+        return Number(x.toFixed(decimals));
+      }
+    }
+  
+    return Number.isInteger(x) ? x : parseInt(`${x}`)
+  };
 
   export const zeroPad = (value, length) => {
     return `${value}`.padStart(length, '0');
