@@ -13,8 +13,6 @@ import { fetchJsonArray, fetchMultipleJsonArray, getComputedLevels, getStrategyR
 
 
 export function ChartDashboard({query}) {
-    
-    
     /********** CREATE **********/
     const [timeframe,s__timeframe] = useState<any>(query.timeframe)
     const [counter, s__counter] = useState(0);
