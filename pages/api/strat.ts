@@ -28,6 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { method, body } = req
   // res.status(200).json({})
   // return
+  console.log("method", method)
   switch (method) {
     case 'GET':
       try {
@@ -60,24 +61,46 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       break
 
-    case 'PUT':
-      try {
-        // console.log("Puuuuuuuuuuuuuuuuut body", body)
-        const { data: strat, error } = await supabase
-          .from<Strat>('strats')
-          .update(body)
-          .match({ key: body.key })
-          .single()
-        if (error) {
-          throw error
+      case 'PUT':
+        try {
+          const { key, ...fieldsToUpdate } = body
+          const { data: existingStrat, error: selectError } = await supabase
+            .from<Strat>('strats')
+            .select('*')
+            .match({ key })
+            .single()
+          // if (selectError) {
+          //   throw selectError
+          // }
+          console.log("selectError")
+          if (existingStrat) {
+            const { data: updatedStrat, error: updateError } = await supabase
+              .from<Strat>('strats')
+              .update(fieldsToUpdate)
+              .match({ key })
+              .single()
+            if (updateError) {
+              throw updateError
+            }
+            res.status(200).json(updatedStrat)
+          } else {
+              console.log("insert new strat updating", { ...fieldsToUpdate, key })
+              const { data: newStrat, error: insertError } = await supabase
+              .from<Strat>('strats')
+              .insert({ ...fieldsToUpdate, key, token: key.split("USDT")[0].toLowerCase(), timeframe: key.split("USDT")[1].toLowerCase() })
+              .single()
+            if (insertError) {
+              console.log("insertError", insertError)
+              throw insertError
+            }
+            res.status(201).json(newStrat)
+          }
+        } catch (error) {
+          console.error(error)
+          res.status(500).json({ message: 'Failed to update strat' })
         }
-        res.status(200).json(strat)
-        // res.status(200).json({})
-      } catch (error) {
-        console.error(error)
-        res.status(500).json({ message: 'Failed to update strat' })
-      }
-      break
+        break
+      
 
     case 'DELETE':
       try {

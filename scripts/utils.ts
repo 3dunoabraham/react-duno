@@ -1,23 +1,50 @@
 import https from 'https';
 import crypto from 'crypto';
 
-export function parseQuantity(symbol: string, quantity: number): number {
-    const lookupTable: { [key: string]: number } = {
-      'BTC': 5,
-      'ETH': 5,
-      'BNB': 4,
-      'USDT': 4,
-      'ADA': 4,
-      'DOGE': 8,
-      'XRP': 4,
-      'DOT': 4,
-      'UNI': 4,
-      'SOL': 4
-    };
-    const decimalPlaces = lookupTable[symbol] || 2;
-    return Number(quantity.toFixed(decimalPlaces));
-  }
+// export function parseQuantity(symbol: string, quantity: number): number {
+//     const lookupTable: { [key: string]: number } = {
+//       'BTC': 5,
+//       'ETH': 5,
+//       'BNB': 4,
+//       'USDT': 4,
+//       'ADA': 4,
+//       'DOGE': 8,
+//       'XRP': 4,
+//       'DOT': 4,
+//       'UNI': 4,
+//       'SOL': 4
+//     };
+//     const decimalPlaces = lookupTable[symbol] || 2;
+//     return Number(quantity.toFixed(decimalPlaces));
+//   }
   
+export type LimitOrderParams = {
+  side: string,
+  symbol: string,
+  quantity: number,
+  price: number,
+  recvWindow?: number,
+  timestamp?: number
+}
+
+export function parseQuantity(symbol: string, quantity: number): number {
+  const lookupTable: { [key: string]: number } = {
+    'BTC': 5,
+    'ETH': 5,
+    'BNB': 4,
+    'USDT': 4,
+    'ADA': 4,
+    'DOGE': 8,
+    'XRP': 4,
+    'DOT': 4,
+    'UNI': 4,
+    'SOL': 4
+  };
+  const decimalPlaces = lookupTable[symbol] || 2;
+  return Number(quantity.toFixed(decimalPlaces));
+}
+
+
 
 export function getCryptoPriceDecimals(symbol: string): number {
   const lookupTable: { [key: string]: number } = {
