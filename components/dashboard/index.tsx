@@ -43,6 +43,8 @@ export function ChartDashboard({query}) {
     useEffect(()=>{
         s__counter(counter+1)
         s__tokensArrayObj(JSON.parse(LS_tokensArrayObj))
+        console.log("LS_tokensArrayObj")
+        console.log(JSON.parse(LS_tokensArrayObj)) 
         s__uid(LS_uid)
         s__clientIP(LS_uid.split(":")[0])
         {

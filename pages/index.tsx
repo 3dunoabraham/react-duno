@@ -38,11 +38,11 @@ const getBotUpdates = () =>
 
 
 function Gallery({
-    links, services, example,
-}: { links: ILink[], services: IService[], example:any }) {
+    links, strats, example,
+}: { links: ILink[], strats: IService[], example:any }) {
 // new TELEGRAM_WRAPPER({});
     useEffect(()=>{
-        console.log(services)
+        console.log(strats)
     },[])
     return (
     <div className="body pos-rel flex-col flex-justify-start">
@@ -120,9 +120,9 @@ function Gallery({
                         <div className="px-3 py-6 mt-3 w-150px" ></div>
                     </div>
                     <div className="pos-rel flex-row bg-w-opaci-10 bord-r-10 ma-2 px-4 mt-0 py-4">
-                        {services.map((service) => (
-                            <div key={service.id} className="">
-                                <Service service={service} />
+                        {strats.map((strat) => (
+                            <div key={strat.id} className="">
+                                <Service service={strat} />
                             </div>
                         ))}
                     </div>
@@ -235,7 +235,7 @@ export const getStaticProps = async () => {
         process.env.SUPABASE_SERVICE_ROLE_KEY || ""
     );
     let links = (await supabaseAdmin.from("links").select("*").order("id")).data || []
-    let services = (await supabaseAdmin.from("strats").select("*").order("id")).data || []
+    let strats = (await supabaseAdmin.from("strats").select("*").order("id")).data || []
     
     // let randomHundred = parseInt(`${(Math.random()*90) + 10}`)
     // console.log("randomHundred", randomHundred)
@@ -247,7 +247,7 @@ export const getStaticProps = async () => {
     return {
         props: {
             links: links,
-            services: services,
+            strats: strats,
             example: {},
         },
     };
