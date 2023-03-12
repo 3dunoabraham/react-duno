@@ -10,6 +10,7 @@ import TokenRow from "../../components/dashboard/TokenRow";
 import { Strat } from "../../pages/api/strat";
 import { LimitOrderParams, parseQuantity } from "../../scripts/utils";
 import { fetchJsonArray, fetchMultipleJsonArray, getComputedLevels, getStrategyResult, parseDecimals, parseUTCDateString, timeDifference, _parseDecimals } from "../../scripts/helpers";
+import { DownloadButton } from "./DownloadButton";
 
 
 export function ChartDashboard({query}) {
@@ -474,6 +475,7 @@ export function ChartDashboard({query}) {
             </div>
         </div>
         <div className=" pt-200"></div>
+        <DownloadButton filename="database" data={tokensArrayObj} />
     </div>
     )
 }
