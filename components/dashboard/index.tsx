@@ -143,14 +143,14 @@ export function ChartDashboard({query}) {
         addToken(token,thePrice)
     }
     const addToken = (token:string,price:number) => {
-    if (!token) return
-    let new_tokensArrayObj = {
-        ...tokensArrayObj, ...
-        {
-            [`${token}`]: DEFAULT_TIMEFRAME_ARRAY.map((aTimeframe, index)=> (
-                {...DEFAULT_TOKEN_OBJ,...{
-                    ...getComputedLevels({floor:price*0.8,ceil:price*1.2})
-                }}
+        if (!token) return
+        let new_tokensArrayObj = {
+            ...tokensArrayObj, ...
+            {
+                [`${token}`]: DEFAULT_TIMEFRAME_ARRAY.map((aTimeframe, index)=> (
+                    {...DEFAULT_TOKEN_OBJ,...{
+                        ...getComputedLevels({floor:price*0.8,ceil:price*1.2})
+                    }}
                 ) )
             }
         }
@@ -321,7 +321,7 @@ export function ChartDashboard({query}) {
             </button>
         )
     }
-    
+    console.log("DEFAULT_TOKENS_ARRAY", DEFAULT_TOKENS_ARRAY, tokensArrayObj)
     return (
     <div className="body h-min-100  pos-rel flex-col flex-justify-start noverflow">
         <div className={"bg-glass-6   bord-r-10 tx-white mt-4 py-2 z-999 fade-in w-95 noverflow flex flex-between"}
@@ -345,6 +345,14 @@ export function ChartDashboard({query}) {
                             if (queryUSDT.isLoading) { isQ = false }
                             if (queryUSDT.error) { isQ = false }
                             let isK = isQ
+                            
+                            if (tokensArrayObj[aToken]) {
+                                return (
+                                    <div key={index}>
+                                    </div>
+                                )
+                            }
+
                             if (!tokensArrayObj[aToken] || (tokensArrayObj[aToken] && !tokensArrayObj[aToken][0])) { isQ = false }
                             if (!showAllTokens && aToken != cryptoToken) return
                             let aTokenCristayl = isQ ? tokensArrayObj[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)] : {}

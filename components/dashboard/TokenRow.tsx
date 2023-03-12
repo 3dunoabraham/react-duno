@@ -7,7 +7,8 @@ export default function Component({
     buy_all, buy_min, sell_min, sell_all, crystal, timeframe, uid, updateTokenOrder,
     removeToken, joinToken    
 }) {
-    let theTokenConfig = tokensArrayObj[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)]
+    console.log("tokensArrayObj", tokensArrayObj)
+    let theTokenConfig = tokensArrayObj[aToken] ? tokensArrayObj[aToken][DEFAULT_TIMEFRAME_ARRAY.indexOf(timeframe)] : null
     return (
         <div className="      flex-col w-100 " >
             <div className="w-100">
@@ -72,8 +73,8 @@ export default function Component({
                                                 {aTokenCristayl.buy == 0 && <div>wait to buy</div>}
                                                 {aTokenCristayl.buy == 1 && <div>wait to sell</div>}
                                                 {aTokenCristayl.buy == 2 && <div className="tx-bold">wait to sell</div>}
-                                                {aTokenCristayl.buy == 1 && <div>{theTokenConfig.minMaxAvg}</div> }
-                                                {aTokenCristayl.buy == 2 && <div>{theTokenConfig.minMaxAvg} or {theTokenConfig.maxMedian}</div> }
+                                                {aTokenCristayl.buy == 1 && <div>{theTokenConfig && theTokenConfig.minMaxAvg}</div> }
+                                                {aTokenCristayl.buy == 2 && <div>{theTokenConfig && theTokenConfig.minMaxAvg} or {theTokenConfig.maxMedian}</div> }
                                             </div>
                                         </>}
                                         {aTokenCristayl.buy > 0 &&
@@ -127,24 +128,29 @@ export default function Component({
                                             </button>
                                         </div>
                                     }
-                                    {!(aToken in tokensArrayObj) && !!uid &&
-                                        <div className={`tx-bold flex-center mt-1  invert ${!uid && "opaci-50"}`}
-                                        >
-                                            <button className="clickble tx-ls-5 opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-4 bord-r-50 tx-lg"
-                                                onClick={()=>{!!uid && joinToken(aToken)}} 
-                                                style={{boxShadow:"0px 0px 25px #CF589433"}}
-                                            >
-                                                JOIN
-                                            </button>
-                                        </div>
-                                    }
+                                    
                                 </div>
                             </details>
                         }
 
                     </div>
+                    
+
                 </div>
             }
+            
+            {!(aToken in tokensArrayObj) && !!uid &&
+                <div className={`tx-bold flex-center mt-1  invert ${!uid && "opaci-50"}`}
+                >
+                    <button className="clickble tx-ls-5 opaci-50 opaci-chov-50 duno-btn hov-bord-1-w py-2 px-4 bord-r-50 tx-lg"
+                        onClick={()=>{!!uid && joinToken(aToken)}} 
+                        style={{boxShadow:"0px 0px 25px #CF589433"}}
+                    >
+                        JOIN
+                    </button>
+                </div>
+            }
+
         </div>
     )
 }
