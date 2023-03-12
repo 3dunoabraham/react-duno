@@ -346,12 +346,12 @@ export function ChartDashboard({query}) {
                             if (queryUSDT.error) { isQ = false }
                             let isK = isQ
                             
-                            if (tokensArrayObj[aToken]) {
-                                return (
-                                    <div key={index}>
-                                    </div>
-                                )
-                            }
+                            // if (tokensArrayObj[aToken]) {
+                            //     return (
+                            //         <div key={index}>asd
+                            //         </div>
+                            //     )
+                            // }
 
                             if (!tokensArrayObj[aToken] || (tokensArrayObj[aToken] && !tokensArrayObj[aToken][0])) { isQ = false }
                             if (!showAllTokens && aToken != cryptoToken) return
